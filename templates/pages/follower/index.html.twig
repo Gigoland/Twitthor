@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Twitthor Pro - Followers{% endblock %}
+
+{% block header %}{% include 'partials/_header.html.twig' %}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Followers</h1>
+
+        {% if followers is same as([]) %}
+            Zero data.
+        {% else %}
+            {# total items count #}
+            <div class="count">
+                Total: {{ followers.getTotalItemCount }} followers found.
+            </div>
+
+            <table class="table table-hover mt-4">
+                <thead>
+                    <tr>
+                        <th scope="col">Twitter Name</th>
+                        <th scope="col">Twitter Usernme</th>
+                        <th scope="col">Twitter ID</th>
+                        <th scope="col">Twitter Verified</th>
+                        <th scope="col">Wallet ETH</th>
+                        <th scope="col">Wallet SOL</th>
+                        <th scope="col">Favorite</th>
+                        <th scope="col">Created</th>
+                        <th scope="col">Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for follower in followers %}
+                        <tr class="table-primary">
+                            <th scope="row">{{ follower.twName }}</th>
+                            <td>{{ follower.twUsername }}</td>
+                            <td>{{ follower.twUserId }}</td>
+                            <td>{{ follower.twVerified }}</td>
+                            <td>{{ follower.walletEth }}</td>
+                            <td>{{ follower.walletSol }}</td>
+                            <td>{{ follower.favorite }}</td>
+                            <td>{{ follower.createAt|date('d/m/Y') }}</td>
+                            <td>{{ follower.updateAt|date('d/m/Y') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# display navigation #}
+            <div class="navigation d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(followers) }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
