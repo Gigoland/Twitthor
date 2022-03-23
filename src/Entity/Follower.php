@@ -12,44 +12,52 @@ class Follower
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 55)]
     #[Assert\Unique()]
     #[Assert\NotBlank()]
     #[Assert\Length(max: 55)]
-    private $twUserId;
+    private string $twUserId;
 
     #[ORM\Column(type: 'string', length: 22)]
     #[Assert\Unique()]
     #[Assert\NotBlank()]
     #[Assert\Length(max: 22)]
-    private $twUsername;
+    private string $twUsername;
 
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank()]
-    private $twName;
+    private string $twName;
 
     #[ORM\Column(type: 'boolean')]
-    private $twVerified;
+    private bool $twVerified;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(max: 55)]
-    private $walletEth;
+    private string $walletEth;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(max: 55)]
-    private $walletSol;
+    private string $walletSol;
 
     #[ORM\Column(type: 'boolean')]
-    private $favorite;
+    private bool $favorite;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
-    private $createAt;
+    private ?\DateTimeImmutable $createAt;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $updateAt;
+    private ?\DateTimeImmutable $updateAt;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->createAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
