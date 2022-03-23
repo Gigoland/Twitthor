@@ -52,10 +52,10 @@ class FollowerController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Follower created with success.'
+                'Follower created with success !'
             );
 
-            $this->redirectToRoute('app_followers');
+            return $this->redirectToRoute('app_followers');
         }
 
         return $this->render('pages/follower/new.html.twig', [

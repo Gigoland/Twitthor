@@ -20,6 +20,7 @@ class FollowerType extends AbstractType
             ->add('twUserId', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'minlength' => 1,
                     'maxlength' => 55,
                 ],
                 'label' => 'Twetter ID',
@@ -34,6 +35,7 @@ class FollowerType extends AbstractType
             ->add('twUsername', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'minlength' => 1,
                     'maxlength' => 22,
                 ],
                 'label' => 'Twetter username',
@@ -48,6 +50,7 @@ class FollowerType extends AbstractType
             ->add('twName', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'minlength' => 1,
                     'maxlength' => 55,
                 ],
                 'label' => 'Twetter name',
