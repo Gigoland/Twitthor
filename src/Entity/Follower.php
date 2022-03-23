@@ -4,9 +4,12 @@ namespace App\Entity;
 
 use App\Repository\FollowerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FollowerRepository::class)]
+#[UniqueEntity('twUserId')]
+#[UniqueEntity('twUsername')]
 class Follower
 {
     #[ORM\Id]
@@ -15,15 +18,13 @@ class Follower
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 55)]
-    #[Assert\Unique()]
     #[Assert\NotBlank()]
-    #[Assert\Length(max: 55)]
+    #[Assert\Length(min: 1, max: 55)]
     private string $twUserId;
 
     #[ORM\Column(type: 'string', length: 22)]
-    #[Assert\Unique()]
     #[Assert\NotBlank()]
-    #[Assert\Length(max: 22)]
+    #[Assert\Length(min: 1, max: 22)]
     private string $twUsername;
 
     #[ORM\Column(type: 'text')]
@@ -34,12 +35,12 @@ class Follower
     private bool $twVerified;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
-    #[Assert\Length(max: 55)]
-    private string $walletEth;
+    #[Assert\Length(min: 1, max: 55)]
+    private ?string $walletEth;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
-    #[Assert\Length(max: 55)]
-    private string $walletSol;
+    #[Assert\Length(min: 1, max: 55)]
+    private ?string $walletSol;
 
     #[ORM\Column(type: 'boolean')]
     private bool $favorite;
@@ -56,6 +57,8 @@ class Follower
      */
     public function __construct()
     {
+        $this->twVerified = false;
+        $this->favorite = false;
         $this->createAt = new \DateTimeImmutable();
     }
 
