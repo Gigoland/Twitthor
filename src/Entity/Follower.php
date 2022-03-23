@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\FollowerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FollowerRepository::class)]
 class Follower
@@ -14,27 +15,37 @@ class Follower
     private $id;
 
     #[ORM\Column(type: 'string', length: 55)]
+    #[Assert\Unique()]
+    #[Assert\NotBlank()]
+    #[Assert\Length(max: 55)]
     private $twUserId;
 
     #[ORM\Column(type: 'string', length: 22)]
+    #[Assert\Unique()]
+    #[Assert\NotBlank()]
+    #[Assert\Length(max: 22)]
     private $twUsername;
 
     #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank()]
     private $twName;
 
     #[ORM\Column(type: 'boolean')]
     private $twVerified;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
+    #[Assert\Length(max: 55)]
     private $walletEth;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
+    #[Assert\Length(max: 55)]
     private $walletSol;
 
     #[ORM\Column(type: 'boolean')]
     private $favorite;
 
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Assert\NotNull()]
     private $createAt;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
