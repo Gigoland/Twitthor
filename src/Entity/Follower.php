@@ -32,7 +32,7 @@ class Follower
     private string $twName;
 
     #[ORM\Column(type: 'boolean', nullable: false)]
-    private bool $twVerified = false;
+    private bool $twIsVerified = false;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
@@ -43,7 +43,7 @@ class Follower
     private ?string $walletSol;
 
     #[ORM\Column(type: 'boolean', nullable: false)]
-    private bool $favorite = false;
+    private bool $isFavorite = false;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
@@ -101,14 +101,14 @@ class Follower
         return $this;
     }
 
-    public function getTwVerified(): ?bool
+    public function getTwIsVerified(): ?bool
     {
-        return $this->twVerified;
+        return $this->twIsVerified;
     }
 
-    public function setTVerified(bool $twVerified): self
+    public function setTwIsVerified(bool $twIsVerified): self
     {
-        $this->twVerified = (bool) $twVerified;
+        $this->twIsVerified = (bool) $twIsVerified;
 
         return $this;
     }
@@ -137,14 +137,14 @@ class Follower
         return $this;
     }
 
-    public function getFavorite(): ?bool
+    public function getIsFavorite(): ?bool
     {
-        return $this->favorite;
+        return $this->isFavorite;
     }
 
-    public function setFavorite(bool $favorite): self
+    public function setIsFavorite(bool $isFavorite): self
     {
-        $this->favorite = (bool) $favorite;
+        $this->isFavorite = (bool) $isFavorite;
 
         return $this;
     }

@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Follower;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -63,7 +62,7 @@ class FollowerType extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('twVerified', CheckboxType::class, [
+            ->add('twIsVerified', CheckboxType::class, [
                 'label' => 'Twitter verified',
                 'label_attr' => [
                     'class' => 'checkbox-inline checkbox-switch mt-4',
@@ -98,7 +97,7 @@ class FollowerType extends AbstractType
                     new Assert\Length(['min' => 1, 'max' => 55]),
                 ],
             ])
-            ->add('favorite', CheckboxType::class, [
+            ->add('isFavorite', CheckboxType::class, [
                 'label' => 'My favorite',
                 'label_attr' => [
                     'class' => 'checkbox-inline checkbox-switch mt-4',
