@@ -4,13 +4,14 @@ namespace App\Form;
 
 use App\Entity\Follower;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class FollowerType extends AbstractType
 {
@@ -23,7 +24,7 @@ class FollowerType extends AbstractType
                     'minlength' => 1,
                     'maxlength' => 55,
                 ],
-                'label' => 'Twetter ID',
+                'label' => 'Twitter ID',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -38,7 +39,7 @@ class FollowerType extends AbstractType
                     'minlength' => 1,
                     'maxlength' => 22,
                 ],
-                'label' => 'Twetter username',
+                'label' => 'Twitter username',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -53,7 +54,7 @@ class FollowerType extends AbstractType
                     'minlength' => 1,
                     'maxlength' => 55,
                 ],
-                'label' => 'Twetter name',
+                'label' => 'Twitter name',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -63,7 +64,7 @@ class FollowerType extends AbstractType
                 ],
             ])
             ->add('twVerified', CheckboxType::class, [
-                'label' => 'Twetter verified',
+                'label' => 'Twitter verified',
                 'label_attr' => [
                     'class' => 'checkbox-inline checkbox-switch mt-4',
                 ],
@@ -98,7 +99,7 @@ class FollowerType extends AbstractType
                 ],
             ])
             ->add('favorite', CheckboxType::class, [
-                'label' => 'Twetter verified',
+                'label' => 'My favorite',
                 'label_attr' => [
                     'class' => 'checkbox-inline checkbox-switch mt-4',
                 ],

@@ -6,8 +6,7 @@
 
 {% block body %}
     <div class="container mt-4">
-        <h1>Followers</h1>
-
+        <h1>Followers | <a href="{{ path('app_follower_add') }}">Add</a></h1>
         {% if followers is same as([]) %}
             Zero data.
         {% else %}
@@ -28,6 +27,8 @@
                         <th scope="col">Favorite</th>
                         <th scope="col">Created</th>
                         <th scope="col">Updated</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,6 +43,12 @@
                             <td>{{ follower.favorite }}</td>
                             <td>{{ follower.createAt|date('d/m/Y') }}</td>
                             <td>{{ follower.updateAt|date('d/m/Y') }}</td>
+                            <td>
+                                <a href="{{ path('app_follower_edit', {id: follower.id}) }}" class="btn btn-warning">Edit</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_follower_delete', {id: follower.id}) }}" class="btn btn-danger">Delete</a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -31,8 +31,8 @@ class Follower
     #[Assert\NotBlank()]
     private string $twName;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $twVerified;
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private bool $twVerified = false;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
@@ -42,8 +42,8 @@ class Follower
     #[Assert\Length(min: 1, max: 55)]
     private ?string $walletSol;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $favorite;
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private bool $favorite = false;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
@@ -57,8 +57,6 @@ class Follower
      */
     public function __construct()
     {
-        $this->twVerified = false;
-        $this->favorite = false;
         $this->createAt = new \DateTimeImmutable();
     }
 
@@ -110,7 +108,7 @@ class Follower
 
     public function setTVerified(bool $twVerified): self
     {
-        $this->twVerified = $twVerified;
+        $this->twVerified = (bool) $twVerified;
 
         return $this;
     }
@@ -146,7 +144,7 @@ class Follower
 
     public function setFavorite(bool $favorite): self
     {
-        $this->favorite = $favorite;
+        $this->favorite = (bool) $favorite;
 
         return $this;
     }

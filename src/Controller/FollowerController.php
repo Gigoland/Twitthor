@@ -22,9 +22,12 @@ class FollowerController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/followers', name: 'app_followers', methods:['GET'])]
-    public function index(FollowerRepository $repository, PaginatorInterface $paginator, Request $request): Response
-    {
+    #[Route('/followers', name:'app_followers', methods:['GET'])]
+    public function index(
+        FollowerRepository $repository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
         $followers = $paginator->paginate(
             $repository->findAll(),
             $request->query->getInt('page', 1),
@@ -36,11 +39,22 @@ class FollowerController extends AbstractController
         ]);
     }
 
-    #[Route('/follower/add', name: 'app_follower_add', methods:['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $manager): Response
-    {
+    /**
+     * Create
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route('/follower/add', name:'app_follower_add', methods:['GET', 'POST'])]
+    public function new(
+        Request $request,
+        EntityManagerInterface $manager
+    ): Response {
         $follower = new Follower();
-        $form = $this->createForm(FollowerType::class, $follower);
+        $form = $this->createForm(FollowerType::class, $follower, [
+            'method' => 'POST',
+        ]);
 
         $form->handleRequest($request);
 
@@ -61,5 +75,67 @@ class FollowerController extends AbstractController
         return $this->render('pages/follower/new.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * Edit
+     *
+     * @param Follower $follower
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route('/follower/edit/{id}', name:'app_follower_edit', methods:['GET', 'POST'])]
+    public function edit(
+        Follower $follower,
+        Request $request,
+        EntityManagerInterface $manager
+    ): Response {
+        $form = $this->createForm(FollowerType::class, $follower, [
+            'method' => 'POST',
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $follower = $form->getData();
+
+            $manager->persist($follower);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Follower updated with success !'
+            );
+
+            return $this->redirectToRoute('app_followers');
+        }
+
+        return $this->render('pages/follower/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Delete
+     *
+     * @param Follower $follower
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route('/follower/delete/{id}', name:'app_follower_delete', methods:['GET', 'POST'])]
+    public function delete(
+        Follower $follower,
+        EntityManagerInterface $manager
+    ): Response {
+        $manager->remove($follower);
+        $manager->flush();
+
+        $this->addFlash(
+            'success',
+            'Follower deleted with success !'
+        );
+
+        return $this->redirectToRoute('app_followers');
     }
 }
