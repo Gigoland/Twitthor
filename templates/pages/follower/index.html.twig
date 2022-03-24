@@ -41,8 +41,8 @@
                             <td>{{ follower.walletEth }}</td>
                             <td>{{ follower.walletSol }}</td>
                             <td>{{ follower.isFavorite }}</td>
-                            <td>{{ follower.createAt|date('d/m/Y') }}</td>
-                            <td>{{ follower.updateAt|date('d/m/Y') }}</td>
+                            <td>{{ follower.createAt|date('d/m/Y h:i') }}</td>
+                            <td>{{ follower.updateAt|date('d/m/Y h:i') }}</td>
                             <td>
                                 <a href="{{ path('app_follower_edit', {id: follower.id}) }}" class="btn btn-warning">Edit</a>
                             </td>

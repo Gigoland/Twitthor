@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\FollowerRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Repository\FollowerRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: FollowerRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[UniqueEntity('twUserId')]
 #[UniqueEntity('twUsername')]
 class Follower
@@ -58,6 +59,13 @@ class Follower
     public function __construct()
     {
         $this->createAt = new \DateTimeImmutable();
+        $this->updateAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PrePersist()]
+    public function setUpdateAtValue()
+    {
+        $this->updateAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
