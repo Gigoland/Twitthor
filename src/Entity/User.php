@@ -2,21 +2,33 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\FollowerRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-#[ORM\Entity(repositoryClass: FollowerRepository::class)]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity('email')]
 #[UniqueEntity('twUserId')]
 #[UniqueEntity('twUsername')]
-class Follower
+class User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank()]
+    #[Assert\Email()]
+    private string $email;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank()]
+    private string $password;
 
     #[ORM\Column(type: 'string', length: 55)]
     #[Assert\NotBlank()]
@@ -28,34 +40,24 @@ class Follower
     #[Assert\Length(min: 1, max: 22)]
     private string $twUsername;
 
-    #[ORM\Column(type: 'text')]
-    #[Assert\NotBlank()]
-    private string $twName;
-
-    #[ORM\Column(type: 'boolean', nullable: false)]
-    private bool $twIsVerified = false;
+    #[ORM\Column(type: 'string', length: 55, nullable: true)]
+    #[Assert\Length(min: 1, max: 55)]
+    private string $walletEth;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
-    private ?string $walletEth;
-
-    #[ORM\Column(type: 'string', length: 55, nullable: true)]
-    #[Assert\Length(min: 1, max: 55)]
-    private ?string $walletSol;
-
-    #[ORM\Column(type: 'boolean', nullable: false)]
-    private bool $isFavorite = false;
+    private string $welletSol;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
     private ?\DateTimeImmutable $createAt;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Assert\NotNull()]
     private ?\DateTimeImmutable $updateAt;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'followers')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Follower::class, orphanRemoval: true)]
+    private $followers;
 
     /**
      * Constructor
@@ -64,6 +66,7 @@ class Follower
     {
         $this->createAt = new \DateTimeImmutable();
         $this->updateAt = new \DateTimeImmutable();
+        $this->followers = new ArrayCollection();
     }
 
     #[ORM\PrePersist()]
@@ -75,6 +78,30 @@ class Follower
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
     }
 
     public function getTwUserId(): ?string
@@ -101,30 +128,6 @@ class Follower
         return $this;
     }
 
-    public function getTwName(): ?string
-    {
-        return $this->twName;
-    }
-
-    public function setTwName(string $twName): self
-    {
-        $this->twName = $twName;
-
-        return $this;
-    }
-
-    public function getTwIsVerified(): ?bool
-    {
-        return $this->twIsVerified;
-    }
-
-    public function setTwIsVerified(bool $twIsVerified): self
-    {
-        $this->twIsVerified = (bool) $twIsVerified;
-
-        return $this;
-    }
-
     public function getWalletEth(): ?string
     {
         return $this->walletEth;
@@ -137,26 +140,14 @@ class Follower
         return $this;
     }
 
-    public function getWalletSol(): ?string
+    public function getWelletSol(): ?string
     {
-        return $this->walletSol;
+        return $this->welletSol;
     }
 
-    public function setWalletSol(?string $walletSol): self
+    public function setWelletSol(?string $welletSol): self
     {
-        $this->walletSol = $walletSol;
-
-        return $this;
-    }
-
-    public function getIsFavorite(): ?bool
-    {
-        return $this->isFavorite;
-    }
-
-    public function setIsFavorite(bool $isFavorite): self
-    {
-        $this->isFavorite = (bool) $isFavorite;
+        $this->welletSol = $welletSol;
 
         return $this;
     }
@@ -185,14 +176,32 @@ class Follower
         return $this;
     }
 
-    public function getUser(): ?User
+    /**
+     * @return Collection<int, Follower>
+     */
+    public function getFollowers(): Collection
     {
-        return $this->user;
+        return $this->followers;
     }
 
-    public function setUser(?User $user): self
+    public function addFollower(Follower $follower): self
     {
-        $this->user = $user;
+        if (!$this->followers->contains($follower)) {
+            $this->followers[] = $follower;
+            $follower->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(Follower $follower): self
+    {
+        if ($this->followers->removeElement($follower)) {
+            // set the owning side to null (unless already changed)
+            if ($follower->getUser() === $this) {
+                $follower->setUser(null);
+            }
+        }
 
         return $this;
     }

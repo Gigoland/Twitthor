@@ -17,7 +17,7 @@ class FollowerType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('twUserId', NumberType::class, [
+            ->add('twUserId', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => 1,
