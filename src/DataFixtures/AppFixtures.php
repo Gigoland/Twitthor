@@ -29,6 +29,7 @@ class AppFixtures extends Fixture
      */
     public function load(ObjectManager $manager): void
     {
+        /*
         $user = new User();
         $user
             ->setEmail($this->faker->email())
@@ -41,7 +42,7 @@ class AppFixtures extends Fixture
 
         $manager->persist($user);
         $manager->flush();
-
+*/
         for ($i = 0; $i < 50; $i++) {
             $follower = new Follower();
             $follower
@@ -52,7 +53,7 @@ class AppFixtures extends Fixture
                 ->setWalletEth($this->faker->uuid())
                 ->setWalletSol($this->faker->uuid())
                 ->setIsFavorite(false)
-                ->setUser($user)
+               // ->setUser($user)
             ;
 
             $manager->persist($follower);

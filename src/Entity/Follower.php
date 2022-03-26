@@ -53,10 +53,6 @@ class Follower
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $updateAt;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'followers')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $user;
-
     /**
      * Constructor
      */
@@ -181,18 +177,6 @@ class Follower
     public function setUpdateAt(?\DateTimeImmutable $updateAt): self
     {
         $this->updateAt = $updateAt;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
 
         return $this;
     }
