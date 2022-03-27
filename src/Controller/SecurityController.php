@@ -14,7 +14,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
-     * Undocumented function
+     * User login
      *
      * @param AuthenticationUtils $authenticationUtils
      * @return Response
@@ -28,6 +28,11 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    /**
+     * User logout
+     *
+     * @return void
+     */
     #[Route('/logout', name: 'app_security_logout')]
     public function logout()
     {
@@ -35,7 +40,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Undocumented function
+     * New user registration
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
@@ -45,7 +50,7 @@ class SecurityController extends AbstractController
     public function registration(
         Request $request,
         EntityManagerInterface $manager
-    ) : Response {
+    ): Response {
         $user = new User();
         $user->setRoles(['USER_ROLE']);
         $form = $this->createForm(RegistrationType::class, $user);
@@ -63,7 +68,7 @@ class SecurityController extends AbstractController
                 'User created with success !'
             );
 
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_security_login');
         }
 
         return $this->render('pages/security/registration.html.twig', [
