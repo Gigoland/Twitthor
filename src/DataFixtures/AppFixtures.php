@@ -29,20 +29,20 @@ class AppFixtures extends Fixture
      */
     public function load(ObjectManager $manager): void
     {
-        /*
         $user = new User();
         $user
             ->setEmail($this->faker->email())
-            ->setPassword($this->faker->password())
             ->setTwUserId($this->faker->randomNumber(5, true))
             ->setTwUsername($this->faker->numerify('user-#####'))
             ->setWalletEth($this->faker->uuid())
-            ->setWelletSol($this->faker->uuid())
+            ->setWalletSol($this->faker->uuid())
+            ->setRoles(['ROLE_USER'])
+            ->setPlainPassword('password')
         ;
 
         $manager->persist($user);
         $manager->flush();
-*/
+
         for ($i = 0; $i < 50; $i++) {
             $follower = new Follower();
             $follower

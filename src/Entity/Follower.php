@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\FollowerRepository;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: FollowerRepository::class)]
-#[ORM\HasLifecycleCallbacks]
 #[UniqueEntity('twUserId')]
 #[UniqueEntity('twUsername')]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Entity(repositoryClass: FollowerRepository::class)]
 class Follower
 {
     #[ORM\Id]
@@ -37,21 +37,22 @@ class Follower
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
-    private ?string $walletEth;
+    private ?string $walletEth = null;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
-    private ?string $walletSol;
+    private ?string $walletSol = null;
 
     #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $isFavorite = false;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
-    private ?\DateTimeImmutable $createAt;
+    private \DateTimeImmutable $createAt;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?\DateTimeImmutable $updateAt;
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Assert\NotNull()]
+    private \DateTimeImmutable $updateAt;
 
     /**
      * Constructor
