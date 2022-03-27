@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Twitthor Pro - Login{% endblock %}
+
+{% block header %}{% include 'partials/_header.html.twig' %}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Login</h1>
+
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+
+        <form action="{{ path('app_security_login') }}" method="post">
+            <div class="form-group">
+                <label for="username" class="form-label mt-4">Email address</label>
+                <input type="email" name="_username" value="{{ last_username }}" class="form-control" id="username" placeholder="email@gmail.com">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="password" name="_password" class="form-label mt-4">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="********">
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-4">Login</button>
+        </form>
+    </div>
+{% endblock %}

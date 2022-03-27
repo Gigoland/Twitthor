@@ -2,21 +2,38 @@
 
 namespace App\Form;
 
-use App\Entity\Follower;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\User;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FollowerType extends AbstractType
+class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('email', EmailType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'minlength' => 1,
+                    'maxlength' => 55,
+                ],
+                'label' => 'Email',
+                'label_attr' => [
+                    'class' => 'form-label mt-4',
+                ],
+                'constraints' => [
+                    new Assert\Length(['min' => 1, 'max' => 55]),
+                    new Assert\NotBlank(),
+                ],
+            ])
             ->add('twUserId', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -47,28 +64,6 @@ class FollowerType extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('twName', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'minlength' => 1,
-                    'maxlength' => 55,
-                ],
-                'label' => 'Twitter name',
-                'label_attr' => [
-                    'class' => 'form-label mt-4',
-                ],
-                'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 55]),
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('twIsVerified', CheckboxType::class, [
-                'label' => 'Twitter verified',
-                'label_attr' => [
-                    'class' => 'checkbox-inline checkbox-switch mt-4',
-                ],
-                'required' => false,
-            ])
             ->add('walletEth', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -97,18 +92,33 @@ class FollowerType extends AbstractType
                     new Assert\Length(['min' => 1, 'max' => 55]),
                 ],
             ])
-            ->add('isFavorite', CheckboxType::class, [
-                'label' => 'My favorite',
-                'label_attr' => [
-                    'class' => 'checkbox-inline checkbox-switch mt-4',
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'first_options' => [
+                    'attr' => [
+                        'class' => 'form-control',
+                    ],
+                    'label' => 'Password',
+                    'label_attr' => [
+                        'class' => 'form-label mt-4',
+                    ],
                 ],
-                'required' => false,
+                'second_options' => [
+                    'attr' => [
+                        'class' => 'form-control',
+                    ],
+                    'label' => 'Repeat paswword',
+                    'label_attr' => [
+                        'class' => 'form-label mt-4',
+                    ],
+                ],
+                'invalid_message' => 'Incorect password',
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary mt-4',
                 ],
-                'label' => 'Add follower',
+                'label' => 'Create',
             ])
         ;
     }
@@ -116,7 +126,7 @@ class FollowerType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Follower::class,
+            'data_class' => User::class,
         ]);
     }
 }
