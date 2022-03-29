@@ -117,11 +117,9 @@ class UserController extends AbstractController
                 ]);
             }
 
-            $user->setPassword(
-                $hasher->hashPassword(
-                    $user,
-                    $form->getData()['newPassword']
-                )
+            $user->setUpdateAt(new \DateTimeImmutable()); // For force preUpdate
+            $user->setPlainPassword(
+                $form->getData()['newPassword']
             );
 
             $manager->persist($user);

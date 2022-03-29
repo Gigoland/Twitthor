@@ -26,6 +26,17 @@ class UserListener
     }
 
     /**
+     * Update
+     *
+     * @param User $user
+     * @return void
+     */
+    public function preUpdate(User $user)
+    {
+        $this->encodePassword($user);
+    }
+
+    /**
      * Password hasher
      *
      * @param User $user

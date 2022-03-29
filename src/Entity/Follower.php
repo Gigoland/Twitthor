@@ -64,6 +64,7 @@ class Follower
     }
 
     #[ORM\PrePersist()]
+    #[ORM\PreUpdate()]
     public function setUpdateAtValue()
     {
         $this->updateAt = new \DateTimeImmutable();
