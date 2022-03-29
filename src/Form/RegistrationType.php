@@ -64,34 +64,6 @@ class RegistrationType extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('walletEth', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'maxlength' => 55,
-                ],
-                'label' => 'Wallet ETH',
-                'label_attr' => [
-                    'class' => 'form-label mt-4',
-                ],
-                'required' => false,
-                'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 55]),
-                ],
-            ])
-            ->add('walletSol', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'maxlength' => 55,
-                ],
-                'label' => 'Wallet SOL',
-                'label_attr' => [
-                    'class' => 'form-label mt-4',
-                ],
-                'required' => false,
-                'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 55]),
-                ],
-            ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options' => [
@@ -102,6 +74,9 @@ class RegistrationType extends AbstractType
                     'label_attr' => [
                         'class' => 'form-label mt-4',
                     ],
+                    'constraints' => [
+                        new Assert\NotBlank(),
+                    ],
                 ],
                 'second_options' => [
                     'attr' => [
@@ -110,6 +85,9 @@ class RegistrationType extends AbstractType
                     'label' => 'Repeat paswword',
                     'label_attr' => [
                         'class' => 'form-label mt-4',
+                    ],
+                    'constraints' => [
+                        new Assert\NotBlank(),
                     ],
                 ],
                 'invalid_message' => 'Incorect password',

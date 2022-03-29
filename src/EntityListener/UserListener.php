@@ -14,12 +14,13 @@ class UserListener
         $this->hasher = $hasher;
     }
 
+    /**
+     * Persist
+     *
+     * @param User $user
+     * @return void
+     */
     public function prePersist(User $user)
-    {
-        $this->encodePassword($user);
-    }
-
-    public function preUpdate(User $user)
     {
         $this->encodePassword($user);
     }

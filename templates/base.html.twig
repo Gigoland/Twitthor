@@ -18,18 +18,24 @@
         {% block header %}{% endblock %}
         {% block flash %}
             {% for message in app.flashes('success') %}
-                <div class="alert alert-dismissible alert-success">
-                    {{ message }}
+                <div class="container mt-4">
+                    <div class="alert alert-dismissible alert-success">
+                        {{ message }}
+                    </div>
                 </div>
             {% endfor %}
             {% for message in app.flashes('warnings') %}
-                <div class="alert alert-dismissible alert-warning">
-                    {{ message }}
+                <div class="container mt-4">
+                    <div class="alert alert-dismissible alert-warning">
+                        {{ message }}
+                    </div>
                 </div>
             {% endfor %}
             {% for message in app.flashes('errors') %}
-                <div class="alert alert-dismissible alert-error">
-                    {{ message }}
+                <div class="container mt-4">
+                    <div class="alert alert-dismissible alert-error">
+                        {{ message }}
+                    </div>
                 </div>
             {% endfor %}
         {% endblock %}
