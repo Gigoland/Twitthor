@@ -27,6 +27,7 @@
                         <th scope="col">Favorite</th>
                         <th scope="col">Created</th>
                         <th scope="col">Updated</th>
+                        <th scope="col">Following</th>
                         <th scope="col">Edit</th>
                         <th scope="col">Delete</th>
                     </tr>
@@ -37,14 +38,17 @@
                             <th scope="row">{{ follower.twUser.twName }}</th>
                             <td>{{ follower.twUser.twUsername }}</td>
                             <td>{{ follower.twUser.twUserId }}</td>
-                            <td>{{ follower.twUser.twIsVerified ? 'Yes' : 'No' }}</td>
+                            <td>{{ follower.twUser.twIsVerified ? '<span class="badge rounded-pill bg-success">Yes</span>' : '<span class="badge rounded-pill bg-light">No</span>' }}</td>
                             <td>{{ follower.walletEth }}</td>
                             <td>{{ follower.walletSol }}</td>
-                            <td>{{ follower.isFavorite ? 'Yes' : 'No' }}</td>
+                            <td>{{ follower.isFavorite ? '<span class="badge rounded-pill bg-success">Yes</span>' : '<span class="badge rounded-pill bg-light">No</span>' }}</td>
                             <td>{{ follower.createAt|date('d/m/Y h:i') }}</td>
                             <td>{{ follower.updateAt|date('d/m/Y h:i') }}</td>
                             <td>
-                                <a href="{{ path('app_follower_edit', {id: follower.id}) }}" class="btn btn-warning">Edit</a>
+                                <a href="#" class="btn btn-warning">Unfollow</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_follower_edit', {id: follower.id}) }}" class="btn btn-primary">Edit</a>
                             </td>
                             <td>
                                 <a href="{{ path('app_follower_delete', {id: follower.id}) }}" class="btn btn-danger">Delete</a>
