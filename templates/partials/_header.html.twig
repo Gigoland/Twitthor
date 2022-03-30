@@ -1,24 +1,17 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Twit<string>thor</strong> Pro</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <a class="navbar-brand" href="{{ path('app_index') }}">Twit<string>thor</strong> Pro</a>
 
     <div class="collapse navbar-collapse" id="navbarColor02">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="{{ path('app_index') }}">Home
-            <span class="visually-hidden">(current)</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('app_security_registration') }}">Registration</a>
+          <a class="nav-link" href="{{ path('app_security_login') }}">Login</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ path('app_followers') }}">Followers</a>
         </li>
       </ul>
     </div>
+
   </div>
 </nav>

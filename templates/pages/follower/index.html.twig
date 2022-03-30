@@ -34,14 +34,14 @@
                 </thead>
                 <tbody>
                     {% for follower in followers %}
-                        <tr class="table-primary">
+                        <tr class="{{ follower.isFavorite ? 'table-success' : 'table-primary' }}">
                             <th scope="row">{{ follower.twUser.twName }}</th>
                             <td>{{ follower.twUser.twUsername }}</td>
                             <td>{{ follower.twUser.twUserId }}</td>
                             <td>{{ follower.twUser.twIsVerified ? '<span class="badge rounded-pill bg-success">Yes</span>' : '<span class="badge rounded-pill bg-light">No</span>' }}</td>
                             <td>{{ follower.walletEth }}</td>
                             <td>{{ follower.walletSol }}</td>
-                            <td>{{ follower.isFavorite ? '<span class="badge rounded-pill bg-success">Yes</span>' : '<span class="badge rounded-pill bg-light">No</span>' }}</td>
+                            <td><span class="badge rounded-pill bg-light">{{ follower.isFavorite ? 'Yes' : 'No' }}</span></td>
                             <td>{{ follower.createAt|date('d/m/Y h:i') }}</td>
                             <td>{{ follower.updateAt|date('d/m/Y h:i') }}</td>
                             <td>

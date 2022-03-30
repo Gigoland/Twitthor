@@ -6,7 +6,7 @@
 
 {% block body %}
     <div class="container mt-4">
-        <h1>Login</h1>
+        <h1>Login or <a href="{{ path('app_security_registration') }}">Registration</a></h1>
 
         {% if error %}
             <div class="alert alert-danger">
@@ -26,5 +26,6 @@
 
             <button type="submit" class="btn btn-primary mt-4">Login</button>
         </form>
+
     </div>
 {% endblock %}
