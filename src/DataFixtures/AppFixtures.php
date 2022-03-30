@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use App\Entity\Follower;
+use App\Entity\TwUser;
 use Faker\Generator;
 use Faker\Factory;
 use Doctrine\Persistence\ObjectManager;
@@ -29,6 +30,10 @@ class AppFixtures extends Fixture
      */
     public function load(ObjectManager $manager): void
     {
+        $users = [];
+        $twUsers = [];
+
+        // Users
         for ($i = 0; $i < 10; $i++) {
             $user = new User();
             $user
@@ -41,22 +46,37 @@ class AppFixtures extends Fixture
                 ->setPlainPassword('password')
             ;
 
+            $users[] = $user;
             $manager->persist($user);
         }
 
         $manager->flush();
 
-        for ($i = 0; $i < 50; $i++) {
-            $follower = new Follower();
-            $follower
+        // Twitter users created by API
+        for ($i = 0; $i < 100; $i++) {
+            $twUser = new TwUser();
+            $twUser
                 ->setTwUserId($this->faker->randomNumber(5, true))
                 ->setTwUsername($this->faker->numerify('user-#####'))
                 ->setTwName($this->faker->name())
                 ->setTwIsVerified(false)
+            ;
+
+            $twUsers[] = $twUser;
+            $manager->persist($twUser);
+        }
+
+        $manager->flush();
+
+        // User followers
+        for ($i = 0; $i < 50; $i++) {
+            $follower = new Follower();
+            $follower
                 ->setWalletEth($this->faker->uuid())
                 ->setWalletSol($this->faker->uuid())
                 ->setIsFavorite(false)
-               // ->setUser($user)
+                ->setUser($users[0]) // User
+                ->setTwUser($twUsers[$i]) // Twitter user
             ;
 
             $manager->persist($follower);

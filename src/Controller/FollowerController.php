@@ -22,14 +22,17 @@ class FollowerController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/followers', name:'app_followers', methods:['GET'])]
+    #[Route('/followers', name: 'app_followers', methods: ['GET'])]
     public function index(
         FollowerRepository $repository,
         PaginatorInterface $paginator,
         Request $request
     ): Response {
+        // Get connected user followers
         $followers = $paginator->paginate(
-            $repository->findAll(),
+            $repository->findBy([
+                'user' => $this->getUser(),
+            ]),
             $request->query->getInt('page', 1),
             10
         );
@@ -46,7 +49,7 @@ class FollowerController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/follower/add', name:'app_follower_add', methods:['GET', 'POST'])]
+    #[Route('/follower/add', name: 'app_follower_add', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $manager
@@ -60,6 +63,7 @@ class FollowerController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $follower = $form->getData();
+            $follower->setUser($this->getUser()); // Connected user
 
             $manager->persist($follower);
             $manager->flush();
@@ -85,7 +89,7 @@ class FollowerController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/follower/edit/{id}', name:'app_follower_edit', methods:['GET', 'POST'])]
+    #[Route('/follower/edit/{id}', name: 'app_follower_edit', methods: ['GET', 'POST'])]
     public function edit(
         Follower $follower,
         Request $request,
@@ -98,7 +102,11 @@ class FollowerController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $twUser = $follower->getTwUser();
+
             $follower = $form->getData();
+            $follower->setUser($this->getUser()); // Connected user
+            $follower->setTwUser($twUser); // Twitter user
 
             $manager->persist($follower);
             $manager->flush();
@@ -112,6 +120,7 @@ class FollowerController extends AbstractController
         }
 
         return $this->render('pages/follower/edit.html.twig', [
+            'follower' => $follower,
             'form' => $form->createView(),
         ]);
     }
@@ -123,7 +132,7 @@ class FollowerController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/follower/delete/{id}', name:'app_follower_delete', methods:['GET', 'POST'])]
+    #[Route('/follower/delete/{id}', name: 'app_follower_delete', methods: ['GET', 'POST'])]
     public function delete(
         Follower $follower,
         EntityManagerInterface $manager

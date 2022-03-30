@@ -4,11 +4,8 @@ namespace App\Entity;
 
 use App\Repository\FollowerRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[UniqueEntity('twUserId')]
-#[UniqueEntity('twUsername')]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: FollowerRepository::class)]
 class Follower
@@ -17,23 +14,6 @@ class Follower
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id;
-
-    #[ORM\Column(type: 'string', length: 55)]
-    #[Assert\NotBlank()]
-    #[Assert\Length(min: 1, max: 55)]
-    private string $twUserId;
-
-    #[ORM\Column(type: 'string', length: 22)]
-    #[Assert\NotBlank()]
-    #[Assert\Length(min: 1, max: 22)]
-    private string $twUsername;
-
-    #[ORM\Column(type: 'text')]
-    #[Assert\NotBlank()]
-    private string $twName;
-
-    #[ORM\Column(type: 'boolean', nullable: false)]
-    private bool $twIsVerified = false;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
@@ -54,6 +34,14 @@ class Follower
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'Follower')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $user;
+
+    #[ORM\ManyToOne(targetEntity: TwUser::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private $TwUser;
+
     /**
      * Constructor
      */
@@ -73,54 +61,6 @@ class Follower
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTwUserId(): ?string
-    {
-        return $this->twUserId;
-    }
-
-    public function setTwUserId(string $twUserId): self
-    {
-        $this->twUserId = $twUserId;
-
-        return $this;
-    }
-
-    public function getTwUsername(): ?string
-    {
-        return $this->twUsername;
-    }
-
-    public function setTwUsername(string $twUsername): self
-    {
-        $this->twUsername = $twUsername;
-
-        return $this;
-    }
-
-    public function getTwName(): ?string
-    {
-        return $this->twName;
-    }
-
-    public function setTwName(string $twName): self
-    {
-        $this->twName = $twName;
-
-        return $this;
-    }
-
-    public function getTwIsVerified(): ?bool
-    {
-        return $this->twIsVerified;
-    }
-
-    public function setTwIsVerified(bool $twIsVerified): self
-    {
-        $this->twIsVerified = (bool) $twIsVerified;
-
-        return $this;
     }
 
     public function getWalletEth(): ?string
@@ -179,6 +119,30 @@ class Follower
     public function setUpdateAt(?\DateTimeImmutable $updateAt): self
     {
         $this->updateAt = $updateAt;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getTwUser(): ?TwUser
+    {
+        return $this->TwUser;
+    }
+
+    public function setTwUser(?TwUser $TwUser): self
+    {
+        $this->TwUser = $TwUser;
 
         return $this;
     }

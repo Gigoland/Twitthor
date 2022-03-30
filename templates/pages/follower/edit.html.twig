@@ -8,36 +8,22 @@
     <div class="container mt-4">
         <h1>Edit follower</h1>
 
+<div class="form-group">
+
+        <div class="card border-primary mb-3" style="max-width: 20rem;">
+            <div class="card-header">Follower info</div>
+            <div class="card-body">
+                <h4 class="card-title">{{ follower.twUser.twName }}</h4>
+                <p class="card-text">
+                    <p>Username : @{{ follower.twUser.twUsername }}</p>
+                    <p>ID : {{ follower.twUser.twUserId }}</p>
+                    <p>Verified : {{ follower.twUser.twIsVerified ? 'Yes' : 'No' }}</p>
+                </p>
+            </div>
+        </div>
+
         {{ form_start(form) }}
 
-            <div class="form-group">
-                {{ form_label(form.twUserId) }}
-                {{ form_widget(form.twUserId) }}
-                <div class="form-error">
-                    {{ form_errors(form.twUserId) }}
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.twUsername) }}
-                {{ form_widget(form.twUsername) }}
-                <div class="form-error">
-                    {{ form_errors(form.twUsername) }}
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.twName) }}
-                {{ form_widget(form.twName) }}
-                <div class="form-error">
-                    {{ form_errors(form.twName) }}
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form_label(form.twIsVerified) }}
-                {{ form_widget(form.twIsVerified) }}
-                <div class="form-error">
-                    {{ form_errors(form.twIsVerified) }}
-                </div>
-            </div>
             <div class="form-group">
                 {{ form_label(form.walletEth) }}
                 {{ form_widget(form.walletEth) }}

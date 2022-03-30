@@ -14,6 +14,43 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
+     * New user registration
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route('/registration', name: 'app_security_registration', methods: ['GET', 'POST'])]
+    public function registration(
+        Request $request,
+        EntityManagerInterface $manager
+    ): Response {
+        $user = new User();
+        $user->setRoles(['USER_ROLE']); // @todo
+        $form = $this->createForm(RegistrationType::class, $user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+
+            $manager->persist($user);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'User created with success !'
+            );
+
+            return $this->redirectToRoute('app_security_login');
+        }
+
+        return $this->render('pages/security/registration.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
      * User login
      *
      * @param AuthenticationUtils $authenticationUtils
@@ -37,42 +74,5 @@ class SecurityController extends AbstractController
     public function logout()
     {
         // No need code
-    }
-
-    /**
-     * New user registration
-     *
-     * @param Request $request
-     * @param EntityManagerInterface $manager
-     * @return Response
-     */
-    #[Route('/registration', name: 'app_security_registration', methods: ['GET', 'POST'])]
-    public function registration(
-        Request $request,
-        EntityManagerInterface $manager
-    ): Response {
-        $user = new User();
-        $user->setRoles(['USER_ROLE']);
-        $form = $this->createForm(RegistrationType::class, $user);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $form->getData();
-
-            $manager->persist($user);
-            $manager->flush();
-
-            $this->addFlash(
-                'success',
-                'User created with success !'
-            );
-
-            return $this->redirectToRoute('app_security_login');
-        }
-
-        return $this->render('pages/security/registration.html.twig', [
-            'form' => $form->createView(),
-        ]);
     }
 }

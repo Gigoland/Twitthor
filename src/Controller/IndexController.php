@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class IndexController extends AbstractController
 {
@@ -13,11 +13,9 @@ class IndexController extends AbstractController
      *
      * @return Response
      */
-    #[Route('/', name:'app_index', methods:['GET'])]
+    #[Route('/', name: 'app_index', methods: ['GET'])]
     public function index(): Response
     {
-        return $this->render('pages/index/index.html.twig', [
-
-        ]);
+        return $this->render('pages/index/index.html.twig');
     }
 }

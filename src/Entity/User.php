@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -59,6 +61,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Follower::class, orphanRemoval: true)]
+    private $Follower;
+
     /**
      * Constructor
      */
@@ -66,6 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->createAt = new \DateTimeImmutable();
         $this->updateAt = new \DateTimeImmutable();
+        $this->Follower = new ArrayCollection();
     }
 
     #[ORM\PrePersist()]
@@ -224,6 +230,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdateAt(\DateTimeImmutable $updateAt): self
     {
         $this->updateAt = $updateAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Follower>
+     */
+    public function getFollower(): Collection
+    {
+        return $this->Follower;
+    }
+
+    public function addFollower(Follower $follower): self
+    {
+        if (!$this->Follower->contains($follower)) {
+            $this->Follower[] = $follower;
+            $follower->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(Follower $follower): self
+    {
+        if ($this->Follower->removeElement($follower)) {
+            // set the owning side to null (unless already changed)
+            if ($follower->getUser() === $this) {
+                $follower->setUser(null);
+            }
+        }
 
         return $this;
     }
