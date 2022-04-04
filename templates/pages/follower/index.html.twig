@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Twitthor Pro - Followers{% endblock %}
+{% block title %}Twitthor - My Followers{% endblock %}
 
 {% block header %}{% include 'partials/_header.html.twig' %}{% endblock %}
 
 {% block body %}
     <div class="container mt-4">
-        <h1>Followers | <a href="{{ path('app_follower_add') }}">Add</a></h1>
+        <h1>My Followers</h1>
         {% if followers is same as([]) %}
             Zero data.
         {% else %}

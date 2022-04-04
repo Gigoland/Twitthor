@@ -49,6 +49,7 @@ class FollowerController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return Response
      */
+/*
     #[Route('/follower/add', name: 'app_follower_add', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
@@ -80,6 +81,7 @@ class FollowerController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+*/
 
     /**
      * Edit

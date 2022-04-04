@@ -58,7 +58,7 @@ class UserPasswordType extends AbstractType
                 'attr' => [
                     'class' => 'btn btn-primary mt-4',
                 ],
-                'label' => 'Edit',
+                'label' => 'Save my new password',
             ])
         ;
     }
