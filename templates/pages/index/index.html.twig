@@ -2,8 +2,6 @@
 
 {% block title %}Twitthor - Home{% endblock %}
 
-{% block header %}{% include 'partials/_header.html.twig' %}{% endblock %}
-
 {% block body %}
     <div class="container mt-4">
         <div class="jumbotron">
@@ -11,9 +9,15 @@
             <p class="lead">🛠️ New tool ⚡️ “Twit<b>thor</b>” that will help us to manage Twitter.</p>
             <hr class="mt-4">
             <p>🧩 The first utility unfollow "Platonic" subscriptions will be to find who’s not following back and unfollow them ☠️</p>
-            <p class="lead">
-                <a class="btn btn-primary btn-lg" href="{{ path('app_security_login') }}" role="button">Login / Registration</a>
-            </p>
+            {% if app.user %}
+                <p class="lead">
+                    🤟 Hello dear {{ app.user.twUsername }} !
+                </p>
+            {% else %}
+                <p class="lead">
+                    <a class="btn btn-primary btn-lg" href="{{ path('app_security_login') }}" role="button">Login / Registration</a>
+                </p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

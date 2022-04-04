@@ -19,7 +19,7 @@
         {% endblock %}
     </head>
     <body>
-        {% block header %}{% endblock %}
+        {% block header %}{% include 'partials/_header.html.twig' %}{% endblock %}
         {% block flash %}
             {% for message in app.flashes('success') %}
                 <div class="container mt-4">

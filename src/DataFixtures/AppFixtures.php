@@ -59,7 +59,7 @@ class AppFixtures extends Fixture
                 ->setTwUserId($this->faker->randomNumber(5, true))
                 ->setTwUsername($this->faker->numerify('user-#####'))
                 ->setTwName($this->faker->name())
-                ->setTwIsVerified(false)
+                ->setTwIsVerified(mt_rand(0, 1) == 1 ? true : false)
             ;
 
             $twUsers[] = $twUser;
@@ -74,7 +74,7 @@ class AppFixtures extends Fixture
             $follower
                 ->setWalletEth($this->faker->uuid())
                 ->setWalletSol($this->faker->uuid())
-                ->setIsFavorite(false)
+                ->setIsFavorite(mt_rand(0, 1) == 1 ? true : false)
                 ->setUser($users[0]) // User
                 ->setTwUser($twUsers[$i]) // Twitter user
             ;
