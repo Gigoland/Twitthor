@@ -10,6 +10,8 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class FollowerController extends AbstractController
@@ -23,6 +25,7 @@ class FollowerController extends AbstractController
      * @return Response
      */
     #[Route('/followers', name: 'app_followers', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(
         FollowerRepository $repository,
         PaginatorInterface $paginator,
@@ -51,6 +54,7 @@ class FollowerController extends AbstractController
      */
 /*
     #[Route('/follower/add', name: 'app_follower_add', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function new(
         Request $request,
         EntityManagerInterface $manager
@@ -92,6 +96,7 @@ class FollowerController extends AbstractController
      * @return Response
      */
     #[Route('/follower/edit/{id}', name: 'app_follower_edit', methods: ['GET', 'POST'])]
+    #[Security("is_granted('ROLE_USER') and user === follower.getUser()")]
     public function edit(
         Follower $follower,
         Request $request,
@@ -135,6 +140,7 @@ class FollowerController extends AbstractController
      * @return Response
      */
     #[Route('/follower/delete/{id}', name: 'app_follower_delete', methods: ['GET', 'POST'])]
+    #[Security("is_granted('ROLE_USER') and user === follower.getUser()")]
     public function delete(
         Follower $follower,
         EntityManagerInterface $manager
