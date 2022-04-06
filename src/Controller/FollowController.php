@@ -24,24 +24,55 @@ class FollowController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/follows', name: 'app_follows', methods: ['GET'])]
+    #[Route('/followers', name: 'app_followers', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function index(
+    public function followers(
         FollowRepository $repository,
         PaginatorInterface $paginator,
         Request $request
     ): Response {
-        // Get connected user follows
-        $follows = $paginator->paginate(
+        // Get connected user followers
+        $followers = $paginator->paginate(
             $repository->findBy([
                 'user' => $this->getUser(),
+                'isFollower' => true,
             ]),
             $request->query->getInt('page', 1),
             10
         );
 
-        return $this->render('pages/follow/index.html.twig', [
-            'follows' => $follows,
+        return $this->render('pages/follow/followers.html.twig', [
+            'followers' => $followers,
+        ]);
+    }
+
+    /**
+     * Folowers manager
+     *
+     * @param FollowRepository $repository
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
+     */
+    #[Route('/following', name: 'app_following', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function following(
+        FollowRepository $repository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+        // Get connected user followers
+        $following = $paginator->paginate(
+            $repository->findBy([
+                'user' => $this->getUser(),
+                'isFollowing' => true,
+            ]),
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('pages/follow/following.html.twig', [
+            'following' => $following,
         ]);
     }
 
@@ -78,7 +109,7 @@ class FollowController extends AbstractController
                 'Follow created with success !'
             );
 
-            return $this->redirectToRoute('app_follows');
+            return $this->redirectToRoute('app_followers');
         }
 
         return $this->render('pages/follow/new.html.twig', [
@@ -123,7 +154,7 @@ class FollowController extends AbstractController
                 'Follow updated with success !'
             );
 
-            return $this->redirectToRoute('app_follows');
+            return $this->redirectToRoute('app_followers');
         }
 
         return $this->render('pages/follow/edit.html.twig', [
@@ -153,6 +184,6 @@ class FollowController extends AbstractController
             'Follow deleted with success !'
         );
 
-        return $this->redirectToRoute('app_follows');
+        return $this->redirectToRoute('app_followers');
     }
 }

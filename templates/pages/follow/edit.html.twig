@@ -16,6 +16,8 @@
                     <p>Username : @{{ follow.twUser.twUsername }}</p>
                     <p>ID : {{ follow.twUser.twUserId }}</p>
                     <p>Verified : {{ follow.twUser.twIsVerified ? 'Yes' : 'No' }}</p>
+                    <p>Follow me : {{ follow.isFollower ? 'Yes' : 'No' }}</p>
+                    <p>Following : {{ follow.isFollowing ? 'Yes' : 'No' }}</p>
                 </p>
             </div>
         </div>
