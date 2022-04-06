@@ -18,9 +18,8 @@ class TwUser
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
-    #[ORM\Column(type: 'string', length: 55)]
-    #[Assert\NotBlank()]
-    #[Assert\Length(min: 1, max: 55)]
+    #[ORM\Column(type: 'bigint', nullable: false)]
+    #[Assert\NotNull()]
     private string $twUserId;
 
     #[ORM\Column(type: 'string', length: 22)]

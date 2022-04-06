@@ -64,6 +64,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Follow::class, orphanRemoval: true)]
     private $Follow;
 
+    #[ORM\OneToOne(mappedBy: 'User', targetEntity: TwApi::class, orphanRemoval: true)]
+    private $twApi;
+
     /**
      * Constructor
      */
@@ -260,6 +263,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $follow->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTwApi(): ?TwApi
+    {
+        return $this->twApi;
+    }
+
+    public function setTwApi(TwApi $twApi): self
+    {
+        // set the owning side of the relation if necessary
+        if ($twApi->getUser() !== $this) {
+            $twApi->setUser($this);
+        }
+
+        $this->twApi = $twApi;
 
         return $this;
     }

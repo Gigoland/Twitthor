@@ -16,12 +16,15 @@ class Follow
     private ?int $id;
 
     #[ORM\Column(type: 'boolean', nullable: false)]
+    #[Assert\NotNull()]
     private bool $isFollower = false;
 
     #[ORM\Column(type: 'boolean', nullable: false)]
+    #[Assert\NotNull()]
     private bool $isFollowing = false;
 
     #[ORM\Column(type: 'boolean', nullable: false)]
+    #[Assert\NotNull()]
     private bool $isFavorite = false;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
