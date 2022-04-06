@@ -21,7 +21,7 @@
                 <label for="password" class="form-label mt-4">Password</label>
                 <input type="password" name="_password" id="password" class="form-control" placeholder="********">
             </div>
-
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
             <button type="submit" class="btn btn-primary mt-4">Login</button>
         </form>
 

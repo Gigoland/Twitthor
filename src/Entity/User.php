@@ -61,11 +61,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Follow::class, orphanRemoval: true)]
-    private $Follow;
+    #[ORM\OneToMany(mappedBy: 'User', targetEntity: TwApi::class, orphanRemoval: true)]
+    private $twApis;
 
-    #[ORM\OneToOne(mappedBy: 'User', targetEntity: TwApi::class, orphanRemoval: true)]
-    private $twApi;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Follow::class, orphanRemoval: true)]
+    private $Follows;
 
     /**
      * Constructor
@@ -74,7 +74,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->createAt = new \DateTimeImmutable();
         $this->updateAt = new \DateTimeImmutable();
-        $this->Follow = new ArrayCollection();
+
+        $this->twApis = new ArrayCollection();
+        $this->Follows = new ArrayCollection();
     }
 
     #[ORM\PrePersist()]
@@ -238,17 +240,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * @return Collection<int, TwApi>
+     */
+    public function getTwApis(): Collection
+    {
+        return $this->twApis;
+    }
+
+    public function addTwApi(TwApi $twApi): self
+    {
+        if (!$this->twApis->contains($twApi)) {
+            $this->twApis[] = $twApi;
+            $twApi->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTwApi(TwApi $twApi): self
+    {
+        if ($this->twApis->removeElement($twApi)) {
+            // set the owning side to null (unless already changed)
+            if ($twApi->getUser() === $this) {
+                $twApi->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, Follow>
      */
-    public function getFollow(): Collection
+    public function getFollows(): Collection
     {
-        return $this->Follow;
+        return $this->Follows;
     }
 
     public function addFollow(Follow $follow): self
     {
-        if (!$this->Follow->contains($follow)) {
-            $this->Follow[] = $follow;
+        if (!$this->Follows->contains($follow)) {
+            $this->Follows[] = $follow;
             $follow->setUser($this);
         }
 
@@ -257,29 +289,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeFollow(Follow $follow): self
     {
-        if ($this->Follow->removeElement($follow)) {
+        if ($this->Follows->removeElement($follow)) {
             // set the owning side to null (unless already changed)
             if ($follow->getUser() === $this) {
                 $follow->setUser(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getTwApi(): ?TwApi
-    {
-        return $this->twApi;
-    }
-
-    public function setTwApi(TwApi $twApi): self
-    {
-        // set the owning side of the relation if necessary
-        if ($twApi->getUser() !== $this) {
-            $twApi->setUser($this);
-        }
-
-        $this->twApi = $twApi;
 
         return $this;
     }

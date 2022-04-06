@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class FollowController extends AbstractController
 {
     /**
-     * Folowers manager
+     * Followers manager
      *
      * @param FollowRepository $repository
      * @param PaginatorInterface $paginator
@@ -47,7 +47,7 @@ class FollowController extends AbstractController
     }
 
     /**
-     * Folowers manager
+     * Following manager
      *
      * @param FollowRepository $repository
      * @param PaginatorInterface $paginator
@@ -77,49 +77,38 @@ class FollowController extends AbstractController
     }
 
     /**
-     * Create
+     * No follows manager
      *
+     * @param FollowRepository $repository
+     * @param PaginatorInterface $paginator
      * @param Request $request
-     * @param EntityManagerInterface $manager
      * @return Response
      */
-/*
-    #[Route('/follow/add', name: 'app_follow_add', methods: ['GET', 'POST'])]
+    #[Route('/nofollows', name: 'app_no_follows', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function new(
-        Request $request,
-        EntityManagerInterface $manager
+    public function noFollows(
+        FollowRepository $repository,
+        PaginatorInterface $paginator,
+        Request $request
     ): Response {
-        $follow = new Follow();
-        $form = $this->createForm(FollowType::class, $follow, [
-            'method' => 'POST',
-        ]);
+        // Get connected user followers
+        $noFollows = $paginator->paginate(
+            $repository->findBy([
+                'user' => $this->getUser(),
+                'isFollowing' => false,
+                'isFollower' => false,
+            ]),
+            $request->query->getInt('page', 1),
+            10
+        );
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $follow = $form->getData();
-            $follow->setUser($this->getUser()); // Connected user
-
-            $manager->persist($follow);
-            $manager->flush();
-
-            $this->addFlash(
-                'success',
-                'Follow created with success !'
-            );
-
-            return $this->redirectToRoute('app_followers');
-        }
-
-        return $this->render('pages/follow/new.html.twig', [
-            'form' => $form->createView(),
+        return $this->render('pages/follow/no_follows.html.twig', [
+            'noFollows' => $noFollows,
         ]);
     }
-*/
 
     /**
-     * Edit
+     * Edit follow
      *
      * @param Follow $follow
      * @param Request $request
@@ -164,7 +153,7 @@ class FollowController extends AbstractController
     }
 
     /**
-     * Delete
+     * Delete follow
      *
      * @param Follow $follow
      * @param EntityManagerInterface $manager

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TwApiRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TwApiRepository::class)]
 class TwApi
@@ -14,27 +15,33 @@ class TwApi
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $ConsumerKey = null;
+    #[Assert\Length(min: 1, max: 255)]
+    private ?string $consumerKey = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $ConsumerSecret = null;
+    #[Assert\Length(min: 1, max: 255)]
+    private ?string $consumerSecret = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $AccessToken = null;
+    #[Assert\Length(min: 1, max: 255)]
+    private ?string $accessToken = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $AccessTokenSecret = null;
+    #[Assert\Length(min: 1, max: 255)]
+    private ?string $accessTokenSecret = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $BearerToken = null;
+    #[Assert\Length(min: 1, max: 255)]
+    private ?string $bearerToken = null;
 
     #[ORM\Column(type: 'bigint', nullable: true)]
-    private ?string $AccountId;
+    private ?string $accountId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $AccountName = null;
+    #[Assert\Length(min: 1, max: 255)]
+    private ?string $accountName = null;
 
-    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'Follow')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'twApis')]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
@@ -45,84 +52,84 @@ class TwApi
 
     public function getConsumerKey(): ?string
     {
-        return $this->ConsumerKey;
+        return $this->consumerKey;
     }
 
-    public function setConsumerKey(?string $ConsumerKey): self
+    public function setConsumerKey(?string $consumerKey): self
     {
-        $this->ConsumerKey = $ConsumerKey;
+        $this->consumerKey = $consumerKey;
 
         return $this;
     }
 
     public function getConsumerSecret(): ?string
     {
-        return $this->ConsumerSecret;
+        return $this->consumerSecret;
     }
 
-    public function setConsumerSecret(string $ConsumerSecret): self
+    public function setConsumerSecret(?string $consumerSecret): self
     {
-        $this->ConsumerSecret = $ConsumerSecret;
+        $this->consumerSecret = $consumerSecret;
 
         return $this;
     }
 
     public function getAccessToken(): ?string
     {
-        return $this->AccessToken;
+        return $this->accessToken;
     }
 
-    public function setAccessToken(?string $AccessToken): self
+    public function setAccessToken(?string $accessToken): self
     {
-        $this->AccessToken = $AccessToken;
+        $this->accessToken = $accessToken;
 
         return $this;
     }
 
     public function getAccessTokenSecret(): ?string
     {
-        return $this->AccessTokenSecret;
+        return $this->accessTokenSecret;
     }
 
-    public function setAccessTokenSecret(?string $AccessTokenSecret): self
+    public function setAccessTokenSecret(?string $accessTokenSecret): self
     {
-        $this->AccessTokenSecret = $AccessTokenSecret;
+        $this->accessTokenSecret = $accessTokenSecret;
 
         return $this;
     }
 
     public function getBearerToken(): ?string
     {
-        return $this->BearerToken;
+        return $this->bearerToken;
     }
 
-    public function setBearerToken(?string $BearerToken): self
+    public function setBearerToken(?string $bearerToken): self
     {
-        $this->BearerToken = $BearerToken;
+        $this->bearerToken = $bearerToken;
 
         return $this;
     }
 
     public function getAccountId(): ?string
     {
-        return $this->AccountId;
+        return $this->accountId;
     }
 
-    public function setAccountId(?string $AccountId): self
+    public function setAccountId(?string $accountId): self
     {
-        $this->AccountId = $AccountId;
+        $this->accountId = $accountId;
 
         return $this;
     }
 
     public function getAccountName(): ?string
     {
-        return $this->AccountName;
+        return $this->accountName;
     }
 
-    public function setAccountName(?string $AccountName): self
+    public function setAccountName(?string $accountName): self
     {
-        $this->AccountName = $AccountName;
+        $this->accountName = $accountName;
 
         return $this;
     }

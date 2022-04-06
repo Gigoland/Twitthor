@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Twitthor - No Follows{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-4">
+        <h1>No Follows</h1>
+        {% if noFollows is same as([]) %}
+            Zero data.
+        {% else %}
+            {# total items count #}
+            <div class="count">
+                Total: {{ noFollows.getTotalItemCount }} results found.
+            </div>
+
+            <table class="table table-hover mt-4">
+                <thead>
+                    <tr class="text-nowrap">
+                        <th scope="col">🐥 Name</th>
+                        <th scope="col">🐥 Usernme</th>
+                        <th scope="col">🐥 ID</th>
+                        <th scope="col">🐥 Verified</th>
+                        <th scope="col">Favorite</th>
+                        <th scope="col">Wallet ETH</th>
+                        <th scope="col">Wallet SOL</th>
+                        <th scope="col">Created</th>
+                        <th scope="col">Updated</th>
+                        <th scope="col">Follow</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for noFollow in noFollows %}
+                        <tr class="table-secondary">
+                            <th scope="row">{{ noFollow.twUser.twName }}</th>
+                            <td>{{ noFollow.twUser.twUsername }}</td>
+                            <td>{{ noFollow.twUser.twUserId }}</td>
+                            <td><span class="badge rounded-pill bg-light">{{ noFollow.twUser.twIsVerified ? 'Yes' : 'No' }}</span></td>
+                            <td>{{ noFollow.isFavorite ? '<span class="badge rounded-pill">⭐️</span>' : '<span class="badge rounded-pill bg-light">No</span>' }}</td>
+                            <td>{{ noFollow.walletEth }}</td>
+                            <td>{{ noFollow.walletSol }}</td>
+                            <td>{{ noFollow.createAt|date('d/m/Y h:i') }}</td>
+                            <td>{{ noFollow.updateAt|date('d/m/Y h:i') }}</td>
+                            <td>
+                                <a href="#" class="btn btn-light">Follow</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_follow_edit', {id: noFollow.id}) }}" class="btn btn-secondary">Edit</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_follow_delete', {id: noFollow.id}) }}" class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# display navigation #}
+            <div class="navigation d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(noFollows) }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
