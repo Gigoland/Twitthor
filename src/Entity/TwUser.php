@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\FollowerRepository;
+use App\Repository\FollowRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity('twUserId')]
 #[UniqueEntity('twUsername')]
 #[ORM\HasLifecycleCallbacks]
-#[ORM\Entity(repositoryClass: FollowerRepository::class)]
+#[ORM\Entity(repositoryClass: FollowRepository::class)]
 class TwUser
 {
     #[ORM\Id]

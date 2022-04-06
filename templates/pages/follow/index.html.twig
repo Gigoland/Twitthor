@@ -1,16 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Twitthor - My Followers{% endblock %}
+{% block title %}Twitthor - My Follows{% endblock %}
 
 {% block body %}
     <div class="container mt-4">
-        <h1>My Followers</h1>
-        {% if followers is same as([]) %}
+        <h1>My Follows</h1>
+        {% if follows is same as([]) %}
             Zero data.
         {% else %}
             {# total items count #}
             <div class="count">
-                Total: {{ followers.getTotalItemCount }} followers found.
+                Total: {{ follows.getTotalItemCount }} follows found.
             </div>
 
             <table class="table table-hover mt-4">
@@ -31,25 +31,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for follower in followers %}
-                        <tr class="{{ follower.isFavorite ? 'table-success' : 'table-primary' }}">
-                            <th scope="row">{{ follower.twUser.twName }}</th>
-                            <td>{{ follower.twUser.twUsername }}</td>
-                            <td>{{ follower.twUser.twUserId }}</td>
-                            <td>{{ follower.twUser.twIsVerified ? '<span class="badge rounded-pill bg-success">Yes</span>' : '<span class="badge rounded-pill bg-light">No</span>' }}</td>
-                            <td>{{ follower.walletEth }}</td>
-                            <td>{{ follower.walletSol }}</td>
-                            <td><span class="badge rounded-pill bg-light">{{ follower.isFavorite ? 'Yes' : 'No' }}</span></td>
-                            <td>{{ follower.createAt|date('d/m/Y h:i') }}</td>
-                            <td>{{ follower.updateAt|date('d/m/Y h:i') }}</td>
+                    {% for follow in follows %}
+                        <tr class="{{ follow.isFavorite ? 'table-success' : 'table-primary' }}">
+                            <th scope="row">{{ follow.twUser.twName }}</th>
+                            <td>{{ follow.twUser.twUsername }}</td>
+                            <td>{{ follow.twUser.twUserId }}</td>
+                            <td>{{ follow.twUser.twIsVerified ? '<span class="badge rounded-pill bg-success">Yes</span>' : '<span class="badge rounded-pill bg-light">No</span>' }}</td>
+                            <td>{{ follow.walletEth }}</td>
+                            <td>{{ follow.walletSol }}</td>
+                            <td><span class="badge rounded-pill bg-light">{{ follow.isFavorite ? 'Yes' : 'No' }}</span></td>
+                            <td>{{ follow.createAt|date('d/m/Y h:i') }}</td>
+                            <td>{{ follow.updateAt|date('d/m/Y h:i') }}</td>
                             <td>
                                 <a href="#" class="btn btn-warning">Unfollow</a>
                             </td>
                             <td>
-                                <a href="{{ path('app_follower_edit', {id: follower.id}) }}" class="btn btn-primary">Edit</a>
+                                <a href="{{ path('app_follow_edit', {id: follow.id}) }}" class="btn btn-primary">Edit</a>
                             </td>
                             <td>
-                                <a href="{{ path('app_follower_delete', {id: follower.id}) }}" class="btn btn-danger">Delete</a>
+                                <a href="{{ path('app_follow_delete', {id: follow.id}) }}" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -58,7 +58,7 @@
 
             {# display navigation #}
             <div class="navigation d-flex justify-content-center mt-4">
-                {{ knp_pagination_render(followers) }}
+                {{ knp_pagination_render(follows) }}
             </div>
         {% endif %}
     </div>

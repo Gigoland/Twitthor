@@ -2,18 +2,27 @@
 
 namespace App\Entity;
 
-use App\Repository\FollowerRepository;
+use App\Repository\FollowRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\HasLifecycleCallbacks]
-#[ORM\Entity(repositoryClass: FollowerRepository::class)]
-class Follower
+#[ORM\Entity(repositoryClass: FollowRepository::class)]
+class Follow
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id;
+
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private bool $isFollower = false;
+
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private bool $isFollowing = false;
+
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private bool $isFavorite = false;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
@@ -23,9 +32,6 @@ class Follower
     #[Assert\Length(min: 1, max: 55)]
     private ?string $walletSol = null;
 
-    #[ORM\Column(type: 'boolean', nullable: false)]
-    private bool $isFavorite = false;
-
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
     private \DateTimeImmutable $createAt;
@@ -34,7 +40,7 @@ class Follower
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'Follower')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'Follow')]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
@@ -63,6 +69,42 @@ class Follower
         return $this->id;
     }
 
+    public function getIsFollower(): ?bool
+    {
+        return $this->isFollower;
+    }
+
+    public function setIsFollower(bool $isFollower): self
+    {
+        $this->isFollower = (bool) $isFollower;
+
+        return $this;
+    }
+
+    public function getIsFollowing(): ?bool
+    {
+        return $this->isFollowing;
+    }
+
+    public function setIsFollowing(bool $isFollowing): self
+    {
+        $this->isFollowing = (bool) $isFollowing;
+
+        return $this;
+    }
+
+    public function getIsFavorite(): ?bool
+    {
+        return $this->isFavorite;
+    }
+
+    public function setIsFavorite(bool $isFavorite): self
+    {
+        $this->isFavorite = (bool) $isFavorite;
+
+        return $this;
+    }
+
     public function getWalletEth(): ?string
     {
         return $this->walletEth;
@@ -83,18 +125,6 @@ class Follower
     public function setWalletSol(?string $walletSol): self
     {
         $this->walletSol = $walletSol;
-
-        return $this;
-    }
-
-    public function getIsFavorite(): ?bool
-    {
-        return $this->isFavorite;
-    }
-
-    public function setIsFavorite(bool $isFavorite): self
-    {
-        $this->isFavorite = (bool) $isFavorite;
 
         return $this;
     }

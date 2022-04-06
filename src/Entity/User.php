@@ -61,8 +61,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Follower::class, orphanRemoval: true)]
-    private $Follower;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Follow::class, orphanRemoval: true)]
+    private $Follow;
 
     /**
      * Constructor
@@ -71,7 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->createAt = new \DateTimeImmutable();
         $this->updateAt = new \DateTimeImmutable();
-        $this->Follower = new ArrayCollection();
+        $this->Follow = new ArrayCollection();
     }
 
     #[ORM\PrePersist()]
@@ -235,29 +235,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Follower>
+     * @return Collection<int, Follow>
      */
-    public function getFollower(): Collection
+    public function getFollow(): Collection
     {
-        return $this->Follower;
+        return $this->Follow;
     }
 
-    public function addFollower(Follower $follower): self
+    public function addFollow(Follow $follow): self
     {
-        if (!$this->Follower->contains($follower)) {
-            $this->Follower[] = $follower;
-            $follower->setUser($this);
+        if (!$this->Follow->contains($follow)) {
+            $this->Follow[] = $follow;
+            $follow->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeFollower(Follower $follower): self
+    public function removeFollow(Follow $follow): self
     {
-        if ($this->Follower->removeElement($follower)) {
+        if ($this->Follow->removeElement($follow)) {
             // set the owning side to null (unless already changed)
-            if ($follower->getUser() === $this) {
-                $follower->setUser(null);
+            if ($follow->getUser() === $this) {
+                $follow->setUser(null);
             }
         }
 

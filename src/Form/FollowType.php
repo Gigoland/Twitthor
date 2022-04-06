@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Follower;
+use App\Entity\Follow;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
-class FollowerType extends AbstractType
+class FollowType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -55,7 +55,7 @@ class FollowerType extends AbstractType
                 'attr' => [
                     'class' => 'btn btn-primary mt-4',
                 ],
-                'label' => 'Save follower',
+                'label' => 'Save follow',
             ])
         ;
     }
@@ -63,7 +63,7 @@ class FollowerType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Follower::class,
+            'data_class' => Follow::class,
         ]);
     }
 }

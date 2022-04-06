@@ -2,30 +2,30 @@
 
 namespace App\Repository;
 
-use App\Entity\Follower;
+use App\Entity\Follow;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Follower|null find($id, $lockMode = null, $lockVersion = null)
- * @method Follower|null findOneBy(array $criteria, array $orderBy = null)
- * @method Follower[]    findAll()
- * @method Follower[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Follow|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Follow|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Follow[]    findAll()
+ * @method Follow[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FollowerRepository extends ServiceEntityRepository
+class FollowRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Follower::class);
+        parent::__construct($registry, Follow::class);
     }
 
     /**
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(Follower $entity, bool $flush = true): void
+    public function add(Follow $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
         if ($flush) {
@@ -37,7 +37,7 @@ class FollowerRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(Follower $entity, bool $flush = true): void
+    public function remove(Follow $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
         if ($flush) {

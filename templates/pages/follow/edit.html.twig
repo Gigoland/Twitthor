@@ -1,21 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Twitthor - Edit Follower{% endblock %}
+{% block title %}Twitthor - Edit Follow{% endblock %}
 
 {% block body %}
     <div class="container mt-4">
-        <h1>Edit Follower</h1>
+        <h1>Edit Follow</h1>
 
 <div class="form-group">
 
         <div class="card border-primary mb-3" style="max-width: 20rem;">
-            <div class="card-header">Follower info</div>
+            <div class="card-header">Follow info</div>
             <div class="card-body">
-                <h4 class="card-title">{{ follower.twUser.twName }}</h4>
+                <h4 class="card-title">{{ follow.twUser.twName }}</h4>
                 <p class="card-text">
-                    <p>Username : @{{ follower.twUser.twUsername }}</p>
-                    <p>ID : {{ follower.twUser.twUserId }}</p>
-                    <p>Verified : {{ follower.twUser.twIsVerified ? 'Yes' : 'No' }}</p>
+                    <p>Username : @{{ follow.twUser.twUsername }}</p>
+                    <p>ID : {{ follow.twUser.twUserId }}</p>
+                    <p>Verified : {{ follow.twUser.twIsVerified ? 'Yes' : 'No' }}</p>
                 </p>
             </div>
         </div>

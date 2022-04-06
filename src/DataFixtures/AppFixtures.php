@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
-use App\Entity\Follower;
+use App\Entity\Follow;
 use App\Entity\TwUser;
 use Faker\Generator;
 use Faker\Factory;
@@ -68,18 +68,20 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
-        // User followers
+        // User follows
         for ($i = 0; $i < 50; $i++) {
-            $follower = new Follower();
-            $follower
+            $follow = new Follow();
+            $follow
+                ->setIsFollower(mt_rand(0, 1) == 1 ? true : false)
+                ->setIsFollowing(mt_rand(0, 1) == 1 ? true : false)
+                ->setIsFavorite(mt_rand(0, 1) == 1 ? true : false)
                 ->setWalletEth($this->faker->uuid())
                 ->setWalletSol($this->faker->uuid())
-                ->setIsFavorite(mt_rand(0, 1) == 1 ? true : false)
                 ->setUser($users[0]) // User
                 ->setTwUser($twUsers[$i]) // Twitter user
             ;
 
-            $manager->persist($follower);
+            $manager->persist($follow);
         }
 
         $manager->flush();
