@@ -17,36 +17,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class FollowController extends AbstractController
 {
     /**
-     * Followers manager
-     *
-     * @param FollowRepository $repository
-     * @param PaginatorInterface $paginator
-     * @param Request $request
-     * @return Response
-     */
-    #[Route('/followers', name: 'app_followers', methods: ['GET'])]
-    #[IsGranted('ROLE_USER')]
-    public function followers(
-        FollowRepository $repository,
-        PaginatorInterface $paginator,
-        Request $request
-    ): Response {
-        // Get connected user followers
-        $followers = $paginator->paginate(
-            $repository->findBy([
-                'user' => $this->getUser(),
-                'isFollower' => true,
-            ]),
-            $request->query->getInt('page', 1),
-            10
-        );
-
-        return $this->render('pages/follow/followers.html.twig', [
-            'followers' => $followers,
-        ]);
-    }
-
-    /**
      * Following manager
      *
      * @param FollowRepository $repository
@@ -77,22 +47,52 @@ class FollowController extends AbstractController
     }
 
     /**
-     * No follows manager
+     * Followers manager
      *
      * @param FollowRepository $repository
      * @param PaginatorInterface $paginator
      * @param Request $request
      * @return Response
      */
-    #[Route('/nofollows', name: 'app_no_follows', methods: ['GET'])]
+    #[Route('/followers', name: 'app_followers', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function noFollows(
+    public function followers(
         FollowRepository $repository,
         PaginatorInterface $paginator,
         Request $request
     ): Response {
         // Get connected user followers
-        $noFollows = $paginator->paginate(
+        $followers = $paginator->paginate(
+            $repository->findBy([
+                'user' => $this->getUser(),
+                'isFollower' => true,
+            ]),
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('pages/follow/followers.html.twig', [
+            'followers' => $followers,
+        ]);
+    }
+
+    /**
+     * No follows "outers" manager
+     *
+     * @param FollowRepository $repository
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
+     */
+    #[Route('/outers', name: 'app_outers', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function outers(
+        FollowRepository $repository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+        // Get connected user followers
+        $outers = $paginator->paginate(
             $repository->findBy([
                 'user' => $this->getUser(),
                 'isFollowing' => false,
@@ -102,13 +102,13 @@ class FollowController extends AbstractController
             10
         );
 
-        return $this->render('pages/follow/no_follows.html.twig', [
-            'noFollows' => $noFollows,
+        return $this->render('pages/follow/outers.html.twig', [
+            'outers' => $outers,
         ]);
     }
 
     /**
-     * Edit follow
+     * Edit follow user
      *
      * @param Follow $follow
      * @param Request $request
@@ -153,7 +153,7 @@ class FollowController extends AbstractController
     }
 
     /**
-     * Delete follow
+     * Delete follow user
      *
      * @param Follow $follow
      * @param EntityManagerInterface $manager

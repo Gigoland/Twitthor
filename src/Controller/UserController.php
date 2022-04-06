@@ -18,34 +18,34 @@ class UserController extends AbstractController
     /**
      * Edit connected user
      *
-     * @param User $editUser
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/user/edit/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    #[Security("is_granted('ROLE_USER') and user === editUser")]
-    public function edit(
-        User $editUser,
+    #[Route('/profile/edit', name: 'app_edit_my_profile', methods: ['GET', 'POST'])]
+    #[Security("is_granted('ROLE_USER')")]
+    public function editMyProfile(
         Request $request,
         EntityManagerInterface $manager,
         UserPasswordHasherInterface $hasher
     ): Response {
-        $form = $this->createForm(UserType::class, $editUser, [
+        /** @var User $user */
+        $user = $this->getUser();
+        $form = $this->createForm(UserType::class, $user, [
             'method' => 'POST',
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$hasher->isPasswordValid($editUser, $form->getData()->getPlainPassword())) {
+            if (!$hasher->isPasswordValid($user, $form->getData()->getPlainPassword())) {
                 $this->addFlash(
                     'warnings',
                     'User password incorect !'
                 );
 
-                return $this->redirectToRoute('app_user_edit', [
-                    'id' => $editUser->getId(),
+                return $this->redirectToRoute('app_edit_my_profile', [
+                    'id' => $user->getId(),
                 ]);
             }
 
@@ -59,12 +59,12 @@ class UserController extends AbstractController
                 'User updated with success !'
             );
 
-            return $this->redirectToRoute('app_user_edit', [
+            return $this->redirectToRoute('app_edit_my_profile', [
                 'id' => $user->getId(),
             ]);
         }
 
-        return $this->render('pages/user/edit.html.twig', [
+        return $this->render('pages/user/edit_my_profile.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -72,20 +72,20 @@ class UserController extends AbstractController
     /**
      * Edit user password
      *
-     * @param User $editUser
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @param UserPasswordHasherInterface $hasher
      * @return Response
      */
-    #[Route('/user/edit/password/{id}', name: 'app_user_edit_password', methods: ['GET', 'POST'])]
-    #[Security("is_granted('ROLE_USER') and user === editUser")]
-    public function editPassword(
-        User $editUser,
+    #[Route('/password/edit', name: 'app_edit_my_password', methods: ['GET', 'POST'])]
+    #[Security("is_granted('ROLE_USER')")]
+    public function editMyPassword(
         Request $request,
         EntityManagerInterface $manager,
         UserPasswordHasherInterface $hasher
     ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
         $form = $this->createForm(UserPasswordType::class, [
             'method' => 'POST',
         ]);
@@ -93,23 +93,23 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$hasher->isPasswordValid($editUser, $form->getData()['plainPassword'])) {
+            if (!$hasher->isPasswordValid($user, $form->getData()['plainPassword'])) {
                 $this->addFlash(
                     'warnings',
                     'User password incorect !'
                 );
 
-                return $this->redirectToRoute('app_user_edit_password', [
-                    'id' => $editUser->getId(),
+                return $this->redirectToRoute('app_edit_my_password', [
+                    'id' => $user->getId(),
                 ]);
             }
 
-            $editUser->setUpdateAt(new \DateTimeImmutable()); // For force preUpdate
-            $editUser->setPlainPassword(
+            $user->setUpdateAt(new \DateTimeImmutable()); // For force preUpdate
+            $user->setPlainPassword(
                 $form->getData()['newPassword']
             );
 
-            $manager->persist($editUser);
+            $manager->persist($user);
             $manager->flush();
 
             $this->addFlash(
@@ -117,12 +117,12 @@ class UserController extends AbstractController
                 'User password updated with success !'
             );
 
-            return $this->redirectToRoute('app_user_edit_password', [
-                'id' => $editUser->getId(),
+            return $this->redirectToRoute('app_edit_my_password', [
+                'id' => $user->getId(),
             ]);
         }
 
-        return $this->render('pages/user/edit_password.html.twig', [
+        return $this->render('pages/user/edit_my_password.html.twig', [
             'form' => $form->createView(),
         ]);
     }

@@ -70,7 +70,7 @@ class SecurityController extends AbstractController
      *
      * @return void
      */
-    #[Route('/logout', name: 'app_security_logout')]
+    #[Route('/logout', name: 'app_security_logout', methods: ['GET', 'POST'])]
     public function logout()
     {
         // No need code

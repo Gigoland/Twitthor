@@ -1,16 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Twitthor - No Follows{% endblock %}
+{% block title %}Twitthor - Outers{% endblock %}
 
 {% block body %}
     <div class="container-fluid mt-4">
-        <h1>No Follows</h1>
-        {% if noFollows is same as([]) %}
+        <h1>Outers</h1>
+        {% if outers is same as([]) %}
             Zero data.
         {% else %}
             {# total items count #}
             <div class="count">
-                Total: {{ noFollows.getTotalItemCount }} results found.
+                Total: {{ outers.getTotalItemCount }} results found.
             </div>
 
             <table class="table table-hover mt-4">
@@ -31,25 +31,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for noFollow in noFollows %}
+                    {% for outer in outers %}
                         <tr class="table-secondary">
-                            <th scope="row">{{ noFollow.twUser.twName }}</th>
-                            <td>{{ noFollow.twUser.twUsername }}</td>
-                            <td>{{ noFollow.twUser.twUserId }}</td>
-                            <td><span class="badge rounded-pill bg-light">{{ noFollow.twUser.twIsVerified ? 'Yes' : 'No' }}</span></td>
-                            <td>{{ noFollow.isFavorite ? '<span class="badge rounded-pill">⭐️</span>' : '<span class="badge rounded-pill bg-light">No</span>' }}</td>
-                            <td>{{ noFollow.walletEth }}</td>
-                            <td>{{ noFollow.walletSol }}</td>
-                            <td>{{ noFollow.createAt|date('d/m/Y h:i') }}</td>
-                            <td>{{ noFollow.updateAt|date('d/m/Y h:i') }}</td>
+                            <th scope="row">{{ outer.twUser.twName }}</th>
+                            <td>{{ outer.twUser.twUsername }}</td>
+                            <td>{{ outer.twUser.twUserId }}</td>
+                            <td><span class="badge rounded-pill bg-light">{{ outer.twUser.twIsVerified ? 'Yes' : 'No' }}</span></td>
+                            <td>{{ outer.isFavorite ? '<span class="badge rounded-pill">⭐️</span>' : '<span class="badge rounded-pill bg-light">No</span>' }}</td>
+                            <td>{{ outer.walletEth }}</td>
+                            <td>{{ outer.walletSol }}</td>
+                            <td>{{ outer.createAt|date('d/m/Y h:i') }}</td>
+                            <td>{{ outer.updateAt|date('d/m/Y h:i') }}</td>
                             <td>
                                 <a href="#" class="btn btn-light">Follow</a>
                             </td>
                             <td>
-                                <a href="{{ path('app_follow_edit', {id: noFollow.id}) }}" class="btn btn-secondary">Edit</a>
+                                <a href="{{ path('app_follow_edit', {id: outer.id}) }}" class="btn btn-secondary">Edit</a>
                             </td>
                             <td>
-                                <a href="{{ path('app_follow_delete', {id: noFollow.id}) }}" class="btn btn-danger">Delete</a>
+                                <a href="{{ path('app_follow_delete', {id: outer.id}) }}" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -58,7 +58,7 @@
 
             {# display navigation #}
             <div class="navigation d-flex justify-content-center mt-4">
-                {{ knp_pagination_render(noFollows) }}
+                {{ knp_pagination_render(outers) }}
             </div>
         {% endif %}
     </div>
