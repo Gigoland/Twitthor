@@ -13,8 +13,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-
-
     /**
      * New user registration (Protected by CSRF)
      *
@@ -47,7 +45,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('app_security_login');
         }
 
-        return $this->render('pages/security/registration.html.twig', [
+        return $this->render('page/security/registration.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -61,7 +59,7 @@ class SecurityController extends AbstractController
     #[Route('/login', name: 'app_security_login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        return $this->render('pages/security/login.html.twig', [
+        return $this->render('page/security/login.html.twig', [
             'last_username' => $authenticationUtils->getLastUsername(),
             'error' => $authenticationUtils->getLastAuthenticationError(),
         ]);

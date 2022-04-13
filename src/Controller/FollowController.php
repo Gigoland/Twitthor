@@ -41,7 +41,7 @@ class FollowController extends AbstractController
             10
         );
 
-        return $this->render('pages/follow/following.html.twig', [
+        return $this->render('page/follow/following.html.twig', [
             'following' => $following,
         ]);
     }
@@ -71,7 +71,7 @@ class FollowController extends AbstractController
             10
         );
 
-        return $this->render('pages/follow/followers.html.twig', [
+        return $this->render('page/follow/followers.html.twig', [
             'followers' => $followers,
         ]);
     }
@@ -102,7 +102,7 @@ class FollowController extends AbstractController
             10
         );
 
-        return $this->render('pages/follow/outers.html.twig', [
+        return $this->render('page/follow/outers.html.twig', [
             'outers' => $outers,
         ]);
     }
@@ -146,7 +146,7 @@ class FollowController extends AbstractController
             return $this->redirectToRoute('app_followers');
         }
 
-        return $this->render('pages/follow/edit.html.twig', [
+        return $this->render('page/follow/edit.html.twig', [
             'follow' => $follow,
             'form' => $form->createView(),
         ]);

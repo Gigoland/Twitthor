@@ -40,7 +40,7 @@ class TwApiController extends AbstractController
             10
         );
 
-        return $this->render('pages/twitter/keys.html.twig', [
+        return $this->render('page/twitter/keys.html.twig', [
             'apiKeys' => $apiKeys,
         ]);
     }
@@ -80,7 +80,7 @@ class TwApiController extends AbstractController
             return $this->redirectToRoute('app_api_keys');
         }
 
-        return $this->render('pages/twitter/keys_new.html.twig', [
+        return $this->render('page/twitter/keys_new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -121,7 +121,7 @@ class TwApiController extends AbstractController
             return $this->redirectToRoute('app_tw_api_keys');
         }
 
-        return $this->render('pages/twitter/keys_edit.html.twig', [
+        return $this->render('page/twitter/keys_edit.html.twig', [
             'twApi' => $twApi,
             'form' => $form->createView(),
         ]);

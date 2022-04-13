@@ -3,34 +3,58 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\UserType;
-use App\Form\UserPasswordType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+#[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
 {
     /**
-     * Edit connected user
+     * Users manager
+     *
+     * @param UserRepository $repository
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
+     */
+    #[Route('/users', name: 'app_users', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function users(
+        UserRepository $repository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+        $users = $paginator->paginate(
+            $repository->findAll(),
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('page/user/users.html.twig', [
+            'users' => $users,
+        ]);
+    }
+
+    /**
+     * Create new user
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/profile/edit', name: 'app_edit_my_profile', methods: ['GET', 'POST'])]
-    #[Security("is_granted('ROLE_USER')")]
-    public function editMyProfile(
+    #[Route('/user/add', name: 'app_user_add', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function new(
         Request $request,
-        EntityManagerInterface $manager,
-        UserPasswordHasherInterface $hasher
+        EntityManagerInterface $manager
     ): Response {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = new User();
         $form = $this->createForm(UserType::class, $user, [
             'method' => 'POST',
         ]);
@@ -38,17 +62,46 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$hasher->isPasswordValid($user, $form->getData()->getPlainPassword())) {
-                $this->addFlash(
-                    'warnings',
-                    'User password incorect !'
-                );
+            $user = $form->getData();
 
-                return $this->redirectToRoute('app_edit_my_profile', [
-                    'id' => $user->getId(),
-                ]);
-            }
+            $manager->persist($user);
+            $manager->flush();
 
+            $this->addFlash(
+                'success',
+                'User created with success !'
+            );
+
+            return $this->redirectToRoute('app_user_edit');
+        }
+
+        return $this->render('page/user/user_add.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Edit user
+     *
+     * @param User $user
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route('/user/edit/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function edit(
+        User $user,
+        Request $request,
+        EntityManagerInterface $manager
+    ): Response {
+        $form = $this->createForm(UserType::class, $user, [
+            'method' => 'POST',
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
 
             $manager->persist($user);
@@ -59,71 +112,35 @@ class UserController extends AbstractController
                 'User updated with success !'
             );
 
-            return $this->redirectToRoute('app_edit_my_profile', [
-                'id' => $user->getId(),
-            ]);
+            return $this->redirectToRoute('app_user_edit');
         }
 
-        return $this->render('pages/user/edit_my_profile.html.twig', [
+        return $this->render('page/user/user_edit.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * Edit user password
+     * Delete user
      *
-     * @param Request $request
+     * @param User $user
      * @param EntityManagerInterface $manager
-     * @param UserPasswordHasherInterface $hasher
      * @return Response
      */
-    #[Route('/password/edit', name: 'app_edit_my_password', methods: ['GET', 'POST'])]
-    #[Security("is_granted('ROLE_USER')")]
-    public function editMyPassword(
-        Request $request,
-        EntityManagerInterface $manager,
-        UserPasswordHasherInterface $hasher
+    #[Route('/user/delete/{id}', name: 'app_user_delete', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(
+        User $user,
+        EntityManagerInterface $manager
     ): Response {
-        /** @var User $user */
-        $user = $this->getUser();
-        $form = $this->createForm(UserPasswordType::class, [
-            'method' => 'POST',
-        ]);
+        $manager->remove($user);
+        $manager->flush();
 
-        $form->handleRequest($request);
+        $this->addFlash(
+            'success',
+            'User deleted with success !'
+        );
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if (!$hasher->isPasswordValid($user, $form->getData()['plainPassword'])) {
-                $this->addFlash(
-                    'warnings',
-                    'User password incorect !'
-                );
-
-                return $this->redirectToRoute('app_edit_my_password', [
-                    'id' => $user->getId(),
-                ]);
-            }
-
-            $user->setUpdateAt(new \DateTimeImmutable()); // For force preUpdate
-            $user->setPlainPassword(
-                $form->getData()['newPassword']
-            );
-
-            $manager->persist($user);
-            $manager->flush();
-
-            $this->addFlash(
-                'success',
-                'User password updated with success !'
-            );
-
-            return $this->redirectToRoute('app_edit_my_password', [
-                'id' => $user->getId(),
-            ]);
-        }
-
-        return $this->render('pages/user/edit_my_password.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->redirectToRoute('app_users');
     }
 }
