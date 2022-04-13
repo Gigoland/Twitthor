@@ -9,16 +9,23 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class RegistrationType extends AbstractType
 {
+    /**
+     * Form for external user registration only
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->setMethod('POST')
             ->add('email', EmailType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -42,12 +49,12 @@ class RegistrationType extends AbstractType
                 ],
                 'label' => 'Twitter ID',
                 'label_attr' => [
-                    'class' => 'form-label mt-4',
+                    'class' => 'form-label',
                 ],
                 'constraints' => [
                     new Assert\Length(['min' => 1, 'max' => 55]),
-                    new Assert\NotBlank(),
                 ],
+                'required' => false,
             ])
             ->add('twUsername', TextType::class, [
                 'attr' => [
@@ -57,22 +64,23 @@ class RegistrationType extends AbstractType
                 ],
                 'label' => 'Twitter username',
                 'label_attr' => [
-                    'class' => 'form-label mt-4',
+                    'class' => 'form-label',
                 ],
                 'constraints' => [
                     new Assert\Length(['min' => 1, 'max' => 22]),
-                    new Assert\NotBlank(),
                 ],
+                'required' => false,
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
+                'label' => 'Password',
                 'first_options' => [
                     'attr' => [
                         'class' => 'form-control',
                     ],
-                    'label' => 'Password',
+                    'label' => false,
                     'label_attr' => [
-                        'class' => 'form-label mt-4',
+                        'class' => 'form-label',
                     ],
                     'constraints' => [
                         new Assert\NotBlank(),
@@ -82,29 +90,32 @@ class RegistrationType extends AbstractType
                     'attr' => [
                         'class' => 'form-control',
                     ],
-                    'label' => 'Repeat paswword',
+                    'label' => 'Repeat passwword',
                     'label_attr' => [
-                        'class' => 'form-label mt-4',
+                        'class' => 'form-label',
                     ],
                     'constraints' => [
                         new Assert\NotBlank(),
                     ],
                 ],
-                'invalid_message' => 'Incorect password',
-            ])
-            ->add('submit', SubmitType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary mt-4',
-                ],
-                'label' => 'Create',
+                'invalid_message' => 'Passwords should be the same',
             ])
         ;
     }
 
+    /**
+     * Configuration with CSRF protection
+     *
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id' => 'registration_csrf_token',
         ]);
     }
 }

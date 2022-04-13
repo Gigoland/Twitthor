@@ -1,11 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends '@EasyAdmin/layout.html.twig' %}
 
 {% block title %}Twitthor - Edit My Profile{% endblock %}
 
-{% block body %}
+{% block content %}
     <div class="container mt-4">
-        <h1>Edit My Profile</h1>
-
         {{ form_start(form) }}
 
             <div class="form-group">
@@ -35,6 +33,5 @@
             </div>
 
         {{ form_end(form) }}
-
     </div>
 {% endblock %}

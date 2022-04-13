@@ -2,14 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\TwApi;
+use App\Entity\Follow;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[UniqueEntity('email')]
 #[ORM\HasLifecycleCallbacks]
@@ -29,7 +31,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
-    private ?string $TwUserId = null;
+    private ?string $twUserId = null;
 
     #[ORM\Column(type: 'string', length: 22, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
@@ -61,11 +63,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 
-    #[ORM\OneToMany(mappedBy: 'User', targetEntity: TwApi::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: TwApi::class, cascade: ['remove'], orphanRemoval: true)]
     private $twApis;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Follow::class, orphanRemoval: true)]
-    private $Follows;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Follow::class, cascade: ['remove'], orphanRemoval: true)]
+    private $follows;
 
     /**
      * Constructor
@@ -76,7 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updateAt = new \DateTimeImmutable();
 
         $this->twApis = new ArrayCollection();
-        $this->Follows = new ArrayCollection();
+        $this->follows = new ArrayCollection();
     }
 
     #[ORM\PrePersist()]
@@ -115,12 +117,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getTwUserId(): ?string
     {
-        return $this->TwUserId;
+        return $this->twUserId;
     }
 
-    public function setTwUserId(?string $TwUserId): self
+    public function setTwUserId(?string $twUserId): self
     {
-        $this->TwUserId = $TwUserId;
+        $this->twUserId = $twUserId;
 
         return $this;
     }
@@ -274,13 +276,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getFollows(): Collection
     {
-        return $this->Follows;
+        return $this->follows;
     }
 
     public function addFollow(Follow $follow): self
     {
-        if (!$this->Follows->contains($follow)) {
-            $this->Follows[] = $follow;
+        if (!$this->follows->contains($follow)) {
+            $this->follows[] = $follow;
             $follow->setUser($this);
         }
 
@@ -289,7 +291,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeFollow(Follow $follow): self
     {
-        if ($this->Follows->removeElement($follow)) {
+        if ($this->follows->removeElement($follow)) {
             // set the owning side to null (unless already changed)
             if ($follow->getUser() === $this) {
                 $follow->setUser(null);

@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\FollowRepository;
+use App\Entity\User;
+use App\Entity\TwUser;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\FollowRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\HasLifecycleCallbacks]
@@ -43,13 +45,13 @@ class Follow
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'Follow')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'follows')]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    #[ORM\ManyToOne(targetEntity: TwUser::class)]
+    #[ORM\ManyToOne(targetEntity: TwUser::class, inversedBy: 'follows')]
     #[ORM\JoinColumn(nullable: false)]
-    private $TwUser;
+    private $twUser;
 
     /**
      * Constructor
@@ -170,12 +172,12 @@ class Follow
 
     public function getTwUser(): ?TwUser
     {
-        return $this->TwUser;
+        return $this->twUser;
     }
 
-    public function setTwUser(?TwUser $TwUser): self
+    public function setTwUser(?TwUser $twUser): self
     {
-        $this->TwUser = $TwUser;
+        $this->twUser = $twUser;
 
         return $this;
     }

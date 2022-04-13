@@ -2,15 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\FollowRepository;
+use App\Entity\Follow;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Repository\TwUserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[UniqueEntity('twUserId')]
 #[UniqueEntity('twUsername')]
 #[ORM\HasLifecycleCallbacks]
-#[ORM\Entity(repositoryClass: FollowRepository::class)]
+#[ORM\Entity(repositoryClass: TwUserRepository::class)]
 class TwUser
 {
     #[ORM\Id]
@@ -42,6 +45,9 @@ class TwUser
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 
+    #[ORM\OneToMany(mappedBy: 'twUser', targetEntity: Follow::class, orphanRemoval: true)]
+    private $follows;
+
     /**
      * Constructor
      */
@@ -49,6 +55,8 @@ class TwUser
     {
         $this->createAt = new \DateTimeImmutable();
         $this->updateAt = new \DateTimeImmutable();
+
+        $this->follows = new ArrayCollection();
     }
 
     #[ORM\PrePersist()]
@@ -131,6 +139,36 @@ class TwUser
     public function setUpdateAt(?\DateTimeImmutable $updateAt): self
     {
         $this->updateAt = $updateAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Follow>
+     */
+    public function getFollows(): Collection
+    {
+        return $this->follows;
+    }
+
+    public function addFollow(Follow $follow): self
+    {
+        if (!$this->follows->contains($follow)) {
+            $this->follows[] = $follow;
+            $follow->setTwUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollow(Follow $follow): self
+    {
+        if ($this->follows->removeElement($follow)) {
+            // set the owning side to null (unless already changed)
+            if ($follow->getTwUser() === $this) {
+                $follow->setTwUser(null);
+            }
+        }
 
         return $this;
     }

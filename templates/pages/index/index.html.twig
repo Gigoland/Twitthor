@@ -11,7 +11,7 @@
             <p>🧩 The first utility unfollow "Platonic" subscriptions will be to find who’s not following back and unfollow them ☠️</p>
             {% if app.user %}
                 <p class="lead">
-                    🤟 Hello dear {{ app.user.twUsername }} !
+                    🤟 Hello dear {{ app.user.twUsername|default(app.user.email) }} !
                 </p>
             {% else %}
                 <p class="lead">

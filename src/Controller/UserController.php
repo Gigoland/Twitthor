@@ -44,9 +44,7 @@ class UserController extends AbstractController
                     'User password incorect !'
                 );
 
-                return $this->redirectToRoute('app_edit_my_profile', [
-                    'id' => $user->getId(),
-                ]);
+                return $this->redirectToRoute('app_edit_my_profile');
             }
 
             $user = $form->getData();
@@ -56,12 +54,10 @@ class UserController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'User updated with success !'
+                'Profile updated with success !'
             );
 
-            return $this->redirectToRoute('app_edit_my_profile', [
-                'id' => $user->getId(),
-            ]);
+            return $this->redirectToRoute('app_edit_my_profile');
         }
 
         return $this->render('pages/user/edit_my_profile.html.twig', [
@@ -99,9 +95,7 @@ class UserController extends AbstractController
                     'User password incorect !'
                 );
 
-                return $this->redirectToRoute('app_edit_my_password', [
-                    'id' => $user->getId(),
-                ]);
+                return $this->redirectToRoute('app_edit_my_password');
             }
 
             $user->setUpdateAt(new \DateTimeImmutable()); // For force preUpdate
@@ -117,9 +111,7 @@ class UserController extends AbstractController
                 'User password updated with success !'
             );
 
-            return $this->redirectToRoute('app_edit_my_password', [
-                'id' => $user->getId(),
-            ]);
+            return $this->redirectToRoute('app_edit_my_password');
         }
 
         return $this->render('pages/user/edit_my_password.html.twig', [

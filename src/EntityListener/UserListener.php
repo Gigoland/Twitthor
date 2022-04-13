@@ -44,7 +44,7 @@ class UserListener
      */
     private function encodePassword(User $user)
     {
-        if ($user->getPlainPassword() === null) {
+        if (empty($user->getPlainPassword())) {
             return;
         }
 

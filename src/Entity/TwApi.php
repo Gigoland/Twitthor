@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\TwApiRepository;
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TwApiRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TwApiRepository::class)]
