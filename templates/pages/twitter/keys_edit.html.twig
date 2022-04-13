@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Twitthor - Edit Twitter Configuration Keys{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Edit Twitter Configuration Keys</h1>
+
+        {{ form_start(form) }}
+
+            <div class="form-group">
+                {{ form_label(form.consumerKey ) }}
+                {{ form_widget(form.consumerKey) }}
+                <div class="form-error">
+                    {{ form_errors(form.consumerKey) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.consumerSecret) }}
+                {{ form_widget(form.consumerSecret) }}
+                <div class="form-error">
+                    {{ form_errors(form.consumerSecret) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.accessToken) }}
+                {{ form_widget(form.accessToken) }}
+                <div class="form-error">
+                    {{ form_errors(form.accessToken) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.accessTokenSecret) }}
+                {{ form_widget(form.accessTokenSecret) }}
+                <div class="form-error">
+                    {{ form_errors(form.accessTokenSecret) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.bearerToken) }}
+                {{ form_widget(form.bearerToken) }}
+                <div class="form-error">
+                    {{ form_errors(form.bearerToken) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.accountId) }}
+                {{ form_widget(form.accountId) }}
+                <div class="form-error">
+                    {{ form_errors(form.accountId) }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form_label(form.accountName) }}
+                {{ form_widget(form.accountName) }}
+                <div class="form-error">
+                    {{ form_errors(form.accountName) }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.submit) }}
+            </div>
+
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}

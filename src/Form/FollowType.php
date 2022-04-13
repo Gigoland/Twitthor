@@ -16,6 +16,7 @@ class FollowType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->setMethod('POST')
             ->add('walletEth', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',

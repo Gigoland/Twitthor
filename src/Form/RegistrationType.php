@@ -4,17 +4,21 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class RegistrationType extends AbstractType
 {
+    public const CSRF_TOKEN_NAME = '_twitthor_registration_token';
+    public const CSRF_TOKEN_ID = 'app_registration_csrf';
+
     /**
      * Form for external user registration only
      *
@@ -49,12 +53,12 @@ class RegistrationType extends AbstractType
                 ],
                 'label' => 'Twitter ID',
                 'label_attr' => [
-                    'class' => 'form-label',
+                    'class' => 'form-label mt-4',
                 ],
                 'constraints' => [
                     new Assert\Length(['min' => 1, 'max' => 55]),
+                    new Assert\NotBlank(),
                 ],
-                'required' => false,
             ])
             ->add('twUsername', TextType::class, [
                 'attr' => [
@@ -64,23 +68,22 @@ class RegistrationType extends AbstractType
                 ],
                 'label' => 'Twitter username',
                 'label_attr' => [
-                    'class' => 'form-label',
+                    'class' => 'form-label mt-4',
                 ],
                 'constraints' => [
                     new Assert\Length(['min' => 1, 'max' => 22]),
+                    new Assert\NotBlank(),
                 ],
-                'required' => false,
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'label' => 'Password',
                 'first_options' => [
                     'attr' => [
                         'class' => 'form-control',
                     ],
-                    'label' => false,
+                    'label' => 'Password',
                     'label_attr' => [
-                        'class' => 'form-label',
+                        'class' => 'form-label mt-4',
                     ],
                     'constraints' => [
                         new Assert\NotBlank(),
@@ -90,15 +93,21 @@ class RegistrationType extends AbstractType
                     'attr' => [
                         'class' => 'form-control',
                     ],
-                    'label' => 'Repeat passwword',
+                    'label' => 'Repeat paswword',
                     'label_attr' => [
-                        'class' => 'form-label',
+                        'class' => 'form-label mt-4',
                     ],
                     'constraints' => [
                         new Assert\NotBlank(),
                     ],
                 ],
-                'invalid_message' => 'Passwords should be the same',
+                'invalid_message' => 'Incorect password',
+            ])
+            ->add('submit', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn btn-primary mt-4',
+                ],
+                'label' => 'Create',
             ])
         ;
     }
@@ -114,8 +123,8 @@ class RegistrationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
             'csrf_protection' => true,
-            'csrf_field_name' => '_token',
-            'csrf_token_id' => 'registration_csrf_token',
+            'csrf_field_name' => self::CSRF_TOKEN_NAME,
+            'csrf_token_id' => self::CSRF_TOKEN_ID,
         ]);
     }
 }

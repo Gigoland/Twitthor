@@ -16,6 +16,7 @@ class TwApiType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->setMethod('POST')
             ->add('consumerKey', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',

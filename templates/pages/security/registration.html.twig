@@ -1,90 +1,12 @@
-{% extends ea is defined ? ea.templatePath('layout') : '@EasyAdmin/page/login_minimal.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block body_class 'page-login' %}
-{% block page_title %}{{ page_title is defined ? page_title|raw : (ea is defined ? ea.dashboardTitle|raw : '') }}{% endblock %}
+{% block title %}Twitthor - Registration{% endblock %}
 
-{% block wrapper_wrapper %}
-    {% set page_title = block('page_title') %}
-    {% set _username_label = username_label is defined ? username_label|trans : 'login_page.username'|trans({}, 'EasyAdminBundle') %}
-    {% set _password_label = password_label is defined ? password_label|trans : 'login_page.password'|trans({}, 'EasyAdminBundle') %}
-    {% set _sign_in_label = sign_in_label is defined ? sign_in_label|trans : 'login_page.sign_in'|trans({}, 'EasyAdminBundle') %}
+{% block body %}
+    <div class="container mt-4">
+        <h1>Registration or <a href="{{ path('app_security_login') }}">Login</a></h1>
 
-    {% include '@EasyAdmin/flash_messages.html.twig' %}
+        {{ form(form) }}
 
-    <div class="login-wrapper">
-        <header class="main-header">
-            <div id="header-logo">
-                {% block header_logo %}
-                    {% if page_title %}
-                        {% if ea is defined %}
-                            <a class="logo {{ page_title|length > 14 ? 'logo-long' }}" title="{{ page_title|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-                                {{ page_title|raw }}
-                            </a>
-                        {% else %}
-                            <div class="logo {{ page_title|length > 14 ? 'logo-long' }}">
-                                {{ page_title|raw }}
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                {% endblock header_logo %}
-            </div>
-        </header>
-
-        <section class="content">
-
-            {% if error|default(false) %}
-                <div class="w-100 alert alert-danger rounded mb-3">
-                    <i class="fas fa-times-circle mr-1"></i>
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            {% endif %}
-
-            <form name="registration" method="post" action="{{ path(action_route|default('app_security_registration')) }}">
-                {% if csrf_token_intention|default(false) %}
-                    {{ form_row(form._token) }}
-                {% endif %}
-
-                <div class="form-group">
-                    {{ form_label(form.email) }}
-                    {{ form_widget(form.email) }}
-                    <div class="form-error">
-                        {{ form_errors(form.email) }}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.twUserId) }}
-                    {{ form_widget(form.twUserId) }}
-                    <div class="form-error">
-                        {{ form_errors(form.twUserId) }}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.twUsername) }}
-                    {{ form_widget(form.twUsername) }}
-                    <div class="form-error">
-                        {{ form_errors(form.twUsername) }}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.plainPassword) }}
-                    {{ form_widget(form.plainPassword) }}
-                    <div class="form-error">
-                        {{ form_errors(form.plainPassword) }}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">{{ registration_label|default('Registration') }}</button>
-                    {% if login_enabled|default(false) %}
-                        <a href="{{ path(login_route|default('app_security_registration')) }}">{{ login_label|default( _sign_in_label ) }}</a>
-                    {% endif %}
-                </div>
-            </form>
-
-            <script src="{{ asset('bundles/easyadmin/login.js') }}"></script>
-        </section>
     </div>
 {% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Twitthor - Keys{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-4">
+        <h1>Keys</h1>
+        {% if apiKeys.getTotalItemCount == 0 %}
+            Zero data. | <a href="{{ path('app_api_keys_add') }}" class="btn btn-secondary">Add new configuration</a>
+        {% else %}
+            {# total items count #}
+            <div class="count">
+                Total: {{ apiKeys.getTotalItemCount }} keys configurations found.
+            </div>
+
+            <table class="table table-hover mt-4">
+                <thead>
+                    <tr class="text-nowrap">
+                        <th scope="col">CONSUMER_KEY</th>
+                        <th scope="col">CONSUMER_SECRET</th>
+                        <th scope="col">ACCESS_TOKEN</th>
+                        <th scope="col">ACCESS_TOKEN_SECRET</th>
+                        <th scope="col">BEARER_TOKEN</th>
+                        <th scope="col">ACCOUNT_ID</th>
+                        <th scope="col">ACCOUNT_NAME</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for keys in apiKeys %}
+                        <tr class="table-light">
+                            <th scope="row">{{ keys.consumerKey }}</th>
+                            <td>{{ keys.consumerSecret|slice(0, 10) ~ '...' }}</td>
+                            <td>{{ keys.accessToken|slice(0, 10) ~ '...' }}</td>
+                            <td>{{ keys.accessTokenSecret|slice(0, 10) ~ '...' }}</td>
+                            <td>{{ keys.bearerToken|slice(0, 10) ~ '...' }}</td>
+                            <td>{{ keys.accountId|slice(0, 10) ~ '...' }}</td>
+                            <td>{{ keys.accountName|slice(0, 10) ~ '...' }}</td>
+                            <td>
+                                <a href="{{ path('app_api_keys_edit', {id: keys.id}) }}" class="btn btn-secondary">Edit</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_api_keys_delete', {id: keys.id}) }}" class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# display navigation #}
+            <div class="navigation d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(apiKeys) }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

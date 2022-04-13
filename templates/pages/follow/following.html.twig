@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Twitthor - Following{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-4">
+        <h1>Following</h1>
+        {% if following is same as([]) %}
+            Zero data.
+        {% else %}
+            {# total items count #}
+            <div class="count">
+                Total: {{ following.getTotalItemCount }} following found.
+            </div>
+
+            <table class="table table-hover mt-4">
+                <thead>
+                    <tr class="text-nowrap">
+                        <th scope="col">🐥 Name</th>
+                        <th scope="col">🐥 Usernme</th>
+                        <th scope="col">🐥 ID</th>
+                        <th scope="col">🐥 Verified</th>
+                        <th scope="col">Follow me</th>
+                        <th scope="col">Favorite</th>
+                        <th scope="col">Wallet ETH</th>
+                        <th scope="col">Wallet SOL</th>
+                        <th scope="col">Created</th>
+                        <th scope="col">Updated</th>
+                        <th scope="col">Follow</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for follow in following %}
+                        <tr class="{{ follow.isFollower ? 'table-light' : 'table-secondary' }}">
+                            <th scope="row">{{ follow.twUser.twName }}</th>
+                            <td>{{ follow.twUser.twUsername }}</td>
+                            <td>{{ follow.twUser.twUserId }}</td>
+                            <td><span class="badge rounded-pill bg-light">{{ follow.twUser.twIsVerified ? 'Yes' : 'No' }}</span></td>
+                            <td><span class="badge rounded-pill bg-light">{{ follow.isFollower ? 'Yes' : 'Platonic' }}</span></td>
+                            <td>{{ follow.isFavorite ? '<span class="badge rounded-pill">⭐️</span>' : '<span class="badge rounded-pill bg-light">No</span>' }}</td>
+                            <td>{{ follow.walletEth }}</td>
+                            <td>{{ follow.walletSol }}</td>
+                            <td>{{ follow.createAt|date('d/m/Y h:i') }}</td>
+                            <td>{{ follow.updateAt|date('d/m/Y h:i') }}</td>
+                            <td>
+                                <a href="#" class="btn btn-{{ follow.isFavorite ? 'info' : 'warning' }}">Unfollow</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_follow_edit', {id: follow.id}) }}" class="btn btn-secondary">Edit</a>
+                            </td>
+                            <td>
+                                <a href="{{ path('app_follow_delete', {id: follow.id}) }}" class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# display navigation #}
+            <div class="navigation d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(following) }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
