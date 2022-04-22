@@ -13,6 +13,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class TwApiType extends AbstractType
 {
+    public const CSRF_TOKEN_NAME = '_twitthor_twapi_token';
+    public const CSRF_TOKEN_ID = 'app_twapi_csrf';
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -22,7 +25,7 @@ class TwApiType extends AbstractType
                     'class' => 'form-control',
                     'maxlength' => 255,
                 ],
-                'label' => 'CONSUMER_KEY',
+                'label' => 'CONSUMER KEY',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -36,7 +39,7 @@ class TwApiType extends AbstractType
                     'class' => 'form-control',
                     'maxlength' => 255,
                 ],
-                'label' => 'CONSUMER_SECRET',
+                'label' => 'CONSUMER SECRET',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -50,7 +53,7 @@ class TwApiType extends AbstractType
                     'class' => 'form-control',
                     'maxlength' => 255,
                 ],
-                'label' => 'ACCESS_TOKEN',
+                'label' => 'ACCESS TOKEN',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -64,7 +67,7 @@ class TwApiType extends AbstractType
                     'class' => 'form-control',
                     'maxlength' => 255,
                 ],
-                'label' => 'ACCESS_TOKEN_SECRET',
+                'label' => 'ACCESS TOKEN SECRET',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -78,7 +81,7 @@ class TwApiType extends AbstractType
                     'class' => 'form-control',
                     'maxlength' => 255,
                 ],
-                'label' => 'BEARER_TOKEN',
+                'label' => 'BEARER TOKEN',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -91,7 +94,7 @@ class TwApiType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                 ],
-                'label' => 'ACCOUNT_ID',
+                'label' => 'ACCOUNT ID',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -102,7 +105,7 @@ class TwApiType extends AbstractType
                     'class' => 'form-control',
                     'maxlength' => 255,
                 ],
-                'label' => 'ACCOUNT_NAME',
+                'label' => 'ACCOUNT NAME',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
@@ -113,17 +116,26 @@ class TwApiType extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
-                    'class' => 'btn btn-primary mt-4',
+                    'class' => 'main-btn primary-btn rounded-md btn-hover',
                 ],
                 'label' => 'Save configuration',
             ])
         ;
     }
 
+    /**
+     * Configuration with CSRF protection
+     *
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => TwApi::class,
+            'csrf_protection' => true,
+            'csrf_field_name' => self::CSRF_TOKEN_NAME,
+            'csrf_token_id' => self::CSRF_TOKEN_ID,
         ]);
     }
 }

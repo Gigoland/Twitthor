@@ -7,15 +7,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_USER')]
 class AdminController extends AbstractController
 {
     /**
-     * Admin dashboard
+     * Admin/User dashboard
      */
-    #[Route('/admin', name: 'app_admin_dashboard', methods: ['GET'])]
-    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/dashboard', name: 'app_admin_dashboard', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function dashboard(): Response {
-        return $this->render('page/admin/dashboard.html.twig');
+        return $this->render('theme/admin/page/dashboard/dashboard.html.twig');
     }
 }

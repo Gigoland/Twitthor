@@ -1,0 +1,76 @@
+{% extends 'theme/admin/base.html.twig' %}
+
+{% block title %}Twitthor - Add new User{% endblock %}
+
+{% block body %}
+  {% include 'theme/admin/common/_title_wraper.html.twig' with {
+    'title': 'User New',
+    'navs': [
+      {'title': 'User New', 'path': path('app_user_add')},
+    ]
+  } %}
+
+  <div class="form-elements-wrapper">
+
+    {# user profile fields #}
+    <div class="row">
+      <div class="col-lg-6">
+
+        <div class="card-style mb-30">
+          <h6 class="mb-25">User fields</h6>
+          {{ form_start(form) }}
+
+            <div class="input-style-1">
+              {{ form_label(form.email) }}
+              {{ form_widget(form.email) }}
+              <div class="form-error">
+                {{ form_errors(form.email) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.twUserId) }}
+              {{ form_widget(form.twUserId) }}
+              <div class="form-error">
+                {{ form_errors(form.twUserId) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.twUsername) }}
+              {{ form_widget(form.twUsername) }}
+              <div class="form-error">
+                {{ form_errors(form.twUsername) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.walletEth) }}
+              {{ form_widget(form.walletEth) }}
+              <div class="form-error">
+                {{ form_errors(form.walletEth) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.walletSol) }}
+              {{ form_widget(form.walletSol) }}
+              <div class="form-error">
+                {{ form_errors(form.walletSol) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_widget(form.plainPassword) }}
+              <div class="form-error">
+                {{ form_errors(form.plainPassword) }}
+              </div>
+            </div>
+
+            <div class="input-style-1">
+              {{ form_row(form.submit) }}
+            </div>
+
+          {{ form_end(form) }}
+        </div>
+
+      </div>
+      <div class="col-lg-6"></div>
+    </div>
+  </div>
+{% endblock %}

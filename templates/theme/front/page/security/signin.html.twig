@@ -1,0 +1,60 @@
+{% extends 'theme/front/base.html.twig' %}
+
+{% block header %}{% endblock %}
+{% block title %}Twitthor - Sign-In{% endblock %}
+
+{% block body %}
+  <div class="container-fluid">
+    <div class="row no-gutter">
+
+      <div class="col-md-6 d-none d-md-flex bg-image"></div>
+
+      <div class="col-md-6 bg-light">
+        <div class="login d-flex align-items-center py-5">
+
+          <div class="container">
+
+            {% if error %}
+              <div class="row">
+                <div class="col-lg-10 col-xl-7 mx-auto">
+                  <div class="alert alert-danger">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+
+            <div class="row">
+              <div class="col-lg-10 col-xl-7 mx-auto">
+                <div class="text-nowrap">
+                  <h3 class="display-4">
+                    <a href="{{ path('app_index') }}" class="link-dark text-decoration-none">Twit<strong>thor</strong>.com</a> <small>/ <a href="{{ path('app_security_signup') }}" class="link-dark">Sign-up</a></small>
+                  </h3>
+                </div>
+                <p class="text-muted mb-4">⚡️ Feel the power of the Thor !</p>
+                <form method="post" action="{{ path('app_security_signin') }}">
+                  <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                  <div class="form-group mb-3">
+                    <input type="email" name="_username" value="{{ last_username }}" placeholder="Email address" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
+                  </div>
+                  <div class="form-group mb-3">
+                    <input type="password" name="_password" placeholder="Password" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
+                  </div>
+                  <div class="custom-control custom-checkbox mb-3">
+                    <input id="rem-me" type="checkbox" checked class="custom-control-input">
+                    <label for="rem-me" class="custom-control-label">Remember me</label>
+                  </div>
+                  <div class="form-group mb-3">
+                    <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm">Sign-in</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

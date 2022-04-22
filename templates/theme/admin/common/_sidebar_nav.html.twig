@@ -1,0 +1,89 @@
+<aside class="sidebar-nav-wrapper">
+  <div class="navbar-logo">
+    <a class="navbar-brand" href="{{ path('app_index') }}">Twit<strong>thor</strong>.com</a>
+  </div>
+  <nav class="sidebar-nav">
+    <ul>
+      <li class="nav-item">
+        <a href="{{ path('app_admin_dashboard') }}">
+          <span class="icon">
+            <i class="fa-solid fa-gauge"></i>
+          </span>
+          <span class="text">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item nav-item-has-children">
+        <a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_users" aria-controls="ddmenu_users" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="icon">
+            <i class="fa-solid fa-user-group"></i>
+          </span>
+          <span class="text">Users</span>
+        </a>
+        <ul id="ddmenu_users" class="collapse dropdown-nav">
+          <li>
+            <a href="{{ path('app_users') }}"><i class="fa-solid fa-list"></i> List</a>
+          </li>
+          <li>
+            <a href="{{ path('app_user_add') }}"><i class="fa-solid fa-plus"></i> Add</a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="nav-item nav-item-has-children">
+        <a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_users" aria-controls="ddmenu_users" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="icon">
+            <i class="fa-solid fa-user-group"></i>
+          </span>
+          <span class="text">Twitter Users</span>
+        </a>
+        <ul id="ddmenu_users" class="collapse dropdown-nav">
+          <li>
+            <a href="{{ path('app_users') }}"><i class="fa-solid fa-list"></i> List</a>
+          </li>
+        </ul>
+      </li>
+
+      <span class="divider"><hr /></span>
+
+      <li class="nav-item nav-item-has-children">
+        <a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_follow" aria-controls="ddmenu_follow" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="icon">
+            <i class="fa-brands fa-twitter"></i>
+          </span>
+          <span class="text">Follow </span>
+        </a>
+        <ul id="ddmenu_follow" class="collapse dropdown-nav">
+          <li>
+            <a href="{{ path('app_following') }}"><i class="fa-solid fa-forward"></i> Following</a>
+          </li>
+          <li>
+            <a href="{{ path('app_followers') }}"><i class="fa-solid fa-backward"></i> Followers</a>
+          </li>
+          <li>
+            <a href="{{ path('app_outers') }}"><i class="fa-solid fa-skull-crossbones"></i> Outers</a>
+          </li>
+        </ul>
+      </li>
+
+      <span class="divider"><hr /></span>
+
+      <li class="nav-item nav-item-has-children">
+        <a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_config" aria-controls="ddmenu_config" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="icon">
+            <i class="fa-solid fa-toolbox"></i>
+          </span>
+          <span class="text">Configurations </span>
+        </a>
+        <ul id="ddmenu_config" class="collapse dropdown-nav">
+          <li>
+            <a href="{{ path('app_twapi_keys') }}"><i class="fa-brands fa-twitter-square"></i> Twitter Api Keys</a>
+          </li>
+          <li>
+            <a href="{{ path('app_twapi_keys_add') }}"><i class="fa-solid fa-plus"></i> Add</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</aside>

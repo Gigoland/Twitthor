@@ -1,0 +1,25 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/src/runtime.b4b09f08.js",
+        "/src/850.3c91e6ab.js",
+        "/src/app.9529b4f9.js"
+      ],
+      "css": [
+        "/src/app.56ae90ab.css"
+      ]
+    },
+    "admin": {
+      "js": [
+        "/src/runtime.b4b09f08.js",
+        "/src/850.3c91e6ab.js",
+        "/src/admin.1fdfe232.js"
+      ],
+      "css": [
+        "/src/241.059b0ea1.css",
+        "/src/admin.ee82adb3.css"
+      ]
+    }
+  }
+}

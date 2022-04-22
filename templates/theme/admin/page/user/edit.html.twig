@@ -1,0 +1,99 @@
+{% extends 'theme/admin/base.html.twig' %}
+
+{% block title %}Twitthor - Edit User{% endblock %}
+
+{% block body %}
+  {% include 'theme/admin/common/_title_wraper.html.twig' with {
+    'title': 'User Edit',
+    'navs': [
+      {'title': 'User Edi', 'path': path('app_user_edit', {'id': user.id})},
+    ]
+  } %}
+
+  <div class="form-elements-wrapper">
+
+    {# user profile info #}
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card-style settings-card-1 mb-30">
+          <div class="title mb-30 d-flex justify-content-between align-items-center">
+            <h6>Profile info</h6>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="profile-info">
+                <div class="d-flex align-items-center mb-30">
+                  <div class="profile-image">
+                    <img src="{{ asset('src/images/profile/profile-1.png') }}" alt="Avatar">
+                  </div>
+                  <div class="profile-meta">
+                    <h5 class="text-bold text-dark mb-10">{{ user.email }}</h5>
+                    <p class="text-sm text-gray">Created at : {{ user.createAt|date('d/m/Y h:i') }}</p>
+                    <p class="text-sm text-gray">Edited at : {{ user.updateAt|date('d/m/Y h:i') }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6"></div>
+    </div>
+
+    {# user profile fields #}
+    <div class="row">
+      <div class="col-lg-6">
+
+        <div class="card-style mb-30">
+          <h6 class="mb-25">Profile fields</h6>
+          {{ form_start(form) }}
+
+            <div class="input-style-1">
+              {{ form_label(form.twUserId) }}
+              {{ form_widget(form.twUserId) }}
+              <div class="form-error">
+                {{ form_errors(form.twUserId) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.twUsername) }}
+              {{ form_widget(form.twUsername) }}
+              <div class="form-error">
+                {{ form_errors(form.twUsername) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.walletEth) }}
+              {{ form_widget(form.walletEth) }}
+              <div class="form-error">
+                {{ form_errors(form.walletEth) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.walletSol) }}
+              {{ form_widget(form.walletSol) }}
+              <div class="form-error">
+                {{ form_errors(form.walletSol) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.plainPassword) }}
+              {{ form_widget(form.plainPassword) }}
+              <div class="form-error">
+                {{ form_errors(form.plainPassword) }}
+              </div>
+            </div>
+
+            <div class="input-style-1">
+              {{ form_row(form.submit) }}
+            </div>
+
+          {{ form_end(form) }}
+        </div>
+
+      </div>
+      <div class="col-lg-6"></div>
+    </div>
+  </div>
+{% endblock %}

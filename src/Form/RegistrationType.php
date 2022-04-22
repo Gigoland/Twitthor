@@ -16,8 +16,8 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class RegistrationType extends AbstractType
 {
-    public const CSRF_TOKEN_NAME = '_twitthor_registration_token';
-    public const CSRF_TOKEN_ID = 'app_registration_csrf';
+    public const CSRF_TOKEN_NAME = '_twitthor_signup_token';
+    public const CSRF_TOKEN_ID = 'app_signup_csrf';
 
     /**
      * Form for external user registration only
@@ -32,7 +32,7 @@ class RegistrationType extends AbstractType
             ->setMethod('POST')
             ->add('email', EmailType::class, [
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'form-control rounded-pill border-0 shadow-sm px-4',
                     'minlength' => 1,
                     'maxlength' => 55,
                 ],
@@ -47,7 +47,7 @@ class RegistrationType extends AbstractType
             ])
             ->add('twUserId', NumberType::class, [
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'form-control rounded-pill border-0 shadow-sm px-4',
                     'minlength' => 1,
                     'maxlength' => 55,
                 ],
@@ -62,7 +62,7 @@ class RegistrationType extends AbstractType
             ])
             ->add('twUsername', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control',
+                    'class' => 'form-control rounded-pill border-0 shadow-sm px-4',
                     'minlength' => 1,
                     'maxlength' => 22,
                 ],
@@ -79,7 +79,7 @@ class RegistrationType extends AbstractType
                 'type' => PasswordType::class,
                 'first_options' => [
                     'attr' => [
-                        'class' => 'form-control',
+                        'class' => 'form-control rounded-pill border-0 shadow-sm px-4 text-primary',
                     ],
                     'label' => 'Password',
                     'label_attr' => [
@@ -91,7 +91,7 @@ class RegistrationType extends AbstractType
                 ],
                 'second_options' => [
                     'attr' => [
-                        'class' => 'form-control',
+                        'class' => 'form-control rounded-pill border-0 shadow-sm px-4 text-primary',
                     ],
                     'label' => 'Repeat paswword',
                     'label_attr' => [
@@ -105,9 +105,9 @@ class RegistrationType extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
-                    'class' => 'btn btn-primary mt-4',
+                    'class' => 'btn btn-primary btn-block text-uppercase mt-4 rounded-pill shadow-sm',
                 ],
-                'label' => 'Create',
+                'label' => 'Sign-up',
             ])
         ;
     }

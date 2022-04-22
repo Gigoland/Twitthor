@@ -1,0 +1,29 @@
+{% extends 'theme/admin/base.html.twig' %}
+
+{% block title %}Twitthor - Dashboard{% endblock %}
+
+{% block body %}
+  <div class="title-wrapper pt-30">
+    <div class="row align-items-center">
+
+      <div class="col-md-6">
+        <div class="titlemb-30">
+          <h1>Twit<strong>thor</strong>.com</h1>
+          <p class="lead">🛠️ New tool ⚡️ “Twit<b>thor</b>” that will help us to manage Twitter.</p>
+          <hr class="mt-4">
+          <p>🧩 The first utility unfollow "Platonic" subscriptions will be to find who’s not following back and unfollow them ☠️</p>
+          {% if app.user %}
+            <p class="lead">
+              🤟 Hello dear {{ app.user.twUsername|default(app.user.email) }} !
+            </p>
+          {% else %}
+            <p class="lead">
+              <a class="btn btn-primary btn-lg" href="{{ path('app_security_login') }}" role="button">Login / Registration</a>
+            </p>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

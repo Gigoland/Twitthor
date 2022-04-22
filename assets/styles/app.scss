@@ -1,2 +1,7 @@
-@import "custom";
+@import "variables";
+
 @import "~bootstrap/scss/bootstrap";
+
+@import "./../front/scss/main";
+
+@import "custom";

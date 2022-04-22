@@ -1,0 +1,88 @@
+{% extends 'theme/admin/base.html.twig' %}
+
+{% block title %}Twitthor - Followers{% endblock %}
+
+{% block body %}
+  {% include 'theme/admin/common/_title_wraper.html.twig' with {
+    'title': 'Users',
+    'action_add': {'title': 'Add new user', 'path': path('app_user_add')},
+    'navs': [
+      {'title': 'Users', 'path': path('app_users')},
+    ]
+  } %}
+
+  <div class="tables-wrapper">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card-style mb-30">
+          <h6 class="mb-10">Data Table</h6>
+
+          {% if users.getTotalItemCount == 0 %}
+            <p class="text-sm mb-20">
+              Zero data.
+            </p>
+          {% else %}
+            <p class="text-sm mb-20">
+              Total: {{ users.getTotalItemCount }} users found.
+            </p>
+            <div class="table-wrapper table-responsive">
+              <table class="table table-hover-shadow">
+                <thead>
+                  <tr class="text-nowrap">
+                    <th><h6>Email</h6></th>
+                    <th><h6>🐥 ID</h6></th>
+                    <th><h6>🐥 Usernme</h6></th>
+                    <th><h6>Wallet ETH</h6></th>
+                    <th><h6>Wallet SOL</h6></th>
+                    <th><h6>Created</h6></th>
+                    <th><h6>Updated</h6></th>
+                    <th><h6>Edit</h6></th>
+                    <th><h6>Delete</h6></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for user in users %}
+                    <tr>
+                      <td class="min-width">
+                        <div class="lead">
+                          <div class="lead-image">
+                            <img src="{{ asset('src/images/lead/lead-1.png') }}" alt="Avatar">
+                          </div>
+                          <div class="lead-text">
+                            <p>{{ user.email }}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="min-width"><p>{{ user.twUserId }}</p></td>
+                      <td class="min-width"><p>{{ user.twUsername }}</p></td>
+                      <td class="min-width"><p>{{ user.walletEth }}</p></td>
+                      <td class="min-width"><p>{{ user.walletSol }}</p></td>
+                      <td class="min-width"><p>{{ user.createAt|date('d/m/Y h:i') }}</p></td>
+                      <td class="min-width"><p>{{ user.updateAt|date('d/m/Y h:i') }}</p></td>
+                      <td>
+                        <div class="action">
+                          <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-secondary">Edit</a>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="action">
+                          <a href="{{ path('app_user_delete', {'id': user.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              {# display navigation #}
+              <div class="table-pagination navigation d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(users) }}
+              </div>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

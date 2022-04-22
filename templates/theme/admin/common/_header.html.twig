@@ -1,0 +1,57 @@
+<header class="header">
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-lg-5 col-md-5 col-6">
+        <div class="header-left d-flex align-items-center">
+          <div class="menu-toggle-btn mr-20">
+            <button id="menu-toggle" class="main-btn secondary-btn btn-hover">
+              <i class="fa-solid fa-chevron-left me-2"></i> Menu
+            </button>
+          </div>
+
+          <div class="header-search d-none d-md-flex">
+            <form action="#">
+              <input type="text" placeholder="Search...">
+              <button><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7 col-md-7 col-6">
+        <div class="header-right">
+
+          <div class="profile-box ml-15">
+            <button class="dropdown-toggle bg-transparent border-0" type="button" id="profile" data-bs-toggle="dropdown" aria-expanded="false">
+              <div class="profile-info">
+                <div class="info">
+                  <h6>{{ app.user.twUsername|default(app.user.email) }}</h6>
+                  <div class="image">
+                    <img src="{{ asset('src/images/profile/profile-image.png') }}" alt="Me">
+                    <span class="status"></span>
+                  </div>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile">
+              <li>
+                <a href="{{ path('app_profile_edit') }}"><i class="fa-solid fa-address-card"></i> My Profile</a>
+              </li>
+              <li>
+                <a href="{{ path('app_profile_password') }}"><i class="fa-solid fa-key"></i> My Password</a>
+              </li>
+              <li>
+                <a href="{{ path('app_security_signout') }}"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</header>

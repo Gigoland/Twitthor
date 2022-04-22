@@ -20,8 +20,8 @@ class SecurityController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/registration', name: 'app_security_registration', methods: ['GET', 'POST'])]
-    public function registration(
+    #[Route('/signup', name: 'app_security_signup', methods: ['GET', 'POST'])]
+    public function signUp(
         Request $request,
         EntityManagerInterface $manager
     ): Response {
@@ -42,10 +42,10 @@ class SecurityController extends AbstractController
                 'User created with success !'
             );
 
-            return $this->redirectToRoute('app_security_login');
+            return $this->redirectToRoute('app_security_signin');
         }
 
-        return $this->render('page/security/registration.html.twig', [
+        return $this->render('theme/front/page/security/signup.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -56,10 +56,10 @@ class SecurityController extends AbstractController
      * @param AuthenticationUtils $authenticationUtils
      * @return Response
      */
-    #[Route('/login', name: 'app_security_login', methods: ['GET', 'POST'])]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    #[Route('/signin', name: 'app_security_signin', methods: ['GET', 'POST'])]
+    public function SignIn(AuthenticationUtils $authenticationUtils): Response
     {
-        return $this->render('page/security/login.html.twig', [
+        return $this->render('theme/front/page/security/signin.html.twig', [
             'last_username' => $authenticationUtils->getLastUsername(),
             'error' => $authenticationUtils->getLastAuthenticationError(),
         ]);
@@ -70,8 +70,8 @@ class SecurityController extends AbstractController
      *
      * @return void
      */
-    #[Route('/logout', name: 'app_security_logout', methods: ['GET', 'POST'])]
-    public function logout()
+    #[Route('/signout', name: 'app_security_signout', methods: ['GET', 'POST'])]
+    public function SignOut()
     {
         // No need code
     }

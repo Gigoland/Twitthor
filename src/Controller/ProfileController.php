@@ -17,6 +17,7 @@ class ProfileController extends AbstractController
 {
     /**
      * Edit connected user
+     * Protected by CSRF
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
@@ -60,13 +61,14 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_profile_edit');
         }
 
-        return $this->render('page/profile/edit_my_profile.html.twig', [
+        return $this->render('theme/admin/page/profile/edit_my_profile.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
     /**
      * Edit user password
+     * Protected by CSRF
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
@@ -116,7 +118,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_profile_password');
         }
 
-        return $this->render('page/profile/edit_my_password.html.twig', [
+        return $this->render('theme/admin/page/profile/edit_my_password.html.twig', [
             'form' => $form->createView(),
         ]);
     }

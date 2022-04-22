@@ -1,0 +1,83 @@
+{% extends 'theme/admin/base.html.twig' %}
+
+{% block title %}Twitthor - Twitter API{% endblock %}
+
+{% block body %}
+  {% include 'theme/admin/common/_title_wraper.html.twig' with {
+    'title': 'Add Twitter Configuration Keys',
+    'navs': [
+      {'title': 'Twitter API New Keys', 'path': path('app_twapi_keys_add')},
+    ]
+  } %}
+
+  <div class="form-elements-wrapper">
+
+    <div class="row">
+      <div class="col-lg-6">
+
+        <div class="card-style mb-30">
+          <h6 class="mb-25">API fields</h6>
+          {{ form_start(form) }}
+
+            <div class="input-style-1">
+              {{ form_label(form.consumerKey) }}
+              {{ form_widget(form.consumerKey) }}
+              <div class="form-error">
+                {{ form_errors(form.consumerKey) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.consumerSecret) }}
+              {{ form_widget(form.consumerSecret) }}
+              <div class="form-error">
+                {{ form_errors(form.consumerSecret) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.accessToken) }}
+              {{ form_widget(form.accessToken) }}
+              <div class="form-error">
+                {{ form_errors(form.accessToken) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.accessTokenSecret) }}
+              {{ form_widget(form.accessTokenSecret) }}
+              <div class="form-error">
+                {{ form_errors(form.accessTokenSecret) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.bearerToken) }}
+              {{ form_widget(form.bearerToken) }}
+              <div class="form-error">
+                {{ form_errors(form.bearerToken) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.accountId) }}
+              {{ form_widget(form.accountId) }}
+              <div class="form-error">
+                {{ form_errors(form.accountId) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.accountName) }}
+              {{ form_widget(form.accountName) }}
+              <div class="form-error">
+                {{ form_errors(form.accountName) }}
+              </div>
+            </div>
+
+            <div class="input-style-1">
+              {{ form_row(form.submit) }}
+            </div>
+
+          {{ form_end(form) }}
+        </div>
+
+      </div>
+      <div class="col-lg-6"></div>
+    </div>
+  </div>
+{% endblock %}

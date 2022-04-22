@@ -21,10 +21,10 @@ security:
             lazy: true
             provider: app_user_provider
             form_login:
-                login_path: app_security_login
-                check_path: app_security_login
+                login_path: app_security_signin
+                check_path: app_security_signin
             logout:
-                path: app_security_logout
+                path: app_security_signout
         secured_area:
             form_login:
                 enable_csrf: true

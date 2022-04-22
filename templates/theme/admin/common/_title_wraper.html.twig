@@ -1,0 +1,40 @@
+<div class="title-wrapper pt-30">
+  <div class="row align-items-center">
+
+    <div class="col-md-6">
+      <div class="title d-flex align-items-center flex-wrap mb-30">
+        <h2 class="mr-40">{{ title }}</h2>
+        {% if action_add is defined %}
+          <a href="{{ action_add.path }}" class="main-btn primary-btn btn-hover btn-sm">
+            <i class="lni lni-plus mr-5"></i> {{ action_add.title }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    {# nav #}
+    <div class="col-md-6">
+      {% if navs is defined %}
+        <div class="breadcrumb-wrapper mb-30">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{{ path('app_admin_dashboard') }}">Dashboard</a>
+              </li>
+              {% for nav in navs %}
+                {% if loop.last %}
+                  <li class="breadcrumb-item active" aria-current="page">
+                {% else %}
+                  <li class="breadcrumb-item">
+                {% endif %}
+                  <a href="{{ nav.path }}">{{ nav.title }}</a>
+                </li>
+              {% endfor %}
+            </ol>
+          </nav>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>

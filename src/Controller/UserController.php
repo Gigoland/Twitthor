@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserNewType;
+use App\Form\UserEditType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -36,7 +38,7 @@ class UserController extends AbstractController
             10
         );
 
-        return $this->render('page/user/users.html.twig', [
+        return $this->render('theme/admin/page/user/users.html.twig', [
             'users' => $users,
         ]);
     }
@@ -55,7 +57,7 @@ class UserController extends AbstractController
         EntityManagerInterface $manager
     ): Response {
         $user = new User();
-        $form = $this->createForm(UserType::class, $user, [
+        $form = $this->createForm(UserNewType::class, $user, [
             'method' => 'POST',
         ]);
 
@@ -72,10 +74,12 @@ class UserController extends AbstractController
                 'User created with success !'
             );
 
-            return $this->redirectToRoute('app_user_edit');
+            return $this->redirectToRoute('app_user_edit', [
+                'id' => $user->getId(),
+            ]);
         }
 
-        return $this->render('page/user/user_add.html.twig', [
+        return $this->render('theme/admin/page/user/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -95,7 +99,7 @@ class UserController extends AbstractController
         Request $request,
         EntityManagerInterface $manager
     ): Response {
-        $form = $this->createForm(UserType::class, $user, [
+        $form = $this->createForm(UserEditType::class, $user, [
             'method' => 'POST',
         ]);
 
@@ -112,10 +116,13 @@ class UserController extends AbstractController
                 'User updated with success !'
             );
 
-            return $this->redirectToRoute('app_user_edit');
+            return $this->redirectToRoute('app_user_edit', [
+                'id' => $user->getId(),
+            ]);
         }
 
-        return $this->render('page/user/user_edit.html.twig', [
+        return $this->render('theme/admin/page/user/edit.html.twig', [
+            'user' => $user,
             'form' => $form->createView(),
         ]);
     }

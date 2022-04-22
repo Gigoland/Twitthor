@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/favicon.svg" type="image/x-icon">
+    <title>{% block title %}Welcome to Twitthor{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {% block stylesheets %}
+      <link rel="stylesheet" href="{{ asset('src/css/lineicons.css') }}">
+      <link rel="stylesheet" href="{{ asset('src/css/materialdesignicons.css') }}">
+      <link rel="stylesheet" href="{{ asset('src/css/fullcalendar.css') }}">
+      <link rel="stylesheet" href="{{ asset('src/css/morris.css') }}">
+      {{ encore_entry_link_tags('admin') }}
+    {% endblock %}
+  </head>
+  <body class="theme-light">
+    {% block sidebar %}
+      {% include 'theme/admin/common/_sidebar_nav.html.twig' %}
+    {% endblock %}
+
+    <div class="overlay"></div>
+
+    {% block main %}
+      <main class="main-wrapper">
+
+        <header class="header">
+          <div class="container-fluid">
+            {% block header %}
+              {% include 'theme/admin/common/_header.html.twig' %}
+            {% endblock %}
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="container-fluid">
+            {% block flash %}
+              {% for message in app.flashes('success') %}
+                {% include 'theme/admin/common/_flash.html.twig' with {'type': 'success', 'message': message} %}
+              {% endfor %}
+              {% for message in app.flashes('warnings') %}
+                {% include 'theme/admin/common/_flash.html.twig' with {'type': 'warning', 'message': message} %}
+              {% endfor %}
+              {% for message in app.flashes('errors') %}
+                {% include 'theme/admin/common/_flash.html.twig' with {'type': 'error', 'message': message} %}
+              {% endfor %}
+            {% endblock %}
+
+            {% block body %}{% endblock %}
+          </div>
+        </section>
+
+        <footer class="footer">
+          <div class="container-fluid">
+            {% block footer %}
+              {% include 'theme/admin/common/_footer.html.twig' %}
+            {% endblock %}
+          </div>
+        </footer>
+
+      </main>
+    {% endblock %}
+
+    {% block javascripts %}
+      {{ encore_entry_script_tags('admin') }}
+      {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+  </body>
+</html>

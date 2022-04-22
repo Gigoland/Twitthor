@@ -24,7 +24,7 @@ class TwApiController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/keys', name: 'app_api_keys', methods: ['GET'])]
+    #[Route('/twapi', name: 'app_twapi_keys', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function keys(
         TwApiRepository $repository,
@@ -40,19 +40,20 @@ class TwApiController extends AbstractController
             10
         );
 
-        return $this->render('page/twitter/keys.html.twig', [
+        return $this->render('theme/admin/page/twitter/keys.html.twig', [
             'apiKeys' => $apiKeys,
         ]);
     }
 
     /**
      * Create Twitter API configuration
+     * Protected by CSRF
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/keys/add', name: 'app_api_keys_add', methods: ['GET', 'POST'])]
+    #[Route('/twapi/add', name: 'app_twapi_keys_add', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(
         Request $request,
@@ -77,23 +78,24 @@ class TwApiController extends AbstractController
                 'Configuration created with success !'
             );
 
-            return $this->redirectToRoute('app_api_keys');
+            return $this->redirectToRoute('app_twapi_keys');
         }
 
-        return $this->render('page/twitter/keys_new.html.twig', [
+        return $this->render('theme/admin/page/twitter/keys_new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
     /**
      * Edit Twitter API configuration
+     * Protected by CSRF
      *
      * @param TwApi $twApi
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/keys/edit/{id}', name: 'app_api_keys_edit', methods: ['GET', 'POST'])]
+    #[Route('/twapi/edit/{id}', name: 'app_twapi_keys_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
     public function edit(
         TwApi $twApi,
@@ -118,10 +120,10 @@ class TwApiController extends AbstractController
                 'Configuration updated with success !'
             );
 
-            return $this->redirectToRoute('app_tw_api_keys');
+            return $this->redirectToRoute('app_twapi_keys');
         }
 
-        return $this->render('page/twitter/keys_edit.html.twig', [
+        return $this->render('theme/admin/page/twitter/keys_edit.html.twig', [
             'twApi' => $twApi,
             'form' => $form->createView(),
         ]);
@@ -134,7 +136,7 @@ class TwApiController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/keys/delete/{id}', name: 'app_api_keys_delete', methods: ['GET', 'POST'])]
+    #[Route('/twapi/delete/{id}', name: 'app_twapi_keys_delete', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
     public function delete(
         TwApi $twApi,
@@ -148,6 +150,6 @@ class TwApiController extends AbstractController
             'Configuration deleted with success !'
         );
 
-        return $this->redirectToRoute('app_api_keys');
+        return $this->redirectToRoute('app_twapi_keys');
     }
 }

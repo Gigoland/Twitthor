@@ -4,13 +4,17 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class UserPasswordType extends AbstractType
 {
+    public const CSRF_TOKEN_NAME = '_twitthor_psw_token';
+    public const CSRF_TOKEN_ID = 'app_psw_csrf';
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -57,10 +61,26 @@ class UserPasswordType extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
-                    'class' => 'btn btn-primary mt-4',
+                    'class' => 'main-btn primary-btn btn-hover',
                 ],
                 'label' => 'Save my new password',
             ])
         ;
+    }
+
+    /**
+     * Configuration with CSRF protection
+     *
+     * @param OptionsResolver $resolver
+     * @return void
+     */
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => User::class,
+            'csrf_protection' => true,
+            'csrf_field_name' => self::CSRF_TOKEN_NAME,
+            'csrf_token_id' => self::CSRF_TOKEN_ID,
+        ]);
     }
 }

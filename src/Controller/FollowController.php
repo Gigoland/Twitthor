@@ -41,7 +41,7 @@ class FollowController extends AbstractController
             10
         );
 
-        return $this->render('page/follow/following.html.twig', [
+        return $this->render('theme/admin/page/follow/following.html.twig', [
             'following' => $following,
         ]);
     }
@@ -71,7 +71,7 @@ class FollowController extends AbstractController
             10
         );
 
-        return $this->render('page/follow/followers.html.twig', [
+        return $this->render('theme/admin/page/follow/followers.html.twig', [
             'followers' => $followers,
         ]);
     }
@@ -102,13 +102,14 @@ class FollowController extends AbstractController
             10
         );
 
-        return $this->render('page/follow/outers.html.twig', [
+        return $this->render('theme/admin/page/follow/outers.html.twig', [
             'outers' => $outers,
         ]);
     }
 
     /**
      * Edit follow user
+     * Protected by CSRF
      *
      * @param Follow $follow
      * @param Request $request
@@ -143,10 +144,12 @@ class FollowController extends AbstractController
                 'Follow updated with success !'
             );
 
-            return $this->redirectToRoute('app_followers');
+            return $this->redirectToRoute('app_follow_edit', [
+                'id' => $follow->getId(),
+            ]);
         }
 
-        return $this->render('page/follow/edit.html.twig', [
+        return $this->render('theme/admin/page/follow/edit.html.twig', [
             'follow' => $follow,
             'form' => $form->createView(),
         ]);

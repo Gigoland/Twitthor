@@ -1,0 +1,97 @@
+{% extends 'theme/admin/base.html.twig' %}
+
+{% block title %}Twitthor - Outers{% endblock %}
+
+{% block body %}
+  {% include 'theme/admin/common/_title_wraper.html.twig' with {
+    'title': 'Outers',
+    'navs': [
+      {'title': 'Outers', 'path': path('app_outers')},
+    ]
+  } %}
+
+  <div class="tables-wrapper">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card-style mb-30">
+          <h6 class="mb-10">Data Table</h6>
+
+          {% if outers.getTotalItemCount == 0 %}
+            <p class="text-sm mb-20">
+              Zero data.
+            </p>
+          {% else %}
+            <p class="text-sm mb-20">
+              Total: {{ outers.getTotalItemCount }} outers found.
+            </p>
+            <div class="table-wrapper table-responsive">
+              <table class="table table-hover-shadow">
+                <thead>
+                  <tr class="text-nowrap">
+                    <th><h6>🐥 Name</h6></th>
+                    <th><h6>🐥 Usernme</h6></th>
+                    <th><h6>🐥 ID</h6></th>
+                    <th><h6>🐥 Verified</h6></th>
+                    <th><h6>Favorite</h6></th>
+                    <th><h6>Wallet ETH</h6></th>
+                    <th><h6>Wallet SOL</h6></th>
+                    <th><h6>Created</h6></th>
+                    <th><h6>Updated</h6></th>
+                    <th><h6>Follow</h6></th>
+                    <th><h6>Edit</h6></th>
+                    <th><h6>Delete</h6></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for follow in outers %}
+                    <tr>
+                      <td class="min-width">
+                        <div class="lead">
+                          <div class="lead-image">
+                            <img src="{{ asset('src/images/lead/lead-1.png') }}" alt="Avatar">
+                          </div>
+                          <div class="lead-text">
+                            <p>{{ follow.twUser.twName }}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="min-width"><p>{{ follow.twUser.twUsername }}</p></td>
+                      <td class="min-width"><p>{{ follow.twUser.twUserId }}</p></td>
+                      <td class="min-width"><p><span class="badge bg-secondary">{{ follow.twUser.twIsVerified ? 'Yes' : 'No' }}</span></p></td>
+                      <td class="min-width"><p>{{ follow.isFavorite ? '<span class="badge rounded-pill">⭐️</span>' : '<span class="badge bg-secondary">No</span>' }}</p></td>
+                      <td class="min-width"><p>{{ follow.walletEth }}</p></td>
+                      <td class="min-width"><p>{{ follow.walletSol }}</p></td>
+                      <td class="min-width"><p>{{ follow.createAt|date('d/m/Y h:i') }}</p></td>
+                      <td class="min-width"><p>{{ follow.updateAt|date('d/m/Y h:i') }}</p></td>
+                      <td>
+                        <div class="action">
+                          <a href="#" class="btn btn-light">Follow</a>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="action">
+                          <a href="{{ path('app_follow_edit', {'id': follow.id}) }}" class="btn btn-secondary">Edit</a>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="action">
+                          <a href="{{ path('app_follow_delete', {'id': follow.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              {# display navigation #}
+              <div class="table-pagination navigation d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(outers) }}
+              </div>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
