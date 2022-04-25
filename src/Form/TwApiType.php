@@ -114,6 +114,8 @@ class TwApiType extends AbstractType
                     new Assert\Length(['min' => 1, 'max' => 255]),
                 ],
             ])
+
+            // Subbmit
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'main-btn primary-btn rounded-md btn-hover',

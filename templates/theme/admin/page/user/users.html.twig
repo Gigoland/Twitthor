@@ -5,7 +5,9 @@
 {% block body %}
   {% include 'theme/admin/common/_title_wraper.html.twig' with {
     'title': 'Users',
-    'action_add': {'title': 'Add new user', 'path': path('app_user_add')},
+    'actions': [
+      {'title': 'Add new user', 'icon': 'fa-plus', 'path': path('app_user_add')},
+    ],
     'navs': [
       {'title': 'Users', 'path': path('app_users')},
     ]
@@ -19,7 +21,7 @@
 
           {% if users.getTotalItemCount == 0 %}
             <p class="text-sm mb-20">
-              Zero data.
+              Zero data...
             </p>
           {% else %}
             <p class="text-sm mb-20">
@@ -54,7 +56,7 @@
                         </div>
                       </td>
                       <td class="min-width"><p>{{ user.twUserId }}</p></td>
-                      <td class="min-width"><p>{{ user.twUsername }}</p></td>
+                      <td class="min-width"><p>@{{ user.twUsername }}</p></td>
                       <td class="min-width"><p>{{ user.walletEth }}</p></td>
                       <td class="min-width"><p>{{ user.walletSol }}</p></td>
                       <td class="min-width"><p>{{ user.createAt|date('d/m/Y h:i') }}</p></td>

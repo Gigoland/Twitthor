@@ -1,0 +1,5 @@
+{% macro easyForm(method, action, body, name, id) %}
+	<form{% if method is defined %} method="{{ method|default('post') }}"{% endif %}{% if action is defined %} action="{{ action }}"{% endif %}{% if name is defined %} name="{{ name }}"{% endif %}{% if is is defined %} id="{{ id }}"{% endif %}>
+		{{ body|default(null) }}
+	</form>
+{% endmacro %}}

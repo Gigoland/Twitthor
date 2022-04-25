@@ -25,8 +25,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Assert\Email()]
     #[Assert\Length(min: 5, max: 180)]
+    #[Assert\Email()]
     private string $email;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]

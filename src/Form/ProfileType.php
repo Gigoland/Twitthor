@@ -60,6 +60,7 @@ class ProfileType extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
+
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'main-btn primary-btn btn-hover',

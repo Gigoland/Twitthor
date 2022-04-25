@@ -1,12 +1,13 @@
 {% extends 'theme/admin/base.html.twig' %}
 
-{% block title %}Twitthor - Add new User{% endblock %}
+{% block title %}Twitthor - Add New User{% endblock %}
 
 {% block body %}
   {% include 'theme/admin/common/_title_wraper.html.twig' with {
-    'title': 'User New',
+    'title': 'Add New User',
     'navs': [
-      {'title': 'User New', 'path': path('app_user_add')},
+      {'title': 'Users', 'path': path('app_users')},
+      {'title': 'New', 'path': path('app_user_add')},
     ]
   } %}
 

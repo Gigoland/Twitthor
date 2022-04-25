@@ -96,6 +96,8 @@ class UserNewType extends AbstractType
                 ],
                 'invalid_message' => 'Incorect password',
             ])
+
+            // Subbmit
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'main-btn primary-btn rounded-md btn-hover',

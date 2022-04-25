@@ -1,0 +1,30 @@
+{% macro withBtnOkClose(id, title, btnOkTitle, btnCloseTitle, body) %}
+  <div class="modal fade" id="{{ id|default('modal') }}" data-bs-backdrop="{{ backdrop|default('static') }}" data-bs-keyboard="{{ keyboard|default('false') }}" tabindex="-1" aria-labelledby="{{ id|default('modal') }}-label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="{{ id|default('modal') }}-label">{{ title|default(null) }}</h5>
+          <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{ body|default(null) }}
+        </div>
+        <div class="modal-footer">
+          <div class="row w-100">
+            <div class="col-md-2">
+              <div class="loader spinner-grow text-primary" style="width:2rem;height:2rem;display:none;" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <div class="col-md-10">
+              <div class="btn-content d-flex justify-content-end">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ btnCloseTitle|default('Close') }}</button>
+                <button type="button" class="btn btn-primary btn-ok">{{ btnOkTitle|default('OK') }}</button>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endmacro %}

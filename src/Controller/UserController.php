@@ -19,6 +19,7 @@ class UserController extends AbstractController
 {
     /**
      * Users manager
+     * Admin only
      *
      * @param UserRepository $repository
      * @param PaginatorInterface $paginator
@@ -45,6 +46,8 @@ class UserController extends AbstractController
 
     /**
      * Create new user
+     * Admin only
+     * Protected by CSRF
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
@@ -86,6 +89,8 @@ class UserController extends AbstractController
 
     /**
      * Edit user
+     * Admin only
+     * Protected by CSRF
      *
      * @param User $user
      * @param Request $request
@@ -129,6 +134,7 @@ class UserController extends AbstractController
 
     /**
      * Delete user
+     * Admin only
      *
      * @param User $user
      * @param EntityManagerInterface $manager

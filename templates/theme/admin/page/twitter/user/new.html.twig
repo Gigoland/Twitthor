@@ -1,0 +1,63 @@
+{% extends 'theme/admin/base.html.twig' %}
+
+{% block title %}Twitthor - Add New Twitter User{% endblock %}
+
+{% block body %}
+  {% include 'theme/admin/common/_title_wraper.html.twig' with {
+    'title': 'Add Twitter New User',
+    'navs': [
+      {'title': 'Twitter users', 'path': path('app_twitter_users')},
+      {'title': 'New', 'path': path('app_twitter_user_add')},
+    ]
+  } %}
+
+  <div class="form-elements-wrapper">
+
+    <div class="row">
+      <div class="col-lg-6">
+
+        <div class="card-style mb-30">
+          <h6 class="mb-25">Twitter User fields</h6>
+          {{ form_start(form) }}
+
+            <div class="input-style-1">
+              {{ form_label(form.twName) }}
+              {{ form_widget(form.twName) }}
+              <div class="form-error">
+                {{ form_errors(form.twName) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.twUserId) }}
+              {{ form_widget(form.twUserId) }}
+              <div class="form-error">
+                {{ form_errors(form.twUserId) }}
+              </div>
+            </div>
+            <div class="input-style-1">
+              {{ form_label(form.twUsername) }}
+              {{ form_widget(form.twUsername) }}
+              <div class="form-error">
+                {{ form_errors(form.twUsername) }}
+              </div>
+            </div>
+            <div class="form-check form-switch toggle-switch mb-30">
+              {{ form_widget(form.twIsVerified) }}
+              {{ form_label(form.twIsVerified) }}
+              <div class="form-error">
+                {{ form_errors(form.twIsVerified) }}
+              </div>
+            </div>
+
+            <div class="input-style-1">
+              {{ form_row(form.submit) }}
+            </div>
+
+          {{ form_end(form) }}
+        </div>
+
+      </div>
+      <div class="col-lg-6"></div>
+    </div>
+  </div>
+{% endblock %}

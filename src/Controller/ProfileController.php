@@ -16,7 +16,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class ProfileController extends AbstractController
 {
     /**
-     * Edit connected user
+     * Edit connected user only
      * Protected by CSRF
      *
      * @param Request $request
@@ -67,7 +67,7 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * Edit user password
+     * Edit connected user password only
      * Protected by CSRF
      *
      * @param Request $request

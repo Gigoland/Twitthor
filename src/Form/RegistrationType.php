@@ -103,6 +103,8 @@ class RegistrationType extends AbstractType
                 ],
                 'invalid_message' => 'Incorect password',
             ])
+
+            // Subbmit
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-block text-uppercase mt-4 rounded-pill shadow-sm',

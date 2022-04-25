@@ -14,7 +14,8 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
-     * New user registration (Protected by CSRF)
+     * New user registration
+     * Protected by CSRF
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
@@ -51,7 +52,8 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * User login (Protected by CSRF)
+     * User login
+     * Protected by CSRF
      *
      * @param AuthenticationUtils $authenticationUtils
      * @return Response

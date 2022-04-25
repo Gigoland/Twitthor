@@ -4,9 +4,10 @@
 
 {% block body %}
   {% include 'theme/admin/common/_title_wraper.html.twig' with {
-    'title': 'Edit Twitter Configuration Keys',
+    'title': 'Add Twitter Settings New Keys',
     'navs': [
-      {'title': 'Edit Twitter API Keys', 'path': path('app_twapi_keys_edit', {'id': twApi.id})},
+      {'title': 'Twitter Api settings', 'path': path('app_twitter_api_settings')},
+      {'title': 'New', 'path': path('app_twitter_api_settings_add')},
     ]
   } %}
 

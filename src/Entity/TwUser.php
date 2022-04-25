@@ -26,16 +26,27 @@ class TwUser
     private string $twUserId;
 
     #[ORM\Column(type: 'string', length: 22)]
-    #[Assert\NotBlank()]
     #[Assert\Length(min: 1, max: 22)]
+    #[Assert\NotBlank()]
     private string $twUsername;
 
     #[ORM\Column(type: 'text')]
     #[Assert\NotBlank()]
     private string $twName;
 
-    #[ORM\Column(type: 'boolean', nullable: false)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $twProfileImageUrl;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $twUrl;
+
+    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => 0])]
+    #[Assert\NotNull()]
     private bool $twIsVerified = false;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Assert\NotNull()]
+    private \DateTimeImmutable $twCreatedAt;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
@@ -107,6 +118,30 @@ class TwUser
         return $this;
     }
 
+    public function getTwProfileImageUrl(): ?string
+    {
+        return $this->twProfileImageUrl;
+    }
+
+    public function setTwProfileImageUrl(?string $twProfileImageUrl): self
+    {
+        $this->twProfileImageUrl = $twProfileImageUrl;
+
+        return $this;
+    }
+
+    public function getTwUrl(): ?string
+    {
+        return $this->twUrl;
+    }
+
+    public function seTwtUrl(?string $twUrl): self
+    {
+        $this->twUrl = $twUrl;
+
+        return $this;
+    }
+
     public function getTwIsVerified(): ?bool
     {
         return $this->twIsVerified;
@@ -115,6 +150,18 @@ class TwUser
     public function setTwIsVerified(string $twIsVerified): self
     {
         $this->twIsVerified = $twIsVerified;
+
+        return $this;
+    }
+
+    public function getTwCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->twCreatedAt;
+    }
+
+    public function setTwCreatedAt(\DateTimeImmutable $twCreatedAt): self
+    {
+        $this->twCreatedAt = $twCreatedAt;
 
         return $this;
     }

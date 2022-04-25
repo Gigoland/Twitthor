@@ -4,9 +4,10 @@
 
 {% block body %}
   {% include 'theme/admin/common/_title_wraper.html.twig' with {
-    'title': 'User Edit',
+    'title': 'Edit User',
     'navs': [
-      {'title': 'User Edi', 'path': path('app_user_edit', {'id': user.id})},
+      {'title': 'Users', 'path': path('app_users')},
+      {'title': 'Edit', 'path': path('app_user_edit', {'id': user.id})},
     ]
   } %}
 

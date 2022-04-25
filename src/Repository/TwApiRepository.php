@@ -2,11 +2,13 @@
 
 namespace App\Repository;
 
+use PDO;
+use App\Entity\User;
 use App\Entity\TwApi;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method TwApi|null find($id, $lockMode = null, $lockVersion = null)
@@ -43,5 +45,26 @@ class TwApiRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    /**
+     * Get associative array
+     *
+     * @param User $user
+     * @return array
+     */
+    public function findConsumerKeyByUser(User $user)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $stmt = $conn->prepare("
+            SELECT id, consumer_key FROM tw_api
+            WHERE user_id = :user_id
+        ");
+        $stmt->bindValue(':user_id', $user->getId(), \PDO::PARAM_INT);
+
+        $result = $stmt->executeQuery();
+
+        return $result->fetchAllKeyValue();
     }
 }

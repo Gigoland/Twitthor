@@ -18,7 +18,7 @@
           <span class="icon">
             <i class="fa-solid fa-user-group"></i>
           </span>
-          <span class="text">Users</span>
+          <span class="text">Twitthor Users</span>
         </a>
         <ul id="ddmenu_users" class="collapse dropdown-nav">
           <li>
@@ -31,15 +31,15 @@
       </li>
 
       <li class="nav-item nav-item-has-children">
-        <a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_users" aria-controls="ddmenu_users" aria-expanded="false" aria-label="Toggle navigation">
+        <a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_twusers" aria-controls="ddmenu_twusers" aria-expanded="false" aria-label="Toggle navigation">
           <span class="icon">
             <i class="fa-solid fa-user-group"></i>
           </span>
           <span class="text">Twitter Users</span>
         </a>
-        <ul id="ddmenu_users" class="collapse dropdown-nav">
+        <ul id="ddmenu_twusers" class="collapse dropdown-nav">
           <li>
-            <a href="{{ path('app_users') }}"><i class="fa-solid fa-list"></i> List</a>
+            <a href="{{ path('app_twitter_users') }}"><i class="fa-solid fa-list"></i> List</a>
           </li>
         </ul>
       </li>
@@ -77,10 +77,7 @@
         </a>
         <ul id="ddmenu_config" class="collapse dropdown-nav">
           <li>
-            <a href="{{ path('app_twapi_keys') }}"><i class="fa-brands fa-twitter-square"></i> Twitter Api Keys</a>
-          </li>
-          <li>
-            <a href="{{ path('app_twapi_keys_add') }}"><i class="fa-solid fa-plus"></i> Add</a>
+            <a href="{{ path('app_twitter_api_settings') }}"><i class="fa-brands fa-twitter-square"></i> Twitter Api Keys</a>
           </li>
         </ul>
       </li>

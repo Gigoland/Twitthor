@@ -6,7 +6,7 @@
   {% include 'theme/admin/common/_title_wraper.html.twig' with {
     'title': 'Follow Edit',
     'navs': [
-      {'title': 'Follow Edi', 'path': path('app_follow_edit', {'id': follow.id})},
+      {'title': 'Follow edit', 'path': path('app_follow_edit', {'id': follow.id})},
     ]
   } %}
 
@@ -24,12 +24,15 @@
               <div class="profile-info">
                 <div class="d-flex align-items-center mb-30">
                   <div class="profile-image">
-                    <img src="{{ asset('src/images/profile/profile-1.png') }}" alt="Avatar">
+                    <img src="https://pbs.twimg.com/profile_images/{{ follow.twUser.twProfileImageUrl }}" alt="Avatar">
                   </div>
                   <div class="profile-meta">
                     <h5 class="text-bold text-dark mb-10">{{ follow.twUser.twName }}</h5>
                     <p class="text-sm text-gray">@{{ follow.twUser.twUsername }}</p>
-                    <p class="text-sm text-gray">Twitter ID : {{ follow.twUser.twUserId }}</p>
+                    <p class="text-sm text-gray">ID : {{ follow.twUser.twUserId }}</p>
+                    <p class="text-sm text-gray">Joined : {{ follow.twUser.twCreatedAt|date('d-m-Y H:s') }}</p>
+                    <p class="text-sm text-gray">Verified : {{ follow.twUser.twIsVerified ? 'Yes' : 'No' }}</p>
+                    <p class="text-sm text-gray">Url : {{ follow.twUser.twUrl }}</p>
                   </div>
                 </div>
               </div>
@@ -38,7 +41,6 @@
               <div class="profile-info">
                 <div class="d-flex align-items-center mb-30">
                   <div class="profile-meta">
-                    <p class="text-sm text-gray">Verified : {{ follow.twUser.twIsVerified ? 'Yes' : 'No' }}</p>
                     <p class="text-sm text-gray">Following : {{ follow.isFollowing ? 'Yes' : 'No' }}</p>
                     <p class="text-sm text-gray">Follow me : {{ follow.isFollower ? 'Yes' : 'No' }}</p>
                   </div>

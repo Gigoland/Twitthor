@@ -4,9 +4,12 @@
 
 {% block body %}
   {% include 'theme/admin/common/_title_wraper.html.twig' with {
-    'title': 'Twitter API Keys',
+    'title': 'Twitter API Settings',
+    'actions': [
+      {'title': 'Add new settings', 'icon': 'fa-plus', 'path': path('app_twitter_api_settings_add')},
+    ],
     'navs': [
-      {'title': 'Twitter API Keys', 'path': path('app_twapi_keys')},
+      {'title': 'Twitter API settings', 'path': path('app_twitter_api_settings')},
     ]
   } %}
 
@@ -18,11 +21,11 @@
 
           {% if apiKeys.getTotalItemCount == 0 %}
             <p class="text-sm mb-20">
-              Zero data. | <a href="{{ path('app_twapi_keys_add') }}" class="main-btn primary-btn btn-hover">Add new configuration</a>
+              Zero data...
             </p>
           {% else %}
             <p class="text-sm mb-20">
-              Total: {{ apiKeys.getTotalItemCount }} keys configurations found.
+              Total: {{ apiKeys.getTotalItemCount }} keys settings found.
             </p>
             <div class="table-wrapper table-responsive">
               <table class="table table-hover-shadow">
@@ -51,12 +54,12 @@
                       <td class="min-width"><p>{{ keys.accountName|slice(0, 10) ~ '...' }}</p></td>
                       <td>
                         <div class="action">
-                          <a href="{{ path('app_twapi_keys_edit', {'id': keys.id}) }}" class="btn btn-secondary">Edit</a>
+                          <a href="{{ path('app_twitter_api_settings_edit', {'id': keys.id}) }}" class="btn btn-secondary">Edit</a>
                         </div>
                       </td>
                       <td>
                         <div class="action">
-                          <a href="{{ path('app_twapi_keys_delete', {'id': keys.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
+                          <a href="{{ path('app_twitter_api_settings_delete', {'id': keys.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
                         </div>
                       </td>
                     </tr>

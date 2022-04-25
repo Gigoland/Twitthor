@@ -18,7 +18,7 @@
 
           {% if followers.getTotalItemCount == 0 %}
             <p class="text-sm mb-20">
-              Zero data.
+              Zero data...
             </p>
           {% else %}
             <p class="text-sm mb-20">
@@ -56,7 +56,7 @@
                           </div>
                         </div>
                       </td>
-                      <td class="min-width"><p>{{ follow.twUser.twUsername }}</p></td>
+                      <td class="min-width"><p>@{{ follow.twUser.twUsername }}</p></td>
                       <td class="min-width"><p>{{ follow.twUser.twUserId }}</p></td>
                       <td class="min-width"><p><span class="badge bg-secondary">{{ follow.twUser.twIsVerified ? 'Yes' : 'No' }}</span></p></td>
                       <td class="min-width"><p><span class="badge bg-secondary">{{ follow.isFollowing ? 'Yes' : 'No' }}</span></p></td>

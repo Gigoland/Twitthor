@@ -4,10 +4,26 @@
     <div class="col-md-6">
       <div class="title d-flex align-items-center flex-wrap mb-30">
         <h2 class="mr-40">{{ title }}</h2>
-        {% if action_add is defined %}
-          <a href="{{ action_add.path }}" class="main-btn primary-btn btn-hover btn-sm">
-            <i class="lni lni-plus mr-5"></i> {{ action_add.title }}
-          </a>
+        {% if actions is defined %}
+          {% for action in actions %}
+            {% if action.type|default(null) == 'form' %}
+              {{ form_start(action.form, {'method': 'POST', 'action': action.path|default(''), 'attr': {'id': action.id|default('')}}) }}
+                {% if action.icon is defined %}
+                  {{ form_row(action.form.submit, {'label': '<i class="fa-solid ' ~ action.icon ~ '"></i>' ~ action.title|default('')}) }}
+                {% else %}
+                  {{ form_row(action.form.submit, {'label': action.title|default('')}) }}
+                {% endif %}
+              {{ form_end(action.form) }}
+            {% elseif action.type|default(null) == 'modal' %}
+              <a href="#" class="main-btn primary-btn btn-hover btn-sm" data-bs-toggle="modal" data-bs-target="#{{ action.target|default('modal') }}">
+                <i class="fa-solid {{ action.icon|default('fa-triangle-exclamation') }}"></i> {{ action.title|default('') }}
+              </a>
+            {% else %}
+              <a href="{{ action.path|default('#') }}" class="main-btn primary-btn btn-hover btn-sm"{% if action.id|default(null) %} id="{{ action.id }}"{% endif %}>
+                <i class="fa-solid {{ action.icon|default('fa-triangle-exclamation') }}"></i> {{ action.title|default('') }}
+              </a>
+            {% endif %}
+          {% endfor %}
         {% endif %}
       </div>
     </div>
@@ -27,7 +43,7 @@
                 {% else %}
                   <li class="breadcrumb-item">
                 {% endif %}
-                  <a href="{{ nav.path }}">{{ nav.title }}</a>
+                  <a href="{{ nav.path|default('#') }}">{{ nav.title|default('<i class="fa-solid fa-anchor"></i>') }}</a>
                 </li>
               {% endfor %}
             </ol>
