@@ -58,8 +58,8 @@ class TwApiRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $stmt = $conn->prepare("
-            SELECT id, consumer_key FROM tw_api
-            WHERE user_id = :user_id
+            SELECT id, name FROM tw_api
+            WHERE user_id = :user_id AND name IS NOT NULL
         ");
         $stmt->bindValue(':user_id', $user->getId(), \PDO::PARAM_INT);
 

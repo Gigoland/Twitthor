@@ -31,6 +31,7 @@
               <table class="table table-hover-shadow">
                 <thead>
                   <tr class="text-nowrap">
+                    <th><h6>Name</h6></th>
                     <th><h6>CONSUMER KEY</h6></th>
                     <th><h6>CONSUMER SECRET</h6></th>
                     <th><h6>ACCESS TOKEN</h6></th>
@@ -45,7 +46,8 @@
                 <tbody>
                   {% for keys in apiKeys %}
                     <tr>
-                      <td class="min-width name-title"><p>{{ keys.consumerKey }}</p></td>
+                      <td class="min-width"><p><strong>{{ keys.name }}</strong></p></td>
+                      <td class="min-width"><p>{{ keys.consumerKey|slice(0, 10) ~ '...' }}</p></td>
                       <td class="min-width"><p>{{ keys.consumerSecret|slice(0, 10) ~ '...' }}</p></td>
                       <td class="min-width"><p>{{ keys.accessToken|slice(0, 10) ~ '...' }}</p></td>
                       <td class="min-width"><p>{{ keys.accessTokenSecret|slice(0, 10) ~ '...' }}</p></td>

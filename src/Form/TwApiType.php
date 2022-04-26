@@ -20,6 +20,20 @@ class TwApiType extends AbstractType
     {
         $builder
             ->setMethod('POST')
+            ->add('name', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'maxlength' => 55,
+                ],
+                'label' => 'Name',
+                'label_attr' => [
+                    'class' => 'form-label mt-4',
+                ],
+                'required' => false,
+                'constraints' => [
+                    new Assert\Length(['max' => 55]),
+                ],
+            ])
             ->add('consumerKey', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
@@ -31,7 +45,7 @@ class TwApiType extends AbstractType
                 ],
                 'required' => false,
                 'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 255]),
+                    new Assert\Length(['max' => 255]),
                 ],
             ])
             ->add('consumerSecret', TextType::class, [
@@ -45,7 +59,7 @@ class TwApiType extends AbstractType
                 ],
                 'required' => false,
                 'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 255]),
+                    new Assert\Length(['max' => 255]),
                 ],
             ])
             ->add('accessToken', TextType::class, [
@@ -59,7 +73,7 @@ class TwApiType extends AbstractType
                 ],
                 'required' => false,
                 'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 255]),
+                    new Assert\Length(['max' => 255]),
                 ],
             ])
             ->add('accessTokenSecret', TextType::class, [
@@ -73,7 +87,7 @@ class TwApiType extends AbstractType
                 ],
                 'required' => false,
                 'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 255]),
+                    new Assert\Length(['max' => 255]),
                 ],
             ])
             ->add('bearerToken', TextType::class, [
@@ -87,7 +101,7 @@ class TwApiType extends AbstractType
                 ],
                 'required' => false,
                 'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 255]),
+                    new Assert\Length(['max' => 255]),
                 ],
             ])
             ->add('accountId', NumberType::class, [
@@ -111,7 +125,7 @@ class TwApiType extends AbstractType
                 ],
                 'required' => false,
                 'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 255]),
+                    new Assert\Length(['max' => 255]),
                 ],
             ])
 

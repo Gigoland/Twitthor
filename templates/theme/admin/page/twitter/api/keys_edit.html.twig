@@ -21,6 +21,13 @@
           {{ form_start(form) }}
 
             <div class="input-style-1">
+              {{ form_label(form.name) }}
+              {{ form_widget(form.name) }}
+              <div class="form-error">
+                {{ form_errors(form.name) }}
+              </div>
+            </div>
+            <div class="input-style-1">
               {{ form_label(form.consumerKey) }}
               {{ form_widget(form.consumerKey) }}
               <div class="form-error">
