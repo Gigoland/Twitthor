@@ -81,6 +81,11 @@ class Twitthor extends Api
                 $rows['data']
             );
 
+            // Exit
+            if (empty($rows['meta']['next_token'])) {
+                break;
+            }
+
             // Set next_token
             $this->setNextToken($rows['meta']['next_token']);
 
@@ -121,6 +126,11 @@ class Twitthor extends Api
                 $result,
                 $rows['data']
             );
+
+            // Exit
+            if (empty($rows['meta']['next_token'])) {
+                break;
+            }
 
             // Set next_token
             $this->setNextToken($rows['meta']['next_token']);

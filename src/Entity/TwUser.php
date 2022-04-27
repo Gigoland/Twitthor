@@ -35,7 +35,7 @@ class TwUser
     private string $twName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $twProfileImageUrl;
+    private ?string $twProfileImage;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $twUrl;
@@ -118,14 +118,14 @@ class TwUser
         return $this;
     }
 
-    public function getTwProfileImageUrl(): ?string
+    public function getTwProfileImage(): ?string
     {
-        return $this->twProfileImageUrl;
+        return $this->twProfileImage;
     }
 
-    public function setTwProfileImageUrl(?string $twProfileImageUrl): self
+    public function setTwProfileImage(?string $twProfileImage): self
     {
-        $this->twProfileImageUrl = $twProfileImageUrl;
+        $this->twProfileImage = $twProfileImage;
 
         return $this;
     }
@@ -218,5 +218,15 @@ class TwUser
         }
 
         return $this;
+    }
+
+    /**
+     * Get generated avatar path
+     *
+     * @return string
+     */
+    public function getAvatar(): string
+    {
+        return './uploads/images/avatar/' . $this->twUserId . '/' . $this->twProfileImage;
     }
 }

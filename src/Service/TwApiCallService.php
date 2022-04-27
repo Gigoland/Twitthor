@@ -2,21 +2,26 @@
 
 namespace App\Service;
 
+use App\Utils\File;
 use App\Entity\User;
 use App\Entity\TwApi;
 use App\Entity\Follow;
 use App\Entity\TwUser;
+use App\Utils\VarString;
 use App\Manager\Twitthor;
 use App\Repository\FollowRepository;
 use App\Repository\TwUserRepository;
-use App\Utils\VarString;
+use App\Utils\Url;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TwApiCallService
 {
     const OK = 'success';
     const KO = 'error';
+
+    private $avatarsPath;
 
     /** @var Twitthor $twitthor */
     private $twitthor;
@@ -32,12 +37,16 @@ class TwApiCallService
      *
      * @param User $user
      * @param TwApi $twApi
+     * @param string $nextToken
+     * @param string $uploadsPath
      * @param string $rediretPath
      * @return JsonResponse
      */
     public function updateFollowing(
         User $user,
         TwApi $twApi,
+        ?string $nextToken,
+        string $uploadsPath,
         string $rediretPath
     ): JsonResponse {
         if (!$twApi || !$user) {
@@ -53,10 +62,15 @@ class TwApiCallService
             'twitter_access_token_secret' => $twApi->getAccessTokenSecret(),
         ]);
 
-        // Set for user twitter account
-        $this->twitthor->setTwitterAccountId($twApi->getAccountId());
+        $this->twitthor
+            // Set for user twitter account
+            ->setTwitterAccountId($twApi->getAccountId())
+            // Set next pagination token
+            ->setNextToken($nextToken)
+        ;
 
         // Do update
+        $this->avatarsPath = $uploadsPath . 'images/avatar/';
         $result = $this->updateFollowingByUser($user);
 
         return new JsonResponse([
@@ -73,12 +87,16 @@ class TwApiCallService
      *
      * @param User $user
      * @param TwApi $twApi
+     * @param string $nextToken
+     * @param string $uploadsPath
      * @param string $rediretPath
      * @return JsonResponse
      */
     public function updateFollowers(
         User $user,
         TwApi $twApi,
+        ?string $nextToken,
+        string $uploadsPath,
         string $rediretPath
     ): JsonResponse {
         if (!$twApi || !$user) {
@@ -94,10 +112,15 @@ class TwApiCallService
             'twitter_access_token_secret' => $twApi->getAccessTokenSecret(),
         ]);
 
-        // Set for user twitter account
-        $this->twitthor->setTwitterAccountId($twApi->getAccountId());
+        $this->twitthor
+            // Set for user twitter account
+            ->setTwitterAccountId($twApi->getAccountId())
+            // Set next pagination token
+            ->setNextToken($nextToken)
+        ;
 
         // Do update
+        $this->avatarsPath = $uploadsPath . 'images/avatar/';
         $result = $this->updateFollowersByUser($user);
 
         return new JsonResponse([
@@ -119,7 +142,7 @@ class TwApiCallService
     {
         $following = $this->twitthor
             ->setSettings([
-                'max_pagination' => 2,
+                'max_pagination' => 1,
                 'sleep_pagination_token' => 5,
             ])
             ->clearQueryFields()
@@ -146,7 +169,7 @@ class TwApiCallService
     {
         $following = $this->twitthor
             ->setSettings([
-                'max_pagination' => 2,
+                'max_pagination' => 1,
                 'sleep_pagination_token' => 5,
             ])
             ->clearQueryFields()
@@ -177,15 +200,21 @@ class TwApiCallService
             'update' => [],
         ];
 
-        $varString = new VarString();
+        $fs = new Filesystem();
+        $file = new File();
+        $url = new Url();
 
         // Set max execution time
         if (count($rows) > 999) {
-            set_time_limit(240);
+            set_time_limit(360);
         }
 
         // Save
         foreach ($rows as $row) {
+            if (empty($row['id'])) {
+                continue;
+            }
+
             $saveTwUser = false;
             $saveFollow = false;
 
@@ -194,14 +223,11 @@ class TwApiCallService
                 'twUserId' => $row['id']
             ]);
 
-            // Trim some useless strings
-            $twProfileImageUrl = str_replace(
-                'pbs.twimg.com/profile_images/',
-                '',
-                $varString->trimUrlProtocol($row['profile_image_url'])
-            );
+            // Get file full name
+            $twProfileImage = $url->getPart($row['profile_image_url'], 'basename');
+
             // Trim www.
-            $twUrl = $varString->trimUrlW3($row['url']);
+            $twUrl = $url->trimW3($row['url']);
 
             if (!$twUser) {
                 // New
@@ -210,21 +236,36 @@ class TwApiCallService
                 $twUser->setTwCreatedAt(
                     new \DateTimeImmutable($row['created_at'])
                 );
-                $saveTwUser = true;
+                $saveTwUser = 'insert';
             } elseif ($twUser->getTwUsername() !== $row['username']
                 || $twUser->getTwName() !== $row['name']
-                || $twUser->getTwProfileImageUrl() !== $twProfileImageUrl
+                || $twUser->getTwProfileImage() !== $twProfileImage
                 || $twUser->getTwUrl() !== $twUrl
                 || $twUser->getTwIsVerified() !== $row['verified']
             ) {
                 // Update
-                $saveTwUser = true;
+                $saveTwUser = 'update';
             }
 
             if ($saveTwUser) {
+                // Delete avatar filder before upload avatar image
+                if ($saveTwUser === 'insert'
+                 || $twUser->getTwProfileImage() !== $twProfileImage
+                ) {
+                    if ($saveTwUser === 'update') {
+                        $fs->remove($this->avatarsPath . $row['id'] . '/');
+                    }
+
+                    $file->copyImageByUrl(
+                        $row['profile_image_url'],
+                        $this->avatarsPath . $row['id'] . '/' . $twProfileImage,
+                        true
+                    );
+                }
+
                 $twUser->setTwUsername($row['username']);
                 $twUser->setTwName($row['name']);
-                $twUser->setTwProfileImageUrl($twProfileImageUrl);
+                $twUser->setTwProfileImage($twProfileImage);
                 $twUser->seTwtUrl($twUrl);
 
                 if (isset($row['verified'])) {
@@ -278,15 +319,21 @@ class TwApiCallService
             'update' => [],
         ];
 
-        $varString = new VarString();
+        $fs = new Filesystem();
+        $file = new File();
+        $url = new Url();
 
         // Set max execution time
         if (count($rows) > 999) {
-            set_time_limit(240);
+            set_time_limit(360);
         }
 
         // Save
         foreach ($rows as $row) {
+            if (empty($row['id'])) {
+                continue;
+            }
+
             $saveTwUser = false;
             $saveFollow = false;
 
@@ -295,14 +342,11 @@ class TwApiCallService
                 'twUserId' => $row['id']
             ]);
 
-            // Trim some useless strings
-            $twProfileImageUrl = str_replace(
-                'pbs.twimg.com/profile_images/',
-                '',
-                $varString->trimUrlProtocol($row['profile_image_url'])
-            );
+            // Get file full name
+            $twProfileImage = $url->getPart($row['profile_image_url'], 'basename');
+
             // Trim www.
-            $twUrl = $varString->trimUrlW3($row['url']);
+            $twUrl = $url->trimW3($row['url']);
 
             if (!$twUser) {
                 // New
@@ -311,21 +355,36 @@ class TwApiCallService
                 $twUser->setTwCreatedAt(
                     new \DateTimeImmutable($row['created_at'])
                 );
-                $saveTwUser = true;
+                $saveTwUser = 'insert';
             } elseif ($twUser->getTwUsername() !== $row['username']
                 || $twUser->getTwName() !== $row['name']
-                || $twUser->getTwProfileImageUrl() !== $twProfileImageUrl
+                || $twUser->getTwProfileImage() !== $twProfileImage
                 || $twUser->getTwUrl() !== $twUrl
                 || $twUser->getTwIsVerified() !== $row['verified']
             ) {
                 // Update
-                $saveTwUser = true;
+                $saveTwUser = 'update';
             }
 
             if ($saveTwUser) {
+                // Delete avatar filder before upload avatar image
+                if ($saveTwUser === 'insert'
+                 || $twUser->getTwProfileImage() !== $twProfileImage
+                ) {
+                    if ($saveTwUser === 'update') {
+                        $fs->remove($this->avatarsPath . $row['id'] . '/');
+                    }
+
+                    $file->copyImageByUrl(
+                        $row['profile_image_url'],
+                        $this->avatarsPath . $row['id'] . '/' . $twProfileImage,
+                        true
+                    );
+                }
+
                 $twUser->setTwUsername($row['username']);
                 $twUser->setTwName($row['name']);
-                $twUser->setTwProfileImageUrl($twProfileImageUrl);
+                $twUser->setTwProfileImage($twProfileImage);
                 $twUser->seTwtUrl($twUrl);
 
                 if (isset($row['verified'])) {

@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Follow;
 use App\Form\FollowType;
 use App\Form\AjaxEasyType;
-use App\Form\AjaxHiddenType;
+use App\Form\AjaxTwApiType;
 use App\Repository\FollowRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -47,7 +47,7 @@ class FollowController extends AbstractController
         $ajaxEasyForm = $this->createForm(AjaxEasyType::class);
 
         // For ajax hidden form for update following
-        $ajaxHiddenForm = $this->createForm(AjaxHiddenType::class, null, [
+        $ajaxHiddenForm = $this->createForm(AjaxTwApiType::class, null, [
             'action' => $this->generateUrl('app_ajax_update_following', ['id' => 0]),
             'attr' => ['id' => 'ajax-update-following'],
         ]);
@@ -88,7 +88,7 @@ class FollowController extends AbstractController
         $ajaxEasyForm = $this->createForm(AjaxEasyType::class);
 
         // For ajax hidden form for update followers
-        $ajaxHiddenForm = $this->createForm(AjaxHiddenType::class, null, [
+        $ajaxHiddenForm = $this->createForm(AjaxTwApiType::class, null, [
             'action' => $this->generateUrl('app_ajax_update_followers', ['id' => 0]),
             'attr' => ['id' => 'ajax-update-followers'],
         ]);

@@ -20,12 +20,12 @@ final class Version20220425214123 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE tw_user ADD tw_profile_image_url VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE tw_user ADD tw_profile_image VARCHAR(255) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE tw_user DROP tw_profile_image_url');
+        $this->addSql('ALTER TABLE tw_user DROP tw_profile_image');
     }
 }

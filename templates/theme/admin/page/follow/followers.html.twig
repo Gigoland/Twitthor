@@ -57,7 +57,7 @@
                       <td class="min-width">
                         <div class="lead">
                           <div class="lead-image">
-                            <img src="https://pbs.twimg.com/profile_images/{{ follow.twUser.twProfileImageUrl }}" alt="Avatar" title="{{ follow.twUser.twName }}">
+                            <img src="{{ follow.twUser.avatar }}" alt="Avatar" title="{{ follow.twUser.twName }}">
                           </div>
                           <div class="lead-text">
                             <p>{{ follow.twUser.twName|slice(0, 20) ~ '...' }}</p>
@@ -105,7 +105,7 @@
 
   {% import "theme/admin/common/macro/_modal.html.twig" as macroModal %}
 
-  {{ macroModal.withBtnOkClose('modal-twapi-keys', 'Settings', 'btn-update-followers') }}
+  {{ macroModal.withBtnOkClose('modal-twapi-keys', 'Settings', 'Do not close. It may take time...', 'btn-update-followers') }}
 
   {{ form(ajaxHiddenForm) }}
 {% endblock %}

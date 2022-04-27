@@ -2,7 +2,7 @@
 	<div class="{{ class|default('select-style-1') }}">
 		<label>{{ label }}</label>
 		<div class="select-position">
-			<select{% if id is defined %} id="{{ id }}"{% endif %}{% if name is defined %} name="{{ name }}"{% endif %}>
+			<select class="ev"{% if id is defined %} id="{{ id }}"{% endif %}{% if name is defined %} name="{{ name }}"{% endif %}>
 				{% for key, value in rows %}
 					<option value="{{ key }}">{{ value }}</option>
 				{% endfor %}

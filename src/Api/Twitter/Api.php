@@ -297,7 +297,7 @@ abstract class Api
             $this->twitterBearerToken
         );
 
-        // Set pagination_token
+        // Set pagination_token for get next
         if (!empty($this->getNextToken())) {
             $this->queryFields['pagination_token'] = $this->getNextToken();
         }
@@ -361,6 +361,9 @@ abstract class Api
                 throw new \Exception($error);
             }
         }
+
+        // Clear next token
+        $this->setNextToken(null);
 
         return $result;
     }

@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\TwApi;
 use App\Form\TwApiType;
-use App\Form\AjaxHiddenType;
+use App\Form\AjaxTwApiType;
 use App\Service\TwApiCallService;
 use App\Service\TwApiHtmlService;
 use App\Repository\TwApiRepository;
@@ -192,16 +192,15 @@ class TwApiController extends AbstractController
         Request $request,
         TwApiCallService $service
     ): JsonResponse {
-        $form = $this->createForm(AjaxHiddenType::class, null, [
-            'method' => 'POST',
-        ]);
-
+        $form = $this->createForm(AjaxTwApiType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             return $service->updateFollowing(
                 $this->getUser(),
                 $twApi,
+                $form->getData()['next_token'],
+                $this->getParameter('app.path.uploads'),
                 $this->generateUrl('app_following')
             );
         }
@@ -224,16 +223,15 @@ class TwApiController extends AbstractController
         Request $request,
         TwApiCallService $service
     ): JsonResponse {
-        $form = $this->createForm(AjaxHiddenType::class, null, [
-            'method' => 'POST',
-        ]);
-
+        $form = $this->createForm(AjaxTwApiType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             return $service->updateFollowers(
                 $this->getUser(),
                 $twApi,
+                $form->getData()['next_token'],
+                $this->getParameter('app.path.uploads'),
                 $this->generateUrl('app_followers')
             );
         }

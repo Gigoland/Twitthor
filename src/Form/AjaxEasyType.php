@@ -16,7 +16,6 @@ class AjaxEasyType extends AbstractType
     {
         $builder
             ->setMethod('POST')
-            ->setAttribute('class', 'ajax-easy')
 
             // Subbmit
             ->add('submit', SubmitType::class, [
