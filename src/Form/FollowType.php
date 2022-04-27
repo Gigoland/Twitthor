@@ -20,6 +20,7 @@ class FollowType extends AbstractType
     {
         $builder
             ->setMethod('POST')
+
             ->add('walletEth', TextType::class, [
                 'attr' => [
                     'maxlength' => 55,

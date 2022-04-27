@@ -20,6 +20,7 @@ class ProfileType extends AbstractType
     {
         $builder
             ->setMethod('POST')
+
             ->add('walletEth', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',

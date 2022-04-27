@@ -15,6 +15,7 @@ class AjaxHiddenType extends AbstractType
     {
         $builder
             ->setMethod('POST')
+            ->setAttribute('class', 'ajax-hidden')
         ;
     }
 

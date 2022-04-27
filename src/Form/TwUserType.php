@@ -21,6 +21,7 @@ class TwUserType extends AbstractType
     {
         $builder
             ->setMethod('POST')
+
             ->add('twName', TextType::class, [
                 'attr' => [
                     'maxlength' => 22,

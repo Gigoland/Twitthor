@@ -1,4 +1,4 @@
-{% macro withBtnOkClose(id, title, btnOkTitle, btnCloseTitle, body) %}
+{% macro withBtnOkClose(id, title, btnOkId, btnOkTitle, btnCloseId, btnCloseTitle, body) %}
   <div class="modal fade" id="{{ id|default('modal') }}" data-bs-backdrop="{{ backdrop|default('static') }}" data-bs-keyboard="{{ keyboard|default('false') }}" tabindex="-1" aria-labelledby="{{ id|default('modal') }}-label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -18,8 +18,8 @@
             </div>
             <div class="col-md-10">
               <div class="btn-content d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ btnCloseTitle|default('Close') }}</button>
-                <button type="button" class="btn btn-primary btn-ok">{{ btnOkTitle|default('OK') }}</button>
+                <button type="button"{% if btnCloseId is defined %} id="{{ btnCloseId }}"{% endif %} class="btn btn-secondary" data-bs-dismiss="modal">{{ btnCloseTitle|default('Close') }}</button>
+                <button type="button"{% if btnOkId is defined %} id="{{ btnOkId }}"{% endif %} class="btn btn-primary btn-ok">{{ btnOkTitle|default('OK') }}</button>
                 </div>
               </div>
           </div>

@@ -19,28 +19,31 @@ abstract class Api
     const TWITTER_API_USERS_FOLLOWING_DELETE = 'users/%s/following/%s';
 
     // Api settings
-    protected $twitterConsumerKey;
-    protected $twitterConsumerSecret;
-    protected $twitterBearerToken;
-    protected $twitterAccessToken;
-    protected $twitterAccessTokenSecret;
+    protected ?string $twitterConsumerKey = null;
+    protected ?string $twitterConsumerSecret = null;
+    protected ?string $twitterBearerToken = null;
+    protected ?string $twitterAccessToken = null;
+    protected ?string $twitterAccessTokenSecret = null;
 
     // Acount settings
-    protected $twitterAccountId;
-    protected $twitterAccountName;
+    protected ?string $twitterAccountId = null;
+    protected ?string $twitterAccountName = null;
+
+    // next_token
+    protected ?string $nextToken = null;
 
     // Global settings
-    protected $settings = [
+    protected array $settings = [
         'max_pagination' => 10,
-        'sleep_pagination' => 5,
+        'sleep_pagination_token' => 5,
         'sleep_unfollow' => 5,
     ];
 
     // Api query fields
-    protected $queryFields = [];
+    protected array $queryFields = [];
 
     // Select fields
-    protected $responseFields = [];
+    protected array $responseFields = [];
 
     // For CURLINFO_HTTP_CODE storage
     protected $httpStatusCode;
@@ -92,7 +95,7 @@ abstract class Api
      *
      * @return array
      */
-    public function getQueryFields()
+    public function getQueryFields(): array
     {
         return $this->queryFields;
     }
@@ -103,7 +106,7 @@ abstract class Api
      * @param string $twitterAccountId
      * @return Api
      */
-    public function setTwitterAccountId($twitterAccountId)
+    public function setTwitterAccountId(?string $twitterAccountId): Api
     {
         $this->twitterAccountId = $twitterAccountId;
 
@@ -116,7 +119,7 @@ abstract class Api
      * @param string $twitterAccountName
      * @return Api
      */
-    public function setTwitterAccountName($twitterAccountName)
+    public function setTwitterAccountName(?string $twitterAccountName): Api
     {
         $this->twitterAccountName = $twitterAccountName;
 
@@ -124,12 +127,31 @@ abstract class Api
     }
 
     /**
+     * Get nextToken
+     *
+     * @return string
+     */
+    public function getNextToken(): ?string
+    {
+        return $this->nextToken;
+    }
+
+    /**
+     * Set nextToken
+     * @param string $nextToken
+     */
+    public function setNextToken(?string $nextToken)
+    {
+        $this->nextToken = $nextToken;
+    }
+
+    /**
      * Set settings
      *
      * @param array $settings
-     * @return Twitthor
+     * @return API
      */
-    public function setSettings(array $settings)
+    public function setSettings(array $settings): Api
     {
         foreach ($settings as $key => $val) {
             $this->settings[$key] = $val;
@@ -149,7 +171,7 @@ abstract class Api
      * @param array $fields
      * @return Api
      */
-    public function setQueryFields(array $fields)
+    public function setQueryFields(array $fields): Api
     {
         foreach ($fields as $key => $val) {
             $this->queryFields[$key] = $val;
@@ -164,7 +186,7 @@ abstract class Api
      * @param array $fields
      * @return Api
      */
-    public function setResponseFields(array $fields)
+    public function setResponseFields(array $fields): Api
     {
         foreach ($fields as $field) {
             if (!in_array($field, $this->responseFields)) {
@@ -180,7 +202,7 @@ abstract class Api
      *
      * @return Api
      */
-    public function clearQueryFields()
+    public function clearQueryFields(): Api
     {
         $this->queryFields = [];
 
@@ -193,7 +215,7 @@ abstract class Api
      * @param bool $isJson
      * @return array|object
      */
-    public function getUserByAccountId($isJson = true)
+    public function getUserByAccountId(bool $isJson = true)
     {
         if (empty($this->twitterAccountId)) {
             throw new \InvalidArgumentException(
@@ -221,7 +243,7 @@ abstract class Api
      * @param bool $isJson
      * @return array|object
      */
-    public function getFollowingByAccountId($isJson = true)
+    public function getFollowingByAccountId(bool $isJson = true)
     {
         if (empty($this->twitterAccountId)) {
             throw new \InvalidArgumentException(
@@ -243,7 +265,7 @@ abstract class Api
      * @param bool $isJson
      * @return array|object
      */
-    public function getFollowersByAccountId($isJson = true)
+    public function getFollowersByAccountId(bool $isJson = true)
     {
         if (empty($this->twitterAccountId)) {
             throw new \InvalidArgumentException(
@@ -267,13 +289,18 @@ abstract class Api
      * @param bool $isJson
      * @return array|object
      */
-    private function getRequest($url, $methode, $isJson = true)
+    private function getRequest(string $url, string $methode, bool $isJson = true)
     {
         // For header
         $authorization = sprintf(
             'Authorization: Bearer %s',
             $this->twitterBearerToken
         );
+
+        // Set pagination_token
+        if (!empty($this->getNextToken())) {
+            $this->queryFields['pagination_token'] = $this->getNextToken();
+        }
 
         // Fields for methode GET only
         if ($methode === 'get' && !empty($this->queryFields)) {
@@ -344,7 +371,7 @@ abstract class Api
      * @param array $data
      * @return array
      */
-    private function getSelectedResponseFileds($data)
+    private function getSelectedResponseFileds(array $data): array
     {
         // Return if have error
         if (isset($data['errors'])) {

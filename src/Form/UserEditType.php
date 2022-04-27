@@ -21,6 +21,7 @@ class UserEditType extends AbstractType
     {
         $builder
             ->setMethod('POST')
+
             ->add('twUserId', NumberType::class, [
                 'attr' => [
                     'maxlength' => 55,

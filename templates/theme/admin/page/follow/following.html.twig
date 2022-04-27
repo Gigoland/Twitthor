@@ -46,7 +46,7 @@
                     <th><h6>🐥 Verified</h6></th>
                     <th><h6>Follow me</h6></th>
                     <th><h6>Favorite</h6></th>
-                    <th><h6>Follow</h6></th>
+                    <th><h6>Action</h6></th>
                     <th><h6>Edit</h6></th>
                     <th><h6>Delete</h6></th>
                   </tr>
@@ -105,7 +105,7 @@
 
   {% import "theme/admin/common/macro/_modal.html.twig" as macroModal %}
 
-  {{ macroModal.withBtnOkClose('modal-twapi-keys', 'Settings') }}
+  {{ macroModal.withBtnOkClose('modal-twapi-keys', 'Settings', 'btn-update-following') }}
 
   {{ form(ajaxHiddenForm) }}
 {% endblock %}

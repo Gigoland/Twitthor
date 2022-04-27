@@ -23,6 +23,7 @@ class UserNewType extends AbstractType
     {
         $builder
             ->setMethod('POST')
+
             ->add('email', EmailType::class, [
                 'attr' => [
                     'minlength' => 1,

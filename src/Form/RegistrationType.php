@@ -30,6 +30,7 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->setMethod('POST')
+
             ->add('email', EmailType::class, [
                 'attr' => [
                     'class' => 'form-control rounded-pill border-0 shadow-sm px-4',

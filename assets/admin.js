@@ -10,15 +10,15 @@ import './bootstrap';
 import './admin/js/main';
 
 (function () {
-  const $updateFollofingForm = document.querySelector('#ajax-update-following');
+  const $updateFollowingForm = document.querySelector('#ajax-update-following');
+  const $updateFollowersForm = document.querySelector('#ajax-update-followers');
   const $twApiKeysModal = document.querySelector('#modal-twapi-keys');
   const modalTwApiKeys = new Modal($twApiKeysModal);
 
-  //
+  // Get modal content
   document.querySelector('#ajax-get-twapi-keys').addEventListener('submit', function(e) {
     e.preventDefault();
     e.stopPropagation();
-
     fetch(this.action, {
       method: 'POST',
       body: new FormData(e.target)
@@ -32,7 +32,7 @@ import './admin/js/main';
     });
   });
 
-  //
+  // Modal content
   const twApiKeysHandleResponse = function(response) {
     switch (response.code) {
       case 'success':
@@ -42,23 +42,47 @@ import './admin/js/main';
     }
   };
 
-  //
-  $twApiKeysModal.querySelector('.btn-ok').addEventListener('click', function(e) {
-    $twApiKeysModal.querySelector('.loader').style.display = 'block';
-    $twApiKeysModal.querySelectorAll('.btn').forEach(function($btn) {
-      $btn.disabled = true;
+  // Update following
+  if ($twApiKeysModal.querySelector('#btn-update-following')) {
+    $twApiKeysModal.querySelector('#btn-update-following').addEventListener('click', function(e) {
+      $twApiKeysModal.querySelector('.loader').style.display = 'block';
+      $twApiKeysModal.querySelectorAll('.btn').forEach(function($btn) {
+        $btn.disabled = true;
+      });
+      fetch($updateFollowingForm.action.replace(/\/[^\/]*$/, '/' + $twApiKeysModal.querySelector('#twapi-key').value), {
+        method: 'POST',
+        body: new FormData($updateFollowingForm)
+      })
+      .then(response => response.json())
+      .then(json => {
+        console.log(json);
+        //window.location.href = json.path;
+      })
+      .catch((error) => {
+        console.error('Error:', error);//@todo
+      });
     });
+  }
 
-    fetch($updateFollofingForm.action.replace(/\/[^\/]*$/, '/' + $twApiKeysModal.querySelector('#twapi-key').value), {
-      method: 'POST',
-      body: new FormData($updateFollofingForm)
-    })
-    .then(response => response.json())
-    .then(json => {
-      window.location.href = json.path;
-    })
-    .catch((error) => {
-      console.error('Error:', error);//@todo
+  // Update followers
+  if ($twApiKeysModal.querySelector('#btn-update-followers')) {
+    $twApiKeysModal.querySelector('#btn-update-followers').addEventListener('click', function(e) {
+      $twApiKeysModal.querySelector('.loader').style.display = 'block';
+      $twApiKeysModal.querySelectorAll('.btn').forEach(function($btn) {
+        $btn.disabled = true;
+      });
+      fetch($updateFollowersForm.action.replace(/\/[^\/]*$/, '/' + $twApiKeysModal.querySelector('#twapi-key').value), {
+        method: 'POST',
+        body: new FormData($updateFollowersForm)
+      })
+      .then(response => response.json())
+      .then(json => {
+        console.log(json);
+        //window.location.href = json.path;
+      })
+      .catch((error) => {
+        console.error('Error:', error);//@todo
+      });
     });
-  });
+  }
 })();

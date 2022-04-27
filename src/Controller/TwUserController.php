@@ -60,9 +60,7 @@ class TwUserController extends AbstractController
         EntityManagerInterface $manager
     ): Response {
         $twUser = new TwUser();
-        $form = $this->createForm(TwUserType::class, $twUser, [
-            'method' => 'POST',
-        ]);
+        $form = $this->createForm(TwUserType::class, $twUser);
 
         $form->handleRequest($request);
 
@@ -104,9 +102,7 @@ class TwUserController extends AbstractController
         Request $request,
         EntityManagerInterface $manager
     ): Response {
-        $form = $this->createForm(TwUserType::class, $twUser, [
-            'method' => 'POST',
-        ]);
+        $form = $this->createForm(TwUserType::class, $twUser);
 
         $form->handleRequest($request);
 

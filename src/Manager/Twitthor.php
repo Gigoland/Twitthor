@@ -63,35 +63,32 @@ class Twitthor extends Api
         $result = [];
         $loop = 0;
 
-        // Get by pagination_token
+        // Get by next_token
         do {
             // Get following list
-            $following = $this
-                ->setQueryFields($queryFields)
+            $rows = $this
                 ->getFollowingByAccountId()
             ;
 
             // Check error
-            if ($error = $this->checkError($following)) {
+            if ($error = $this->checkError($rows)) {
                 return $error;
             }
 
             // Merge
             $result = array_merge(
                 $result,
-                $following['data']
+                $rows['data']
             );
 
-            // Check pagination
-            $queryFields['pagination_token'] = empty($following['meta']['next_token'])
-                ? null
-                : $following['meta']['next_token'];
+            // Set next_token
+            $this->setNextToken($rows['meta']['next_token']);
 
             // Waiting
-            sleep($this->settings['sleep_pagination']);
+            sleep($this->settings['sleep_pagination_token']);
 
             $loop++;
-        } while (!empty($queryFields['pagination_token']) && $this->settings['max_pagination'] > $loop);
+        } while (!empty($rows['meta']['next_token']) && $this->settings['max_pagination'] > $loop);
 
         return $result;
     }
@@ -107,35 +104,32 @@ class Twitthor extends Api
         $result = [];
         $loop = 0;
 
-        // Get by pagination_token
+        // Get by next_token
         do {
             // Get followers list
-            $followers = $this
-                ->setQueryFields($queryFields)
+            $rows = $this
                 ->getFollowersByAccountId()
             ;
 
             // Check error
-            if ($error = $this->checkError($followers)) {
+            if ($error = $this->checkError($rows)) {
                 return $error;
             }
 
             // Merge
             $result = array_merge(
                 $result,
-                $followers['data']
+                $rows['data']
             );
 
-            // Check pagination
-            $queryFields['pagination_token'] = empty($followers['meta']['next_token'])
-                ? null
-                : $followers['meta']['next_token'];
+            // Set next_token
+            $this->setNextToken($rows['meta']['next_token']);
 
             // Waiting
-            sleep($this->settings['sleep_pagination']);
+            sleep($this->settings['sleep_pagination_token']);
 
             $loop++;
-        } while (!empty($queryFields['pagination_token']) && $this->settings['max_pagination'] > $loop);
+        } while (!empty($rows['meta']['next_token']) && $this->settings['max_pagination'] > $loop);
 
         return $result;
     }

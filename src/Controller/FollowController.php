@@ -48,7 +48,6 @@ class FollowController extends AbstractController
 
         // For ajax hidden form for update following
         $ajaxHiddenForm = $this->createForm(AjaxHiddenType::class, null, [
-            'method' => 'POST',
             'action' => $this->generateUrl('app_ajax_update_following', ['id' => 0]),
             'attr' => ['id' => 'ajax-update-following'],
         ]);
@@ -85,8 +84,19 @@ class FollowController extends AbstractController
             10
         );
 
+        // For ajax with submit button for get keys select
+        $ajaxEasyForm = $this->createForm(AjaxEasyType::class);
+
+        // For ajax hidden form for update followers
+        $ajaxHiddenForm = $this->createForm(AjaxHiddenType::class, null, [
+            'action' => $this->generateUrl('app_ajax_update_followers', ['id' => 0]),
+            'attr' => ['id' => 'ajax-update-followers'],
+        ]);
+
         return $this->render('theme/admin/page/follow/followers.html.twig', [
             'followers' => $followers,
+            'ajaxEasyForm' => $ajaxEasyForm->createView(),
+            'ajaxHiddenForm' => $ajaxHiddenForm->createView(),
         ]);
     }
 
@@ -137,9 +147,7 @@ class FollowController extends AbstractController
         Request $request,
         EntityManagerInterface $manager
     ): Response {
-        $form = $this->createForm(FollowType::class, $follow, [
-            'method' => 'POST',
-        ]);
+        $form = $this->createForm(FollowType::class, $follow);
 
         $form->handleRequest($request);
 

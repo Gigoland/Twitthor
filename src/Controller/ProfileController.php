@@ -32,9 +32,7 @@ class ProfileController extends AbstractController
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
-        $form = $this->createForm(ProfileType::class, $user, [
-            'method' => 'POST',
-        ]);
+        $form = $this->createForm(ProfileType::class, $user);
 
         $form->handleRequest($request);
 
@@ -84,9 +82,7 @@ class ProfileController extends AbstractController
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
-        $form = $this->createForm(UserPasswordType::class, [
-            'method' => 'POST',
-        ]);
+        $form = $this->createForm(UserPasswordType::class);
 
         $form->handleRequest($request);
 

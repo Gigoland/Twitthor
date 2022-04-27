@@ -206,4 +206,36 @@ class TwApiController extends AbstractController
             );
         }
     }
+
+    /**
+     * Upload folowers by Twitter Api with Twitthor
+     * Protected by CSRF
+     * Ajax only
+     *
+     * @param TwApi $twApi
+     * @param Request $request
+     * @param TwApiCallService $service
+     * @return JsonResponse
+     */
+    #[Route('/tw/ajax/followers/update/{id}', name: 'app_ajax_update_followers', methods: ['POST'])]
+    #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
+    public function ajaxUpdateFollowers(
+        TwApi $twApi,
+        Request $request,
+        TwApiCallService $service
+    ): JsonResponse {
+        $form = $this->createForm(AjaxHiddenType::class, null, [
+            'method' => 'POST',
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $service->updateFollowers(
+                $this->getUser(),
+                $twApi,
+                $this->generateUrl('app_followers')
+            );
+        }
+    }
 }

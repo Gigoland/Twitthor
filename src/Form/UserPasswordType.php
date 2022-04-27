@@ -19,6 +19,7 @@ class UserPasswordType extends AbstractType
     {
         $builder
             ->setMethod('POST')
+
             ->add('plainPassword', PasswordType::class, [
                 'attr' => [
                     'class' => 'form-control',
