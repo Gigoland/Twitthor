@@ -76,7 +76,7 @@ import './admin/js/main';
         $twApiKeysModal.querySelector('.btn-ok').disabled = true;
         $twApiKeysModal.querySelector('.btn-ok').innerHTML = 'Done';
       }
-      $twApiKeysModalAlertMsg.innerHTML = 'Created : ' + json.created + ' / Updated : ' + json.updated;
+      $twApiKeysModalAlertMsg.innerHTML = 'Checked : ' + json.checked + ' / Created : ' + json.created + ' / Updated : ' + json.updated;
       $twApiKeysModalAlert.style.display = 'block';
       redirect = json.path;
     } else {

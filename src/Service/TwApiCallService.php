@@ -75,6 +75,7 @@ class TwApiCallService
 
         return new JsonResponse([
             'code' => self::OK,
+            'checked' => $result['check'],
             'created' => count($result['insert']),
             'updated' => count($result['update']),
             'nextToken' => $this->twitthor->getNextToken(),
@@ -125,6 +126,7 @@ class TwApiCallService
 
         return new JsonResponse([
             'code' => self::OK,
+            'checked' => $result['check'],
             'created' => count($result['insert']),
             'updated' => count($result['update']),
             'nextToken' => $this->twitthor->getNextToken(),
@@ -196,6 +198,7 @@ class TwApiCallService
     private function saveFollowing(User $user, array $rows): array
     {
         $result = [
+            'check' => 0,
             'insert' => [],
             'update' => [],
         ];
@@ -300,6 +303,8 @@ class TwApiCallService
 
                 $result[$saveFollow][] = $follow->getId();
             }
+
+            $result['check']++;
         }
 
         return $result;
@@ -315,6 +320,7 @@ class TwApiCallService
     private function saveFollowers(User $user, array $rows): array
     {
         $result = [
+            'check' => 0,
             'insert' => [],
             'update' => [],
         ];
@@ -419,6 +425,8 @@ class TwApiCallService
 
                 $result[$saveFollow][] = $follow->getId();
             }
+
+            $result['check']++;
         }
 
         return $result;
