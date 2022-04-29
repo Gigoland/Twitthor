@@ -39,11 +39,14 @@
               {% for message in app.flashes('success') %}
                 {% include 'theme/admin/common/_flash.html.twig' with {'type': 'success', 'message': message} %}
               {% endfor %}
+              {% for message in app.flashes('infos') %}
+                {% include 'theme/admin/common/_flash.html.twig' with {'type': 'info', 'message': message} %}
+              {% endfor %}
               {% for message in app.flashes('warnings') %}
                 {% include 'theme/admin/common/_flash.html.twig' with {'type': 'warning', 'message': message} %}
               {% endfor %}
               {% for message in app.flashes('errors') %}
-                {% include 'theme/admin/common/_flash.html.twig' with {'type': 'error', 'message': message} %}
+                {% include 'theme/admin/common/_flash.html.twig' with {'type': 'danger', 'message': message} %}
               {% endfor %}
             {% endblock %}
 

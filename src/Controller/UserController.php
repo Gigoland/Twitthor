@@ -21,17 +21,17 @@ class UserController extends AbstractController
      * Users manager
      * Admin only
      *
-     * @param UserRepository $repository
-     * @param PaginatorInterface $paginator
      * @param Request $request
+     * @param PaginatorInterface $paginator
+     * @param UserRepository $repository
      * @return Response
      */
     #[Route('/users', name: 'app_users', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function users(
-        UserRepository $repository,
+        Request $request,
         PaginatorInterface $paginator,
-        Request $request
+        UserRepository $repository
     ): Response {
         $users = $paginator->paginate(
             $repository->findAll(),
@@ -50,14 +50,14 @@ class UserController extends AbstractController
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
     #[Route('/user/add', name: 'app_user_add', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function new(
         Request $request,
-        EntityManagerInterface $manager
+        EntityManagerInterface $entityManager
     ): Response {
         $user = new User();
         $form = $this->createForm(UserNewType::class, $user, [
@@ -66,20 +66,27 @@ class UserController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $form->getData();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $user = $form->getData();
 
-            $manager->persist($user);
-            $manager->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                'User created with success !'
-            );
+                $this->addFlash(
+                    'success',
+                    'User created with success !'
+                );
 
-            return $this->redirectToRoute('app_user_edit', [
-                'id' => $user->getId(),
-            ]);
+                return $this->redirectToRoute('app_user_edit', [
+                    'id' => $user->getId(),
+                ]);
+            } else {
+                $this->addFlash(
+                    'errors',
+                    'Something went wrong !'
+                );
+            }
         }
 
         return $this->render('theme/admin/page/user/new.html.twig', [
@@ -92,17 +99,17 @@ class UserController extends AbstractController
      * Admin only
      * Protected by CSRF
      *
-     * @param User $user
      * @param Request $request
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface $entityManager
+     * @param User $user
      * @return Response
      */
     #[Route('/user/edit/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(
-        User $user,
         Request $request,
-        EntityManagerInterface $manager
+        EntityManagerInterface $entityManager,
+        User $user
     ): Response {
         $form = $this->createForm(UserEditType::class, $user, [
             'method' => 'POST',
@@ -110,20 +117,27 @@ class UserController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $form->getData();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $user = $form->getData();
 
-            $manager->persist($user);
-            $manager->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                'User updated with success !'
-            );
+                $this->addFlash(
+                    'success',
+                    'User updated with success !'
+                );
 
-            return $this->redirectToRoute('app_user_edit', [
-                'id' => $user->getId(),
-            ]);
+                return $this->redirectToRoute('app_user_edit', [
+                    'id' => $user->getId(),
+                ]);
+            } else {
+                $this->addFlash(
+                    'errors',
+                    'Something went wrong !'
+                );
+            }
         }
 
         return $this->render('theme/admin/page/user/edit.html.twig', [
@@ -136,18 +150,18 @@ class UserController extends AbstractController
      * Delete user
      * Admin only
      *
+     * @param EntityManagerInterface $entityManager
      * @param User $user
-     * @param EntityManagerInterface $manager
      * @return Response
      */
     #[Route('/user/delete/{id}', name: 'app_user_delete', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(
-        User $user,
-        EntityManagerInterface $manager
+        EntityManagerInterface $entityManager,
+        User $user
     ): Response {
-        $manager->remove($user);
-        $manager->flush();
+        $entityManager->remove($user);
+        $entityManager->flush();
 
         $this->addFlash(
             'success',

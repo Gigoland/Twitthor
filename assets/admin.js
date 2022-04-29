@@ -15,6 +15,8 @@ var modalTwApiKeys = null,
     $twUpdateFollowersForm = null,
     $twNextTokenInput = null,
     $twApiKeysModal = null,
+    $twApiKeysModalSelect = null,
+    $twApiKeysModalCount = null,
     $twApiKeysModalLoader = null,
     $twApiKeysModalAlert = null,
     $twApiKeysModalAlertMsg = null,
@@ -25,8 +27,13 @@ const showTwApiKeysModal = function(response) {
   switch (response.code) {
     case 'success':
       $twApiKeysModal.querySelector('.modal-body').innerHTML = response.html;
+      $twApiKeysModalSelect = $twApiKeysModal.querySelector('#twapi-keys');
+      $twApiKeysModalCount = $twApiKeysModal.querySelector('#twapi-call-counts');
       $twApiKeysModalAlert = $twApiKeysModal.querySelector('.alert-box');
       $twApiKeysModalAlertMsg = $twApiKeysModalAlert.querySelector('#ajax-message');
+      $twApiKeysModalSelect.addEventListener('change', function(e) {
+        console.log(this.getAttribute('data-value'));
+      });
       modalTwApiKeys.show();
       break;
     case 'error':
@@ -61,7 +68,7 @@ const callbackUpdate = function(json) {
 
 // Get update following
 const callUpdateFollowing = function(callback) {
-  fetch($twUpdateFollowingForm.action.replace(/\/[^\/]*$/, '/' + $twApiKeysModal.querySelector('#twapi-key').value), {
+  fetch($twUpdateFollowingForm.action.replace(/\/[^\/]*$/, '/' + $twApiKeysModalSelect.value), {
     method: 'POST',
     body: new FormData($twUpdateFollowingForm)
   })
@@ -76,7 +83,7 @@ const callUpdateFollowing = function(callback) {
 
 // Get update followers
 const callUpdateFollowers = function(callback) {
-  fetch($twUpdateFollowersForm.action.replace(/\/[^\/]*$/, '/' + $twApiKeysModal.querySelector('#twapi-key').value), {
+  fetch($twUpdateFollowersForm.action.replace(/\/[^\/]*$/, '/' + $twApiKeysModalSelect.value), {
     method: 'POST',
     body: new FormData($twUpdateFollowersForm)
   })

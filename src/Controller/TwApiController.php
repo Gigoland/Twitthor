@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\TwApi;
-use App\Entity\TwApiCall;
 use App\Form\TwApiType;
 use App\Form\AjaxTwApiType;
 use App\Manager\TwApiCallManager;
@@ -25,17 +24,17 @@ class TwApiController extends AbstractController
     /**
      * Twitter API settings manager
      *
-     * @param TwApiRepository $repository
-     * @param PaginatorInterface $paginator
      * @param Request $request
+     * @param PaginatorInterface $paginator
+     * @param TwApiRepository $repository
      * @return Response
      */
     #[Route('/tw/settings', name: 'app_twitter_api_settings', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function keys(
-        TwApiRepository $repository,
+        Request $request,
         PaginatorInterface $paginator,
-        Request $request
+        TwApiRepository $repository
     ): Response {
         // Get connected user twitter API keys
         $apiKeys = $paginator->paginate(
@@ -56,14 +55,15 @@ class TwApiController extends AbstractController
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface $entityManager
+     * @param TwApiCallManager $twApiCallManager
      * @return Response
      */
     #[Route('/tw/settings/add', name: 'app_twitter_api_settings_add', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(
         Request $request,
-        EntityManagerInterface $manager,
+        EntityManagerInterface $entityManager,
         TwApiCallManager $twApiCallManager
     ): Response {
         $twApi = new TwApi();
@@ -77,8 +77,8 @@ class TwApiController extends AbstractController
             $twApi = $form->getData();
             $twApi->setUser($this->getUser()); // Connected user
 
-            $manager->persist($twApi);
-            $manager->flush();
+            $entityManager->persist($twApi);
+            $entityManager->flush();
 
             // Add new call limit counts
             $twApiCallManager->newTwApiCall($twApi);
@@ -100,17 +100,17 @@ class TwApiController extends AbstractController
      * Edit Twitter API settings
      * Protected by CSRF
      *
-     * @param TwApi $twApi
      * @param Request $request
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface $entityManager
+     * @param TwApi $twApi
      * @return Response
      */
     #[Route('/tw/settings/edit/{id}', name: 'app_twitter_api_settings_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
     public function edit(
-        TwApi $twApi,
         Request $request,
-        EntityManagerInterface $manager
+        EntityManagerInterface $entityManager,
+        TwApi $twApi
     ): Response {
         $form = $this->createForm(TwApiType::class, $twApi, [
             'method' => 'POST',
@@ -118,19 +118,26 @@ class TwApiController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $twApi = $form->getData();
-            $twApi->setUser($this->getUser()); // Connected user
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $twApi = $form->getData();
+                $twApi->setUser($this->getUser()); // Connected user
 
-            $manager->persist($twApi);
-            $manager->flush();
+                $entityManager->persist($twApi);
+                $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                'Settings updated with success !'
-            );
+                $this->addFlash(
+                    'success',
+                    'Settings updated with success !'
+                );
 
-            return $this->redirectToRoute('app_twitter_api_settings');
+                return $this->redirectToRoute('app_twitter_api_settings');
+            } else {
+                $this->addFlash(
+                    'errors',
+                    'Something went wrong !'
+                );
+            }
         }
 
         return $this->render('theme/admin/page/twitter/api/keys_edit.html.twig', [
@@ -142,18 +149,18 @@ class TwApiController extends AbstractController
     /**
      * Delete Twitter API settings
      *
+     * @param EntityManagerInterface $entityManager
      * @param TwApi $twApi
-     * @param EntityManagerInterface $manager
      * @return Response
      */
     #[Route('/tw/settings/delete/{id}', name: 'app_twitter_api_settings_delete', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
     public function delete(
-        TwApi $twApi,
-        EntityManagerInterface $manager
+        EntityManagerInterface $entityManager,
+        TwApi $twApi
     ): Response {
-        $manager->remove($twApi);
-        $manager->flush();
+        $entityManager->remove($twApi);
+        $entityManager->flush();
 
         $this->addFlash(
             'success',
@@ -189,17 +196,17 @@ class TwApiController extends AbstractController
      * Protected by CSRF
      * Ajax only
      *
-     * @param TwApi $twApi
      * @param Request $request
      * @param TwApiCallService $service
+     * @param TwApi $twApi
      * @return JsonResponse
      */
     #[Route('/tw/ajax/following/update/{id}', name: 'app_ajax_update_following', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
     public function ajaxUpdateFollowing(
-        TwApi $twApi,
         Request $request,
-        TwApiCallService $service
+        TwApiCallService $service,
+        TwApi $twApi
     ): JsonResponse {
         $form = $this->createForm(AjaxTwApiType::class);
         $form->handleRequest($request);
@@ -213,6 +220,11 @@ class TwApiController extends AbstractController
                 $this->generateUrl('app_following')
             );
         }
+
+        return new JsonResponse([
+            'code' => TwApiCallService::KO,
+            'message' => 'Something went wrong !',
+        ]);
     }
 
     /**
@@ -220,17 +232,17 @@ class TwApiController extends AbstractController
      * Protected by CSRF
      * Ajax only
      *
-     * @param TwApi $twApi
      * @param Request $request
      * @param TwApiCallService $service
+     * @param TwApi $twApi
      * @return JsonResponse
      */
     #[Route('/tw/ajax/followers/update/{id}', name: 'app_ajax_update_followers', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
     public function ajaxUpdateFollowers(
-        TwApi $twApi,
         Request $request,
-        TwApiCallService $service
+        TwApiCallService $service,
+        TwApi $twApi
     ): JsonResponse {
         $form = $this->createForm(AjaxTwApiType::class);
         $form->handleRequest($request);
@@ -244,5 +256,10 @@ class TwApiController extends AbstractController
                 $this->generateUrl('app_followers')
             );
         }
+
+        return new JsonResponse([
+            'code' => TwApiCallService::KO,
+            'message' => 'Something went wrong !',
+        ]);
     }
 }

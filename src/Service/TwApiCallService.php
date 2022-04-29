@@ -26,7 +26,7 @@ class TwApiCallService
     private string $avatarsPath;
 
 	public function __construct(
-        private EntityManagerInterface $manager,
+        private EntityManagerInterface $entityManager,
         private TwUserRepository $twUserRepository,
         private FollowRepository $followRepository,
         private TwApiCallManager $twApiCallManager
@@ -75,6 +75,7 @@ class TwApiCallService
             'created' => count($result['insert']),
             'updated' => count($result['update']),
             'nextToken' => $this->twitthorManager->getNextToken(),
+            'callCount' => $this->twApiCallManager->appendOneCallFollowing($twApi),
             'path' => $rediretPath,
         ]);
     }
@@ -122,6 +123,7 @@ class TwApiCallService
             'created' => count($result['insert']),
             'updated' => count($result['update']),
             'nextToken' => $this->twitthorManager->getNextToken(),
+            'callCount' => $this->twApiCallManager->appendOneCallFollowers($twApi),
             'path' => $rediretPath,
         ]);
     }
@@ -282,8 +284,8 @@ class TwApiCallService
                     $twUser->setTwIsVerified($row['verified']);
                 }
 
-                $this->manager->persist($twUser);
-                $this->manager->flush();
+                $this->entityManager->persist($twUser);
+                $this->entityManager->flush();
             }
 
             $follow = $this->followRepository->findOneBy([
@@ -305,8 +307,8 @@ class TwApiCallService
             if ($saveFollow) {
                 $follow->setIsFollowing(true);
 
-                $this->manager->persist($follow);
-                $this->manager->flush();
+                $this->entityManager->persist($follow);
+                $this->entityManager->flush();
 
                 $result[$saveFollow][] = $follow->getId();
             }
@@ -419,8 +421,8 @@ class TwApiCallService
                     $twUser->setTwIsVerified($row['verified']);
                 }
 
-                $this->manager->persist($twUser);
-                $this->manager->flush();
+                $this->entityManager->persist($twUser);
+                $this->entityManager->flush();
             }
 
             $follow = $this->followRepository->findOneBy([
@@ -442,8 +444,8 @@ class TwApiCallService
             if ($saveFollow) {
                 $follow->setIsFollower(true);
 
-                $this->manager->persist($follow);
-                $this->manager->flush();
+                $this->entityManager->persist($follow);
+                $this->entityManager->flush();
 
                 $result[$saveFollow][] = $follow->getId();
             }

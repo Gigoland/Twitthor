@@ -18,13 +18,13 @@ class SecurityController extends AbstractController
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
     #[Route('/signup', name: 'app_security_signup', methods: ['GET', 'POST'])]
     public function signUp(
         Request $request,
-        EntityManagerInterface $manager
+        EntityManagerInterface $entityManager
     ): Response {
         $user = new User();
         $user->setRoles(['ROLE_USER']);
@@ -32,18 +32,25 @@ class SecurityController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $form->getData();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $user = $form->getData();
 
-            $manager->persist($user);
-            $manager->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                'User created with success !'
-            );
+                $this->addFlash(
+                    'success',
+                    'User created with success !'
+                );
 
-            return $this->redirectToRoute('app_security_signin');
+                return $this->redirectToRoute('app_security_signin');
+            } else {
+                $this->addFlash(
+                    'errors',
+                    'Something went wrong !'
+                );
+            }
         }
 
         return $this->render('theme/front/page/security/signup.html.twig', [
@@ -59,8 +66,9 @@ class SecurityController extends AbstractController
      * @return Response
      */
     #[Route('/signin', name: 'app_security_signin', methods: ['GET', 'POST'])]
-    public function SignIn(AuthenticationUtils $authenticationUtils): Response
-    {
+    public function SignIn(
+        AuthenticationUtils $authenticationUtils
+    ): Response {
         return $this->render('theme/front/page/security/signin.html.twig', [
             'last_username' => $authenticationUtils->getLastUsername(),
             'error' => $authenticationUtils->getLastAuthenticationError(),

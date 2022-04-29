@@ -43,6 +43,9 @@ class TwApiHtmlService
             'code' => self::OK,
             'html' => $this->environment->render('theme/admin/common/custom/_select_with_keys.html.twig', [
                 'options' => $rows,
+                'twApiCallCount' => $rows[0]['optionData'],
+                'twApiCallLimit' => 15,
+                'twApiCallIntervale' => '15 mins'
             ]),
         ]);
     }

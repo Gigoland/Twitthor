@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\TwUser;
 use App\Form\TwUserType;
-use App\Repository\UserRepository;
 use App\Repository\TwUserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -21,17 +20,17 @@ class TwUserController extends AbstractController
      * Twitter users manager
      * Admin only
      *
-     * @param UserRepository $repository
-     * @param PaginatorInterface $paginator
      * @param Request $request
+     * @param PaginatorInterface $paginator
+     * @param TwUserRepository $repository
      * @return Response
      */
     #[Route('/tw/users', name: 'app_twitter_users', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function users(
-        TwUserRepository $repository,
+        Request $request,
         PaginatorInterface $paginator,
-        Request $request
+        TwUserRepository $repository
     ): Response {
         $twUsers = $paginator->paginate(
             $repository->findAll(),
@@ -50,34 +49,41 @@ class TwUserController extends AbstractController
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
     #[Route('/tw/user/add', name: 'app_twitter_user_add', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function new(
         Request $request,
-        EntityManagerInterface $manager
+        EntityManagerInterface $entityManager
     ): Response {
         $twUser = new TwUser();
         $form = $this->createForm(TwUserType::class, $twUser);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $twUser = $form->getData();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $twUser = $form->getData();
 
-            $manager->persist($twUser);
-            $manager->flush();
+                $entityManager->persist($twUser);
+                $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                'Twitter user created with success !'
-            );
+                $this->addFlash(
+                    'success',
+                    'Twitter user created with success !'
+                );
 
-            return $this->redirectToRoute('app_twitter_user_edit', [
-                'id' => $twUser->getId(),
-            ]);
+                return $this->redirectToRoute('app_twitter_user_edit', [
+                    'id' => $twUser->getId(),
+                ]);
+            } else {
+                $this->addFlash(
+                    'errors',
+                    'Something went wrong !'
+                );
+            }
         }
 
         return $this->render('theme/admin/page/twitter/user/new.html.twig', [
@@ -90,36 +96,43 @@ class TwUserController extends AbstractController
      * Admin only
      * Protected by CSRF
      *
-     * @param TwUser $twUser
      * @param Request $request
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface $entityManager
+     * @param TwUser $twUser
      * @return Response
      */
     #[Route('/tw/user/edit/{id}', name: 'app_twitter_user_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(
-        TwUser $twUser,
         Request $request,
-        EntityManagerInterface $manager
+        EntityManagerInterface $entityManager,
+        TwUser $twUser
     ): Response {
         $form = $this->createForm(TwUserType::class, $twUser);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $twUser = $form->getData();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $twUser = $form->getData();
 
-            $manager->persist($twUser);
-            $manager->flush();
+                $entityManager->persist($twUser);
+                $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                'Twitter user updated with success !'
-            );
+                $this->addFlash(
+                    'success',
+                    'Twitter user updated with success !'
+                );
 
-            return $this->redirectToRoute('app_twitter_user_edit', [
-                'id' => $twUser->getId(),
-            ]);
+                return $this->redirectToRoute('app_twitter_user_edit', [
+                    'id' => $twUser->getId(),
+                ]);
+            } else {
+                $this->addFlash(
+                    'errors',
+                    'Something went wrong !'
+                );
+            }
         }
 
         return $this->render('theme/admin/page/twitter/user/edit.html.twig', [
@@ -132,18 +145,18 @@ class TwUserController extends AbstractController
      * Delete twitter user by form post
      * Admin only
      *
+     * @param EntityManagerInterface $entityManager
      * @param TwUser $twUser
-     * @param EntityManagerInterface $manager
      * @return Response
      */
     #[Route('/tw/user/delete/{id}', name: 'app_twitter_user_delete', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(
-        TwUser $twUser,
-        EntityManagerInterface $manager
+        EntityManagerInterface $entityManager,
+        TwUser $twUser
     ): Response {
-        $manager->remove($twUser);
-        $manager->flush();
+        $entityManager->remove($twUser);
+        $entityManager->flush();
 
         $this->addFlash(
             'success',

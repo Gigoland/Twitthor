@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class TwApiCallManager
 {
     public function __construct(
-        private EntityManagerInterface $manager
+        private EntityManagerInterface $entityManager
     ) {}
 
     /**
@@ -18,26 +18,24 @@ class TwApiCallManager
      * @param TwApi $twApi
      * @return void
      */
-    public function newTwApiCall(
-        TwApi $twApi
-    ) {
+    public function newTwApiCall(TwApi $twApi)
+    {
         // Add call limit counts
         $twApiCall = new TwApiCall();
         $twApiCall->setTwApi($twApi);
 
-        $this->manager->persist($twApiCall);
-        $this->manager->flush();
+        $this->entityManager->persist($twApiCall);
+        $this->entityManager->flush();
     }
 
     /**
      * Add new limits counter
      *
      * @param TwApi $twApi
-     * @return void
+     * @return integer
      */
-    public function addOneForFollowing(
-        TwApi $twApi
-    ) {
+    public function appendOneCallFollowing(TwApi $twApi): int
+    {
         // Add call limit counts
         $twApiCall = new TwApiCall();
         $twApiCall->setTwApi($twApi);
@@ -48,7 +46,33 @@ class TwApiCallManager
         $twApiCall->setFollowingCnt($count);
         $twApiCall->setFollowingAt($at);
 
-        $this->manager->persist($twApiCall);
-        $this->manager->flush();
+        $this->entityManager->persist($twApiCall);
+        $this->entityManager->flush();
+
+        return $twApiCall->getFollowingCnt();
+    }
+
+    /**
+     * Add new limits counter
+     *
+     * @param TwApi $twApi
+     * @return integer
+     */
+    public function appendOneCallFollowers(TwApi $twApi): int
+    {
+        // Add call limit counts
+        $twApiCall = new TwApiCall();
+        $twApiCall->setTwApi($twApi);
+
+        $count = $twApiCall->getFollowersCnt() + 1;
+        $at = new \DateTimeImmutable();
+
+        $twApiCall->setFollowersCnt($count);
+        $twApiCall->setFollowersAt($at);
+
+        $this->entityManager->persist($twApiCall);
+        $this->entityManager->flush();
+
+        return $twApiCall->getFollowersCnt();
     }
 }

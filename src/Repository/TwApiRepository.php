@@ -53,9 +53,9 @@ class TwApiRepository extends ServiceEntityRepository
      * @param User $user
      * @return integer
      */
-    public function haveValideFollowingSettings(User $user): int
+    public function haveValidFollowingSettings(User $user): int
     {
-        return $this->haveValideSettings($user, 'following');
+        return $this->haveValidSettings($user, 'following');
     }
 
     /**
@@ -64,43 +64,9 @@ class TwApiRepository extends ServiceEntityRepository
      * @param User $user
      * @return integer
      */
-    public function haveValideFollowersSettings(User $user): int
+    public function haveValidFollowersSettings(User $user): int
     {
-        return $this->haveValideSettings($user, 'followers');
-    }
-
-    /**
-     * Check valid settings
-     *
-     * @param User $user
-     * @param string $for
-     * @return integer
-     */
-    private function haveValideSettings(User $user, string $for): int
-    {
-        $qb = $this
-            ->createQueryBuilder('t')
-            ->select('count(t.id)')
-            ->where('t.user = :user')
-            ->andWhere('t.name IS NOT NULL')
-            ->setParameter(':user', $user)
-            ->setMaxResults(1)
-        ;
-
-        switch ($for) {
-            case 'following':
-            case 'followers':
-                $qb
-                    ->andWhere('t.bearerToken IS NOT NULL')
-                    ->andWhere('t.accountId IS NOT NULL')
-                ;
-                break;
-        }
-
-        return (int) $qb
-            ->getQuery()
-            ->getSingleScalarResult()
-        ;
+        return $this->haveValidSettings($user, 'followers');
     }
 
     /**
@@ -140,6 +106,40 @@ class TwApiRepository extends ServiceEntityRepository
         return $qb
             ->getQuery()
             ->getArrayResult()
+        ;
+    }
+
+    /**
+     * Check valid settings
+     *
+     * @param User $user
+     * @param string $for
+     * @return integer
+     */
+    private function haveValidSettings(User $user, string $for): int
+    {
+        $qb = $this
+            ->createQueryBuilder('t')
+            ->select('count(t.id)')
+            ->where('t.user = :user')
+            ->andWhere('t.name IS NOT NULL')
+            ->setParameter(':user', $user)
+            ->setMaxResults(1)
+        ;
+
+        switch ($for) {
+            case 'following':
+            case 'followers':
+                $qb
+                    ->andWhere('t.bearerToken IS NOT NULL')
+                    ->andWhere('t.accountId IS NOT NULL')
+                ;
+                break;
+        }
+
+        return (int) $qb
+            ->getQuery()
+            ->getSingleScalarResult()
         ;
     }
 }

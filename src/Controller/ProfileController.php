@@ -20,14 +20,15 @@ class ProfileController extends AbstractController
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface $entityManager
+     * @param UserPasswordHasherInterface $hasher
      * @return Response
      */
     #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER')")]
     public function editMyProfile(
         Request $request,
-        EntityManagerInterface $manager,
+        EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $hasher
     ): Response {
         /** @var User $user */
@@ -36,27 +37,34 @@ class ProfileController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if (!$hasher->isPasswordValid($user, $form->getData()->getPlainPassword())) {
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                if (!$hasher->isPasswordValid($user, $form->getData()->getPlainPassword())) {
+                    $this->addFlash(
+                        'warnings',
+                        'Your password is incorect !'
+                    );
+
+                    return $this->redirectToRoute('app_profile_edit');
+                }
+
+                $user = $form->getData();
+
+                $entityManager->persist($user);
+                $entityManager->flush();
+
                 $this->addFlash(
-                    'warnings',
-                    'Your password is incorect !'
+                    'success',
+                    'Your updated with success !'
                 );
 
                 return $this->redirectToRoute('app_profile_edit');
+            } else {
+                $this->addFlash(
+                    'errors',
+                    'Something went wrong !'
+                );
             }
-
-            $user = $form->getData();
-
-            $manager->persist($user);
-            $manager->flush();
-
-            $this->addFlash(
-                'success',
-                'Your updated with success !'
-            );
-
-            return $this->redirectToRoute('app_profile_edit');
         }
 
         return $this->render('theme/admin/page/profile/edit_my_profile.html.twig', [
@@ -69,7 +77,7 @@ class ProfileController extends AbstractController
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $manager
+     * @param EntityManagerInterface $entityManager
      * @param UserPasswordHasherInterface $hasher
      * @return Response
      */
@@ -77,7 +85,7 @@ class ProfileController extends AbstractController
     #[Security("is_granted('ROLE_USER')")]
     public function editMyPassword(
         Request $request,
-        EntityManagerInterface $manager,
+        EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $hasher
     ): Response {
         /** @var User $user */
@@ -86,32 +94,39 @@ class ProfileController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if (!$hasher->isPasswordValid($user, $form->getData()['plainPassword'])) {
-                $this->addFlash(
-                    'warnings',
-                    'Your password is incorect !'
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                if (!$hasher->isPasswordValid($user, $form->getData()['plainPassword'])) {
+                    $this->addFlash(
+                        'warnings',
+                        'Your password is incorect !'
+                    );
+
+                    return $this->redirectToRoute('app_profile_password', [
+                        'id' => $user->getId(),
+                    ]);
+                }
+
+                $user->setUpdateAt(new \DateTimeImmutable()); // For force preUpdate
+                $user->setPlainPassword(
+                    $form->getData()['newPassword']
                 );
 
-                return $this->redirectToRoute('app_profile_password', [
-                    'id' => $user->getId(),
-                ]);
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                $this->addFlash(
+                    'success',
+                    'Your password updated with success !'
+                );
+
+                return $this->redirectToRoute('app_profile_password');
+            } else {
+                $this->addFlash(
+                    'errors',
+                    'Something went wrong !'
+                );
             }
-
-            $user->setUpdateAt(new \DateTimeImmutable()); // For force preUpdate
-            $user->setPlainPassword(
-                $form->getData()['newPassword']
-            );
-
-            $manager->persist($user);
-            $manager->flush();
-
-            $this->addFlash(
-                'success',
-                'Your password updated with success !'
-            );
-
-            return $this->redirectToRoute('app_profile_password');
         }
 
         return $this->render('theme/admin/page/profile/edit_my_password.html.twig', [
