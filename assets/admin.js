@@ -16,10 +16,10 @@ var modalTwApiKeys = null,
     $twNextTokenInput = null,
     $twApiKeysModal = null,
     $twApiKeysModalSelect = null,
-    $twApiKeysModalCount = null,
     $twApiKeysModalLoader = null,
-    $twApiKeysModalAlert = null,
-    $twApiKeysModalAlertMsg = null,
+    $twApiKeysModalAlertCount = null,
+    $twApiKeysModalAlertResult = null,
+    $twApiKeysModalAlertMessage = null,
     redirect = null;
 
 // Modal content
@@ -27,13 +27,6 @@ const showTwApiKeysModal = function(response) {
   switch (response.code) {
     case 'success':
       $twApiKeysModal.querySelector('.modal-body').innerHTML = response.html;
-      $twApiKeysModalSelect = $twApiKeysModal.querySelector('#twapi-keys');
-      $twApiKeysModalCount = $twApiKeysModal.querySelector('#twapi-call-counts');
-      $twApiKeysModalAlert = $twApiKeysModal.querySelector('.alert-box');
-      $twApiKeysModalAlertMsg = $twApiKeysModalAlert.querySelector('#ajax-message');
-      $twApiKeysModalSelect.addEventListener('change', function(e) {
-        $twApiKeysModalCount.innerHTML = this.options[this.selectedIndex].getAttribute('data-value');
-      });
       modalTwApiKeys.show();
       break;
     case 'error':
@@ -53,14 +46,15 @@ const callbackUpdate = function(json) {
   if (json.code === 'success') {
     if (json.nextToken) {
       $twNextTokenInput.value = json.nextToken;
-      $twApiKeysModal.querySelector('.btn-ok').innerHTML = 'Continue';
+      $twApiKeysModal.querySelector('.btn-ok').innerHTML = 'Next';
     } else {
-      $twApiKeysModal.querySelector('.btn-ok').disabled = true;
-      $twApiKeysModal.querySelector('.btn-ok').innerHTML = 'Done';
+      $twApiKeysModal.querySelector('.btn-ok').style.display = 'none';
+      $twApiKeysModal.querySelector('.btn-ko').innerHTML = 'Done';
     }
-    $twApiKeysModalCount.innerHTML = json.callCount;
-    $twApiKeysModalAlertMsg.innerHTML = 'Checked : ' + json.checked + ' / Created : ' + json.created + ' / Updated : ' + json.updated;
-    $twApiKeysModalAlert.style.display = 'block';
+    $twApiKeysModalSelect.options[$twApiKeysModalSelect.selectedIndex].setAttribute('data-value', json.callCount);
+    $twApiKeysModalAlertCount.innerHTML = json.callCount;
+    $twApiKeysModalAlertMessage.innerHTML = 'Checked : ' + json.checked + ' / Created : ' + json.created + ' / Updated : ' + json.updated;
+    $twApiKeysModalAlertResult.style.display = 'block';
     redirect = json.path;
   } else {
     //@todo
@@ -128,9 +122,21 @@ window.onload = function() {
     modalTwApiKeys = new Modal($twApiKeysModal);
     $twApiKeysModalLoader = $twApiKeysModal.querySelector('#loader');
 
+    // On show modal
+    $twApiKeysModal.addEventListener('shown.bs.modal', function() {
+      console.log('Modal shown'); //@todo remove
+      $twApiKeysModalSelect = $twApiKeysModal.querySelector('#twapi-keys');
+      $twApiKeysModalAlertCount = $twApiKeysModal.querySelector('#twapi-call-counts');
+      $twApiKeysModalAlertResult = $twApiKeysModal.querySelector('.alert-box-result');
+      $twApiKeysModalAlertMessage = $twApiKeysModalAlertResult.querySelector('#alert-box-result-message');
+      $twApiKeysModalSelect.addEventListener('change', function(e) {
+        $twApiKeysModalAlertCount.innerHTML = this.options[this.selectedIndex].getAttribute('data-value');
+      });
+    });
+
     // On close modal
     $twApiKeysModal.addEventListener('hide.bs.modal', function() {
-      console.log('Modal close'); //@todo remove
+      console.log('Modal hide'); //@todo remove
       if (redirect) {
         window.location.href = redirect;
       }
@@ -139,7 +145,7 @@ window.onload = function() {
     // Update following
     if ($twApiKeysModal.querySelector('#btn-update-following')) {
       $twApiKeysModal.querySelector('#btn-update-following').addEventListener('click', function(e) {
-        $twApiKeysModalAlert.style.display = 'none';
+        $twApiKeysModalAlertResult.style.display = 'none';
         $twApiKeysModalLoader.style.display = 'block';
         $twApiKeysModal.querySelectorAll('.ev').forEach(function($btn) {
           $btn.disabled = true;

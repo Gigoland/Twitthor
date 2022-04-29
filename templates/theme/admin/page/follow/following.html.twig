@@ -112,7 +112,7 @@
   {% if haveTwApiKeys|default(false) %}
     {% import "theme/admin/common/macro/_modal.html.twig" as macroModal %}
 
-    {{ macroModal.withBtnOkClose('modal-twapi-keys', 'Settings', 'Do not close. It may take time...', 'btn-update-following') }}
+    {{ macroModal.withBtnOkClose('modal-twapi-keys', 'Settings', 'btn-update-following') }}
 
     {{ form(ajaxTwApiForm) }}
   {% endif %}

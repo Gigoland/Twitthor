@@ -36,8 +36,12 @@ class TwApiCallManager
      */
     public function appendOneCallFollowing(TwApi $twApi): int
     {
+        $twApiCall = $this->entityManager
+            ->getRepository(TwApiCall::class)
+            ->findOneBy(['twApi' => $twApi])
+        ;
+
         // Add call limit counts
-        $twApiCall = new TwApiCall();
         $twApiCall->setTwApi($twApi);
 
         $count = $twApiCall->getFollowingCnt() + 1;
@@ -60,8 +64,12 @@ class TwApiCallManager
      */
     public function appendOneCallFollowers(TwApi $twApi): int
     {
+        $twApiCall = $this->entityManager
+            ->getRepository(TwApiCall::class)
+            ->findOneBy(['twApi' => $twApi])
+        ;
+
         // Add call limit counts
-        $twApiCall = new TwApiCall();
         $twApiCall->setTwApi($twApi);
 
         $count = $twApiCall->getFollowersCnt() + 1;

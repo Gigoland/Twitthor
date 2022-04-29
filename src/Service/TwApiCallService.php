@@ -25,7 +25,7 @@ class TwApiCallService
     private TwitthorManager $twitthorManager;
     private string $avatarsPath;
 
-	public function __construct(
+    public function __construct(
         private EntityManagerInterface $entityManager,
         private TwUserRepository $twUserRepository,
         private FollowRepository $followRepository,
@@ -143,11 +143,11 @@ class TwApiCallService
             ])
             ->clearQueryFields()
             ->setQueryFields([
-                'user.fields' => 'id,name,username,verified,profile_image_url,entities,created_at',
+                'user.fields' => 'id,username,name,profile_image_url,entities,url,verified,created_at',
                 'max_results' => 1000,
             ])
             ->setResponseFields([
-                'id', 'name', 'username', 'verified', 'profile_image_url', 'entities', 'created_at',
+                'id', 'username', 'name', 'profile_image_url', 'entities', 'url', 'verified', 'created_at',
             ])
             ->getFollowing()
         ;
@@ -170,11 +170,11 @@ class TwApiCallService
             ])
             ->clearQueryFields()
             ->setQueryFields([
-                'user.fields' => 'id,name,username,verified,profile_image_url,entities,created_at',
+                'user.fields' => 'id,username,name,profile_image_url,entities,url,verified,created_at',
                 'max_results' => 1000,
             ])
             ->setResponseFields([
-                'id', 'name', 'username', 'verified', 'profile_image_url', 'entities', 'created_at',
+                'id', 'username', 'name', 'profile_image_url', 'entities', 'url', 'verified', 'created_at',
             ])
             ->getFollowers()
         ;
@@ -235,11 +235,17 @@ class TwApiCallService
             // Get file full name
             $twProfileImage = $url->getPart($row['profile_image_url'], 'basename');
 
-            // Get expended url
-            $twUrl = $this->getExpendedUrl($row['entities']);
+            // Entities
+            if (empty($row['entities'])) {
+                $twUrl = $url->trimW3($row['url']);
+                $twTags = null;
+            } else {
+                // Get expended url
+                $twUrl = $this->getExpendedUrl($row['entities']);
 
-            // Get description tags
-            $twTags = $this->getTags($row['entities']);
+                // Get description tags
+                $twTags = $this->getTags($row['entities']);
+            }
 
             if (!$twUser) {
                 // New
@@ -375,8 +381,17 @@ class TwApiCallService
             // Get file full name
             $twProfileImage = $url->getPart($row['profile_image_url'], 'basename');
 
-            // Get expended url
-            $twUrl = $this->getExpendedUrl($row['entities']);
+            // Entities
+            if (empty($row['entities'])) {
+                $twUrl = $url->trimW3($row['url']);
+                $twTags = null;
+            } else {
+                // Get expended url
+                $twUrl = $this->getExpendedUrl($row['entities']);
+
+                // Get description tags
+                $twTags = $this->getTags($row['entities']);
+            }
 
             if (!$twUser) {
                 // New
@@ -507,19 +522,30 @@ class TwApiCallService
      * @param [type] $entities
      * @return string
      */
-    private function getExpendedUrl($entities): string
+    private function getExpendedUrl($entities): ?string
     {
+        if (empty($entities['url']['urls'])) {
+            return null;
+        }
+
         $url = new Url();
 
-        // Trim www.
-        return $url->trimW3($entities['url'][0]);
+        // Get first item
+        foreach ($entities['url']['urls'] as $item) {
+            if (empty($item['expanded_url'])) {
+                continue;
+            }
+
+            // Trim www.
+            return $url->trimW3($item['expanded_url']);
+        }
     }
 
     /**
      * Get tags
      *
      * @param [type] $entities
-     * @return void
+     * @return string
      */
     private function getTags($entities): ?string
     {
@@ -530,6 +556,10 @@ class TwApiCallService
         $tags = [];
 
         foreach ($entities['description']['hashtags'] as $item) {
+            if (empty($item['tag'])) {
+                continue;
+            }
+
             $tags[] = $item['tag'];
         }
 
