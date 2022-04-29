@@ -206,7 +206,7 @@ class TwApiCallService
         $url = new Url();
 
         // Get all following from db before update
-        //$noFollowingTwUserIds = $this->twUserRepository->getFollowingTwAccountIds($user);
+        //$noFollowingTwAccountIds = $this->twUserRepository->getFollowingTwAccountIds($user);
 
         // Set max execution time
         if (count($rows) > 999) {
@@ -220,8 +220,8 @@ class TwApiCallService
             }
 
             // Found no following
-            //if (isset($noFollowingTwUserIds[$row['id']])) {
-            //    unset($noFollowingTwUserIds[$row['id']]);
+            //if (isset($noFollowingTwAccountIds[$row['id']])) {
+            //    unset($noFollowingTwAccountIds[$row['id']]);
             //}
 
             $saveTwUser = false;
@@ -229,7 +229,7 @@ class TwApiCallService
 
             // Find in db
             $twUser = $this->twUserRepository->findOneBy([
-                'twUserId' => $row['id']
+                'twAccountId' => $row['id']
             ]);
 
             // Get file full name
@@ -317,7 +317,7 @@ class TwApiCallService
         }
 
         // Update no following
-        //$this->twUserRepository->updateNoFollowingByIds($noFollowingTwUserIds);
+        //$this->twUserRepository->updateNoFollowingByIds($noFollowingTwAccountIds);
 
         return $result;
     }
@@ -346,7 +346,7 @@ class TwApiCallService
         $url = new Url();
 
         // Get all followers from db before update
-        //$noFollowersTwUserIds = $this->twUserRepository->getFollowersTwAccountIds($user);
+        //$noFollowersTwAccountIds = $this->twUserRepository->getFollowersTwAccountIds($user);
 
         // Set max execution time
         if (count($rows) > 999) {
@@ -360,8 +360,8 @@ class TwApiCallService
             }
 
             // Found no follower
-            //if (isset($noFollowersTwUserIds[$row['id']])) {
-            //    unset($noFollowersTwUserIds[$row['id']]);
+            //if (isset($noFollowersTwAccountIds[$row['id']])) {
+            //    unset($noFollowersTwAccountIds[$row['id']]);
             //}
 
             $saveTwUser = false;
@@ -369,7 +369,7 @@ class TwApiCallService
 
             // Find in db
             $twUser = $this->twUserRepository->findOneBy([
-                'twUserId' => $row['id']
+                'twAccountId' => $row['id']
             ]);
 
             // Get file full name

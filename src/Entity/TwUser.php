@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-#[UniqueEntity('twUserId')]
+#[UniqueEntity('twAccountId')]
 #[UniqueEntity('twUsername')]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: TwUserRepository::class)]
@@ -24,7 +24,7 @@ class TwUser
     #[ORM\Column(type: 'bigint', length: 20, nullable: false)]
     #[Assert\Length(min: 1, max: 20)]
     #[Assert\NotBlank()]
-    private string $twAccountId;
+    private ?int $twAccountId;
 
     #[ORM\Column(type: 'string', length: 22)]
     #[Assert\Length(min: 1, max: 22)]

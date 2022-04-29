@@ -38,7 +38,7 @@ class AppFixtures extends Fixture
             $user = new User();
             $user
                 ->setEmail($this->faker->email())
-                ->setTwUserId($this->faker->randomNumber(5, true))
+                ->setTwAccountId($this->faker->randomNumber(5, true))
                 ->setTwUsername($this->faker->numerify('user-#####'))
                 ->setWalletEth($this->faker->uuid())
                 ->setWalletSol($this->faker->uuid())
@@ -56,7 +56,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 100; $i++) {
             $twUser = new TwUser();
             $twUser
-                ->setTwUserId($this->faker->randomNumber(5, true))
+                ->setTwAccountId($this->faker->randomNumber(5, true))
                 ->setTwUsername($this->faker->numerify('user-#####'))
                 ->setTwName($this->faker->name())
                 ->setTwIsVerified(mt_rand(0, 1) == 1 ? true : false)

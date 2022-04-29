@@ -38,7 +38,7 @@ class UserNewType extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('twUserId', NumberType::class, [
+            ->add('twAccountId', NumberType::class, [
                 'attr' => [
                     'maxlength' => 55,
                 ],

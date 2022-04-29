@@ -32,12 +32,12 @@ const showTwApiKeysModal = function(response) {
       $twApiKeysModalAlert = $twApiKeysModal.querySelector('.alert-box');
       $twApiKeysModalAlertMsg = $twApiKeysModalAlert.querySelector('#ajax-message');
       $twApiKeysModalSelect.addEventListener('change', function(e) {
-        console.log(this.getAttribute('data-value'));
+        $twApiKeysModalCount.innerHTML = this.options[this.selectedIndex].getAttribute('data-value');
       });
       modalTwApiKeys.show();
       break;
     case 'error':
-      //@todo
+      //@todothis
       break;
   }
 };
@@ -58,6 +58,7 @@ const callbackUpdate = function(json) {
       $twApiKeysModal.querySelector('.btn-ok').disabled = true;
       $twApiKeysModal.querySelector('.btn-ok').innerHTML = 'Done';
     }
+    $twApiKeysModalCount.innerHTML = json.callCount;
     $twApiKeysModalAlertMsg.innerHTML = 'Checked : ' + json.checked + ' / Created : ' + json.created + ' / Updated : ' + json.updated;
     $twApiKeysModalAlert.style.display = 'block';
     redirect = json.path;

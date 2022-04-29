@@ -29,21 +29,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email()]
     private string $email;
 
-    #[ORM\Column(type: 'string', length: 55, nullable: true)]
-    #[Assert\Length(min: 1, max: 55)]
-    private ?string $twUserId = null;
+    #[ORM\Column(type: 'bigint', length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
+    private ?int $twAccountId;
 
     #[ORM\Column(type: 'string', length: 22, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
-    private ?string $twUsername = null;
+    private ?string $twUsername;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
-    private ?string $walletEth = null;
+    private ?string $walletEth;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(min: 1, max: 55)]
-    private ?string $walletSol = null;
+    private ?string $walletSol;
 
     #[ORM\Column(type: 'json')]
     #[Assert\NotNull()]
@@ -115,14 +115,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
-    public function getTwUserId(): ?string
+    public function getTwAccountId(): ?string
     {
-        return $this->twUserId;
+        return $this->twAccountId;
     }
 
-    public function setTwUserId(?string $twUserId): self
+    public function setTwAccountId(?string $twAccountId): self
     {
-        $this->twUserId = $twUserId;
+        $this->twAccountId = $twAccountId;
 
         return $this;
     }

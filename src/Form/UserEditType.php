@@ -22,7 +22,7 @@ class UserEditType extends AbstractType
         $builder
             ->setMethod('POST')
 
-            ->add('twUserId', NumberType::class, [
+            ->add('twAccountId', NumberType::class, [
                 'attr' => [
                     'maxlength' => 55,
                 ],
@@ -64,9 +64,6 @@ class UserEditType extends AbstractType
             ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Password',
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
                 'required' => false,
             ])
 

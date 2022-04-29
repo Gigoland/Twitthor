@@ -46,7 +46,7 @@ class RegistrationType extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('twUserId', NumberType::class, [
+            ->add('twAccountId', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control rounded-pill border-0 shadow-sm px-4',
                     'minlength' => 1,
