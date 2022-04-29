@@ -1,10 +1,10 @@
-{% macro easySelect(rows, label, id, class) %}
+{% macro easySelect(options, label, id, class) %}
 	<div class="{{ class|default('select-style-1') }}">
 		<label>{{ label }}</label>
 		<div class="select-position">
 			<select class="ev"{% if id is defined %} id="{{ id }}"{% endif %}{% if name is defined %} name="{{ name }}"{% endif %}>
-				{% for key, value in rows %}
-					<option value="{{ key }}">{{ value }}</option>
+				{% for option in options %}
+					<option{% if option.optionData is defined %} data-value="{{ option.optionData }}"{% endif %} value="{{ option.optionValue }}">{{ option.optionText }}</option>
 				{% endfor %}
 			</select>
 		</div>

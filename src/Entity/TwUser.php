@@ -21,9 +21,10 @@ class TwUser
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
-    #[ORM\Column(type: 'bigint', nullable: false)]
-    #[Assert\NotNull()]
-    private string $twUserId;
+    #[ORM\Column(type: 'bigint', length: 20, nullable: false)]
+    #[Assert\Length(min: 1, max: 20)]
+    #[Assert\NotBlank()]
+    private string $twAccountId;
 
     #[ORM\Column(type: 'string', length: 22)]
     #[Assert\Length(min: 1, max: 22)]
@@ -34,11 +35,16 @@ class TwUser
     #[Assert\NotBlank()]
     private string $twName;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 55, nullable: true)]
+    #[Assert\Length(max: 55)]
     private ?string $twProfileImage;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
     private ?string $twUrl;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private $twTags;
 
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => 0])]
     #[Assert\NotNull()]
@@ -82,14 +88,14 @@ class TwUser
         return $this->id;
     }
 
-    public function getTwUserId(): ?string
+    public function getTwAccountId(): ?string
     {
-        return $this->twUserId;
+        return $this->twAccountId;
     }
 
-    public function setTwUserId(string $twUserId): self
+    public function setTwAccountId(string $twAccountId): self
     {
-        $this->twUserId = $twUserId;
+        $this->twAccountId = $twAccountId;
 
         return $this;
     }
@@ -138,6 +144,18 @@ class TwUser
     public function seTwtUrl(?string $twUrl): self
     {
         $this->twUrl = $twUrl;
+
+        return $this;
+    }
+
+    public function getTwTags(): ?string
+    {
+        return $this->twTags;
+    }
+
+    public function setTwTags(?string $twTags): self
+    {
+        $this->twTags = $twTags;
 
         return $this;
     }
@@ -227,6 +245,9 @@ class TwUser
      */
     public function getAvatar(): string
     {
-        return './uploads/images/avatar/' . $this->twUserId . '/' . $this->twProfileImage;
+        return './uploads/images/avatar/'
+            . $this->getTwAccountId()
+            . '/'
+            . $this->getTwProfileImage();
     }
 }

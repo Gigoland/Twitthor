@@ -7,21 +7,31 @@
         {% if actions is defined %}
           {% for action in actions %}
             {% if action.type|default(null) == 'form' %}
-              {{ form_start(action.form, {'method': 'POST', 'action': action.path|default(''), 'attr': {'id': action.id|default('')}}) }}
+
+              {{ form_start(action.form, {
+                'method': 'POST',
+                'action': action.path|default(''),
+                'attr': {'id': action.id|default('')}
+              }) }}
                 {% if action.icon is defined %}
                   {{ form_row(action.form.submit, {'label': '<i class="fa-solid ' ~ action.icon ~ '"></i>' ~ action.title|default('')}) }}
                 {% else %}
                   {{ form_row(action.form.submit, {'label': action.title|default('')}) }}
                 {% endif %}
               {{ form_end(action.form) }}
+
             {% elseif action.type|default(null) == 'modal' %}
+
               <a href="#" class="main-btn primary-btn btn-hover btn-sm" data-bs-toggle="modal" data-bs-target="#{{ action.target|default('modal') }}">
                 <i class="fa-solid {{ action.icon|default('fa-triangle-exclamation') }}"></i> {{ action.title|default('') }}
               </a>
+
             {% else %}
+
               <a href="{{ action.path|default('#') }}" class="main-btn primary-btn btn-hover btn-sm"{% if action.id|default(null) %} id="{{ action.id }}"{% endif %}>
                 <i class="fa-solid {{ action.icon|default('fa-triangle-exclamation') }}"></i> {{ action.title|default('') }}
               </a>
+
             {% endif %}
           {% endfor %}
         {% endif %}

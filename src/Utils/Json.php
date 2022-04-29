@@ -5,6 +5,17 @@ namespace App\Utils;
 class Json
 {
     /**
+     * Json encode
+     *
+     * @param array $data
+     * @return void
+     */
+    public function encode(array $data)
+    {
+        return json_encode($data);
+    }
+
+    /**
      * Json decode
      *
      * @param string $data
@@ -12,7 +23,7 @@ class Json
      *
      * @return void
      */
-    public function decode($data, $isAssoc = true)
+    public function decode($data, $isAssoc = true): ?array
     {
         return json_decode($data, $isAssoc);
     }
@@ -24,7 +35,7 @@ class Json
      *
      * @return bool|string
      */
-    public function getJsoneError($jsonLastError)
+    public function getJsoneError($jsonLastError): ?string
     {
         switch ($jsonLastError) {
             case JSON_ERROR_NONE:

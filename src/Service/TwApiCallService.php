@@ -2,16 +2,17 @@
 
 namespace App\Service;
 
+use App\Utils\Url;
 use App\Utils\File;
+use App\Utils\Json;
 use App\Entity\User;
 use App\Entity\TwApi;
 use App\Entity\Follow;
 use App\Entity\TwUser;
-use App\Utils\VarString;
-use App\Manager\Twitthor;
+use App\Manager\TwitthorManager;
+use App\Manager\TwApiCallManager;
 use App\Repository\FollowRepository;
 use App\Repository\TwUserRepository;
-use App\Utils\Url;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,15 +22,14 @@ class TwApiCallService
     const OK = 'success';
     const KO = 'error';
 
-    private $avatarsPath;
-
-    /** @var Twitthor $twitthor */
-    private $twitthor;
+    private TwitthorManager $twitthorManager;
+    private string $avatarsPath;
 
 	public function __construct(
         private EntityManagerInterface $manager,
         private TwUserRepository $twUserRepository,
-        private FollowRepository $followRepository
+        private FollowRepository $followRepository,
+        private TwApiCallManager $twApiCallManager
     ) {}
 
     /**
@@ -54,15 +54,11 @@ class TwApiCallService
         }
 
         // Initialisation
-        $this->twitthor = new Twitthor([
-            'twitter_consumer_key' => $twApi->getConsumerKey(),
-            'twitter_consumer_secret' => $twApi->getConsumerSecret(),
+        $this->twitthorManager = new TwitthorManager([
             'twitter_bearer_token' => $twApi->getBearerToken(),
-            'twitter_access_token' => $twApi->getAccessToken(),
-            'twitter_access_token_secret' => $twApi->getAccessTokenSecret(),
         ]);
 
-        $this->twitthor
+        $this->twitthorManager
             // Set for user twitter account
             ->setTwitterAccountId($twApi->getAccountId())
             // Set next pagination token
@@ -78,7 +74,7 @@ class TwApiCallService
             'checked' => $result['check'],
             'created' => count($result['insert']),
             'updated' => count($result['update']),
-            'nextToken' => $this->twitthor->getNextToken(),
+            'nextToken' => $this->twitthorManager->getNextToken(),
             'path' => $rediretPath,
         ]);
     }
@@ -105,15 +101,11 @@ class TwApiCallService
         }
 
         // Initialisation
-        $this->twitthor = new Twitthor([
-            'twitter_consumer_key' => $twApi->getConsumerKey(),
-            'twitter_consumer_secret' => $twApi->getConsumerSecret(),
+        $this->twitthorManager = new TwitthorManager([
             'twitter_bearer_token' => $twApi->getBearerToken(),
-            'twitter_access_token' => $twApi->getAccessToken(),
-            'twitter_access_token_secret' => $twApi->getAccessTokenSecret(),
         ]);
 
-        $this->twitthor
+        $this->twitthorManager
             // Set for user twitter account
             ->setTwitterAccountId($twApi->getAccountId())
             // Set next pagination token
@@ -129,7 +121,7 @@ class TwApiCallService
             'checked' => $result['check'],
             'created' => count($result['insert']),
             'updated' => count($result['update']),
-            'nextToken' => $this->twitthor->getNextToken(),
+            'nextToken' => $this->twitthorManager->getNextToken(),
             'path' => $rediretPath,
         ]);
     }
@@ -142,18 +134,18 @@ class TwApiCallService
      */
     private function updateFollowingByUser(User $user): array
     {
-        $following = $this->twitthor
+        $following = $this->twitthorManager
             ->setSettings([
                 'max_pagination' => 1,
                 'sleep_pagination_token' => 5,
             ])
             ->clearQueryFields()
             ->setQueryFields([
-                'user.fields' => 'id,name,username,verified,profile_image_url,url,created_at',
+                'user.fields' => 'id,name,username,verified,profile_image_url,entities,created_at',
                 'max_results' => 1000,
             ])
             ->setResponseFields([
-                'id', 'name', 'username', 'verified', 'profile_image_url', 'url', 'created_at',
+                'id', 'name', 'username', 'verified', 'profile_image_url', 'entities', 'created_at',
             ])
             ->getFollowing()
         ;
@@ -169,18 +161,18 @@ class TwApiCallService
      */
     private function updateFollowersByUser(User $user): array
     {
-        $following = $this->twitthor
+        $following = $this->twitthorManager
             ->setSettings([
                 'max_pagination' => 1,
                 'sleep_pagination_token' => 5,
             ])
             ->clearQueryFields()
             ->setQueryFields([
-                'user.fields' => 'id,name,username,verified,profile_image_url,url,created_at',
+                'user.fields' => 'id,name,username,verified,profile_image_url,entities,created_at',
                 'max_results' => 1000,
             ])
             ->setResponseFields([
-                'id', 'name', 'username', 'verified', 'profile_image_url', 'url', 'created_at',
+                'id', 'name', 'username', 'verified', 'profile_image_url', 'entities', 'created_at',
             ])
             ->getFollowers()
         ;
@@ -203,9 +195,16 @@ class TwApiCallService
             'update' => [],
         ];
 
+        if (empty($rows)) {
+            return $result;
+        }
+
         $fs = new Filesystem();
         $file = new File();
         $url = new Url();
+
+        // Get all following from db before update
+        //$noFollowingTwUserIds = $this->twUserRepository->getFollowingTwAccountIds($user);
 
         // Set max execution time
         if (count($rows) > 999) {
@@ -218,6 +217,11 @@ class TwApiCallService
                 continue;
             }
 
+            // Found no following
+            //if (isset($noFollowingTwUserIds[$row['id']])) {
+            //    unset($noFollowingTwUserIds[$row['id']]);
+            //}
+
             $saveTwUser = false;
             $saveFollow = false;
 
@@ -229,13 +233,16 @@ class TwApiCallService
             // Get file full name
             $twProfileImage = $url->getPart($row['profile_image_url'], 'basename');
 
-            // Trim www.
-            $twUrl = $url->trimW3($row['url']);
+            // Get expended url
+            $twUrl = $this->getExpendedUrl($row['entities']);
+
+            // Get description tags
+            $twTags = $this->getTags($row['entities']);
 
             if (!$twUser) {
                 // New
                 $twUser = new TwUser();
-                $twUser->setTwUserId($row['id']);
+                $twUser->setTwAccountId($row['id']);
                 $twUser->setTwCreatedAt(
                     new \DateTimeImmutable($row['created_at'])
                 );
@@ -307,6 +314,9 @@ class TwApiCallService
             $result['check']++;
         }
 
+        // Update no following
+        //$this->twUserRepository->updateNoFollowingByIds($noFollowingTwUserIds);
+
         return $result;
     }
 
@@ -325,9 +335,16 @@ class TwApiCallService
             'update' => [],
         ];
 
+        if (empty($rows)) {
+            return $result;
+        }
+
         $fs = new Filesystem();
         $file = new File();
         $url = new Url();
+
+        // Get all followers from db before update
+        //$noFollowersTwUserIds = $this->twUserRepository->getFollowersTwAccountIds($user);
 
         // Set max execution time
         if (count($rows) > 999) {
@@ -340,6 +357,11 @@ class TwApiCallService
                 continue;
             }
 
+            // Found no follower
+            //if (isset($noFollowersTwUserIds[$row['id']])) {
+            //    unset($noFollowersTwUserIds[$row['id']]);
+            //}
+
             $saveTwUser = false;
             $saveFollow = false;
 
@@ -351,13 +373,13 @@ class TwApiCallService
             // Get file full name
             $twProfileImage = $url->getPart($row['profile_image_url'], 'basename');
 
-            // Trim www.
-            $twUrl = $url->trimW3($row['url']);
+            // Get expended url
+            $twUrl = $this->getExpendedUrl($row['entities']);
 
             if (!$twUser) {
                 // New
                 $twUser = new TwUser();
-                $twUser->setTwUserId($row['id']);
+                $twUser->setTwAccountId($row['id']);
                 $twUser->setTwCreatedAt(
                     new \DateTimeImmutable($row['created_at'])
                 );
@@ -475,5 +497,46 @@ class TwApiCallService
         return new JsonResponse([
             'code' => $code,
         ]);
+    }
+
+    /**
+     * Get url
+     *
+     * @param [type] $entities
+     * @return string
+     */
+    private function getExpendedUrl($entities): string
+    {
+        $url = new Url();
+
+        // Trim www.
+        return $url->trimW3($entities['url'][0]);
+    }
+
+    /**
+     * Get tags
+     *
+     * @param [type] $entities
+     * @return void
+     */
+    private function getTags($entities): ?string
+    {
+        if (empty($entities['description']['hashtags'])) {
+            return null;
+        }
+
+        $tags = [];
+
+        foreach ($entities['description']['hashtags'] as $item) {
+            $tags[] = $item['tag'];
+        }
+
+        if (empty($tags)) {
+            return null;
+        }
+
+        $json = new Json();
+
+        return $json->encode($tags);
     }
 }

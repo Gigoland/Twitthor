@@ -6,6 +6,7 @@ use App\Entity\Follow;
 use App\Form\FollowType;
 use App\Form\AjaxEasyType;
 use App\Form\AjaxTwApiType;
+use App\Repository\TwApiRepository;
 use App\Repository\FollowRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -21,7 +22,8 @@ class FollowController extends AbstractController
     /**
      * Following manager
      *
-     * @param FollowRepository $repository
+     * @param FollowRepository $followRepository
+     * @param TwApiRepository $twApirepository
      * @param PaginatorInterface $paginator
      * @param Request $request
      * @return Response
@@ -29,13 +31,14 @@ class FollowController extends AbstractController
     #[Route('/following', name: 'app_following', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function following(
-        FollowRepository $repository,
+        FollowRepository $followRepository,
+        TwApiRepository $twApirepository,
         PaginatorInterface $paginator,
         Request $request
     ): Response {
         // Get connected user followers
         $following = $paginator->paginate(
-            $repository->findBy([
+            $followRepository->findBy([
                 'user' => $this->getUser(),
                 'isFollowing' => true,
             ]),
@@ -47,22 +50,24 @@ class FollowController extends AbstractController
         $ajaxEasyForm = $this->createForm(AjaxEasyType::class);
 
         // For ajax hidden form for update following
-        $ajaxHiddenForm = $this->createForm(AjaxTwApiType::class, null, [
+        $ajaxTwApiForm = $this->createForm(AjaxTwApiType::class, null, [
             'action' => $this->generateUrl('app_ajax_update_following', ['id' => 0]),
             'attr' => ['id' => 'ajax-update-following'],
         ]);
 
         return $this->render('theme/admin/page/follow/following.html.twig', [
             'following' => $following,
+            'haveTwApiKeys' => $twApirepository->haveValideFollowingSettings($this->getUser()),
             'ajaxEasyForm' => $ajaxEasyForm->createView(),
-            'ajaxHiddenForm' => $ajaxHiddenForm->createView(),
+            'ajaxTwApiForm' => $ajaxTwApiForm->createView(),
         ]);
     }
 
     /**
      * Followers manager
      *
-     * @param FollowRepository $repository
+     * @param FollowRepository $followRepository
+     * @param TwApiRepository $twApirepository
      * @param PaginatorInterface $paginator
      * @param Request $request
      * @return Response
@@ -70,13 +75,14 @@ class FollowController extends AbstractController
     #[Route('/followers', name: 'app_followers', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function followers(
-        FollowRepository $repository,
+        FollowRepository $followRepository,
+        TwApiRepository $twApirepository,
         PaginatorInterface $paginator,
         Request $request
     ): Response {
         // Get connected user followers
         $followers = $paginator->paginate(
-            $repository->findBy([
+            $followRepository->findBy([
                 'user' => $this->getUser(),
                 'isFollower' => true,
             ]),
@@ -88,22 +94,23 @@ class FollowController extends AbstractController
         $ajaxEasyForm = $this->createForm(AjaxEasyType::class);
 
         // For ajax hidden form for update followers
-        $ajaxHiddenForm = $this->createForm(AjaxTwApiType::class, null, [
+        $ajaxTwApiForm = $this->createForm(AjaxTwApiType::class, null, [
             'action' => $this->generateUrl('app_ajax_update_followers', ['id' => 0]),
             'attr' => ['id' => 'ajax-update-followers'],
         ]);
 
         return $this->render('theme/admin/page/follow/followers.html.twig', [
             'followers' => $followers,
+            'haveTwApiKeys' => $twApirepository->haveValideFollowersSettings($this->getUser()),
             'ajaxEasyForm' => $ajaxEasyForm->createView(),
-            'ajaxHiddenForm' => $ajaxHiddenForm->createView(),
+            'ajaxTwApiForm' => $ajaxTwApiForm->createView(),
         ]);
     }
 
     /**
      * No follows "outers" manager
      *
-     * @param FollowRepository $repository
+     * @param FollowRepository $followRepository
      * @param PaginatorInterface $paginator
      * @param Request $request
      * @return Response
@@ -111,13 +118,13 @@ class FollowController extends AbstractController
     #[Route('/outers', name: 'app_outers', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function outers(
-        FollowRepository $repository,
+        FollowRepository $followRepository,
         PaginatorInterface $paginator,
         Request $request
     ): Response {
         // Get connected user followers
         $outers = $paginator->paginate(
-            $repository->findBy([
+            $followRepository->findBy([
                 'user' => $this->getUser(),
                 'isFollowing' => false,
                 'isFollower' => false,

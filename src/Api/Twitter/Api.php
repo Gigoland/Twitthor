@@ -291,7 +291,7 @@ abstract class Api
      */
     private function getRequest(string $url, string $methode, bool $isJson = true)
     {
-        // For header
+        // For header (Bearer)
         $authorization = sprintf(
             'Authorization: Bearer %s',
             $this->twitterBearerToken

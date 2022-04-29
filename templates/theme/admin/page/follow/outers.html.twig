@@ -30,14 +30,12 @@
                   <tr class="text-nowrap">
                     <th><h6>🐥 Name</h6></th>
                     <th><h6>🐥 Usernme</h6></th>
+                    <th><h6>🐥 Url</h6></th>
                     <th><h6>🐥 ID</h6></th>
+                    <th><h6>🐥 Joined</h6></th>
                     <th><h6>🐥 Verified</h6></th>
                     <th><h6>Favorite</h6></th>
-                    <th><h6>Wallet ETH</h6></th>
-                    <th><h6>Wallet SOL</h6></th>
-                    <th><h6>Created</h6></th>
-                    <th><h6>Updated</h6></th>
-                    <th><h6>Follow</h6></th>
+                    <th><h6>Action</h6></th>
                     <th><h6>Edit</h6></th>
                     <th><h6>Delete</h6></th>
                   </tr>
@@ -48,24 +46,22 @@
                       <td class="min-width">
                         <div class="lead">
                           <div class="lead-image">
-                            <img src="{{ asset('src/images/lead/lead-1.png') }}" alt="Avatar">
+                            <img src="{{ follow.twUser.avatar }}" alt="Avatar" title="{{ follow.twUser.twName }}">
                           </div>
                           <div class="lead-text">
-                            <p>{{ follow.twUser.twName }}</p>
+                            <p>{{ follow.twUser.twName|slice(0, 20) ~ '...' }}</p>
                           </div>
                         </div>
                       </td>
-                      <td class="min-width"><p>{{ follow.twUser.twUsername }}</p></td>
-                      <td class="min-width"><p>{{ follow.twUser.twUserId }}</p></td>
+                      <td class="min-width"><p title="{{ follow.twUser.twUsername }}">@{{ follow.twUser.twUsername|slice(0, 20) ~ '...' }}</p></td>
+                      <td class="min-width"><p title="{{ follow.twUser.twUrl }}">{{ follow.twUser.twUrl|slice(0, 20) ~ '...' }}</p></td>
+                      <td class="min-width"><p>{{ follow.twUser.twAccountId }}</p></td>
+                      <td class="min-width"><p>{{ follow.twUser.twCreatedAt|date('d/m/Y H:i') }}</p></td>
                       <td class="min-width"><p><span class="badge bg-secondary">{{ follow.twUser.twIsVerified ? 'Yes' : 'No' }}</span></p></td>
                       <td class="min-width"><p>{{ follow.isFavorite ? '<span class="badge rounded-pill">⭐️</span>' : '<span class="badge bg-secondary">No</span>' }}</p></td>
-                      <td class="min-width"><p>{{ follow.walletEth }}</p></td>
-                      <td class="min-width"><p>{{ follow.walletSol }}</p></td>
-                      <td class="min-width"><p>{{ follow.createAt|date('d/m/Y h:i') }}</p></td>
-                      <td class="min-width"><p>{{ follow.updateAt|date('d/m/Y h:i') }}</p></td>
                       <td>
                         <div class="action">
-                          <a href="#" class="btn btn-light">Follow</a>
+                          <a href="#" class="btn btn-{{ follow.isFavorite ? 'info' : 'warning' }}">Unfollow</a>
                         </div>
                       </td>
                       <td>

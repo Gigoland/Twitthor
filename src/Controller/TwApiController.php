@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\TwApi;
+use App\Entity\TwApiCall;
 use App\Form\TwApiType;
 use App\Form\AjaxTwApiType;
+use App\Manager\TwApiCallManager;
 use App\Service\TwApiCallService;
 use App\Service\TwApiHtmlService;
 use App\Repository\TwApiRepository;
@@ -61,7 +63,8 @@ class TwApiController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function new(
         Request $request,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        TwApiCallManager $twApiCallManager
     ): Response {
         $twApi = new TwApi();
         $form = $this->createForm(TwApiType::class, $twApi, [
@@ -76,6 +79,9 @@ class TwApiController extends AbstractController
 
             $manager->persist($twApi);
             $manager->flush();
+
+            // Add new call limit counts
+            $twApiCallManager->newTwApiCall($twApi);
 
             $this->addFlash(
                 'success',
@@ -162,16 +168,19 @@ class TwApiController extends AbstractController
      * Protected by CSRF
      * Ajax only
      *
+     * @param Request $request
      * @param TwApiHtmlService $service
      * @return JsonResponse
      */
     #[Route('/tw/ajax/keys', name: 'app_ajax_twitter_api_keys', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER')")]
     public function ajaxGetMyKeys(
+        Request $request,
         TwApiHtmlService $service
     ): JsonResponse {
         return $service->getSelectKeysByUser(
-            $this->getUser()
+            $this->getUser(),
+            $request->query->get('query')
         );
     }
 

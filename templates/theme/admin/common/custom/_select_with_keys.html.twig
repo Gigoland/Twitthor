@@ -1,7 +1,14 @@
 {% import "theme/admin/common/macro/_select.html.twig" as macroSelect %}
 
-{{ macroSelect.easySelect(rows, 'Keys', 'twapi-key') }}
+{{ macroSelect.easySelect(options, 'Keys', 'twapi-key') }}
 
+<div class="alert-box secondary-alert">
+  <div class="alert">
+    <p id="ajax-mimit-count" class="text-medium">
+      Requests count : {{ options[0].optionValue }} / {{ limit|default(0) }} per {{ intervale|default('15 mins') }}
+    </p>
+  </div>
+</div>
 <div class="alert-box success-alert" style="display:none;">
   <div class="alert">
     <p id="ajax-message" class="text-medium">

@@ -28,16 +28,8 @@ class TwUserType extends AbstractType
                 ],
                 'label' => 'Twitter name',
                 'constraints' => [
+                    new Assert\Length(['min' => 1, 'max' => 22]),
                     new Assert\NotBlank(),
-                ],
-            ])
-            ->add('twUserId', NumberType::class, [
-                'attr' => [
-                    'maxlength' => 55,
-                ],
-                'label' => 'Twitter ID',
-                'constraints' => [
-                    new Assert\NotNull(),
                 ],
             ])
             ->add('twUsername', TextType::class, [
@@ -49,6 +41,26 @@ class TwUserType extends AbstractType
                     new Assert\Length(['min' => 1, 'max' => 22]),
                     new Assert\NotBlank(),
                 ],
+            ])
+            ->add('twAccountId', NumberType::class, [
+                'attr' => [
+                    'maxlength' => 20,
+                ],
+                'label' => 'Twitter ID',
+                'constraints' => [
+                    new Assert\Length(['min' => 1, 'max' => 20]),
+                    new Assert\NotBlank(),
+                ],
+            ])
+            ->add('twUrl', TextType::class, [
+                'attr' => [
+                    'maxlength' => 255,
+                ],
+                'label' => 'Twitter Url',
+                'constraints' => [
+                    new Assert\Length(['max' => 255]),
+                ],
+                'required' => false,
             ])
             ->add('twIsVerified', CheckboxType::class, [
                 'attr' => [

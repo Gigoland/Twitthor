@@ -2,9 +2,9 @@
 
 namespace App\Repository;
 
-use PDO;
 use App\Entity\User;
 use App\Entity\TwApi;
+use App\Entity\TwApiCall;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -48,23 +48,98 @@ class TwApiRepository extends ServiceEntityRepository
     }
 
     /**
+     * Check valid settings for get following
+     *
+     * @param User $user
+     * @return integer
+     */
+    public function haveValideFollowingSettings(User $user): int
+    {
+        return $this->haveValideSettings($user, 'following');
+    }
+
+    /**
+     * Check valid settings for get following
+     *
+     * @param User $user
+     * @return integer
+     */
+    public function haveValideFollowersSettings(User $user): int
+    {
+        return $this->haveValideSettings($user, 'followers');
+    }
+
+    /**
+     * Check valid settings
+     *
+     * @param User $user
+     * @param string $for
+     * @return integer
+     */
+    private function haveValideSettings(User $user, string $for): int
+    {
+        $qb = $this
+            ->createQueryBuilder('t')
+            ->select('count(t.id)')
+            ->where('t.user = :user')
+            ->andWhere('t.name IS NOT NULL')
+            ->setParameter(':user', $user)
+            ->setMaxResults(1)
+        ;
+
+        switch ($for) {
+            case 'following':
+            case 'followers':
+                $qb
+                    ->andWhere('t.bearerToken IS NOT NULL')
+                    ->andWhere('t.accountId IS NOT NULL')
+                ;
+                break;
+        }
+
+        return (int) $qb
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
+
+    /**
      * Get associative array
      *
      * @param User $user
+     * @param string $for
      * @return array
      */
-    public function findConsumerKeyByUser(User $user)
+    public function findConsumerKeyByUser(User $user, ?string $for): array
     {
-        $conn = $this->getEntityManager()->getConnection();
+        $qb = $this
+            ->createQueryBuilder('t')
+            ->select('t.id AS optionValue')
+            ->addSelect('t.name AS optionText')
+            ->join('t.twApiCall', 'c')
+            ->where('t.user = :user')
+            ->andWhere('t.name IS NOT NULL')
+            ->setParameter(':user', $user)
+        ;
 
-        $stmt = $conn->prepare("
-            SELECT id, name FROM tw_api
-            WHERE user_id = :user_id AND name IS NOT NULL
-        ");
-        $stmt->bindValue(':user_id', $user->getId(), \PDO::PARAM_INT);
+        switch ($for) {
+            case 'following':
+                $qb
+                    ->addSelect('c.followingCnt AS optionData')
+                    ->andWhere('t.bearerToken IS NOT NULL')
+                ;
+                break;
+            case 'followers':
+                $qb
+                    ->addSelect('c.followersCnt AS optionData')
+                    ->andWhere('t.bearerToken IS NOT NULL')
+                ;
+                break;
+        }
 
-        $result = $stmt->executeQuery();
-
-        return $result->fetchAllKeyValue();
+        return $qb
+            ->getQuery()
+            ->getArrayResult()
+        ;
     }
 }

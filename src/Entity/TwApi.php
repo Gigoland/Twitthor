@@ -50,6 +50,9 @@ class TwApi
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
+    #[ORM\OneToOne(mappedBy: 'twApi', targetEntity: TwApiCall::class, cascade: ['persist', 'remove'])]
+    private $twApiCall;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -159,6 +162,23 @@ class TwApi
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getTwApiCall(): ?TwApiCall
+    {
+        return $this->twApiCall;
+    }
+
+    public function setTwApiCall(TwApiCall $twApiCall): self
+    {
+        // set the owning side of the relation if necessary
+        if ($twApiCall->getTwApi() !== $this) {
+            $twApiCall->setTwApi($this);
+        }
+
+        $this->twApiCall = $twApiCall;
 
         return $this;
     }

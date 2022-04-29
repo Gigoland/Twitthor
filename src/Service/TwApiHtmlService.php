@@ -24,26 +24,32 @@ class TwApiHtmlService
 	}
 
     /**
+     * Undocumented function
+     *
      * @param User $user
+     * @param string $for
      * @return JsonResponse
      */
-    public function getSelectKeysByUser(User $user): JsonResponse
+    public function getSelectKeysByUser(User $user, ?string $for): JsonResponse
     {
         if (!$user) {
             return $this->error(self::KO);
         }
 
-        $rows = $this->repository->findConsumerKeyByUser($user);
+        // Get select options data
+        $rows = $this->repository->findConsumerKeyByUser($user, $for);
 
         return new JsonResponse([
             'code' => self::OK,
             'html' => $this->environment->render('theme/admin/common/custom/_select_with_keys.html.twig', [
-                'rows' => $rows,
+                'options' => $rows,
             ]),
         ]);
     }
 
     /**
+     * @todo
+     *
      * @return JsonResponse
      */
     private function error($code): JsonResponse

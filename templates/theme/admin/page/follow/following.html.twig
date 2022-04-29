@@ -3,18 +3,24 @@
 {% block title %}Twitthor - Following{% endblock %}
 
 {% block body %}
-  {% include 'theme/admin/common/_title_wraper.html.twig' with {
-    'title': 'Following',
-    'actions': [
+  {# Actions #}
+  {% set actions = [] %}
+  {% if haveTwApiKeys|default(false) %}
+    {% set actions = [
       {
         'type': 'form',
         'form': ajaxEasyForm,
-        'path': path('app_ajax_twitter_api_keys'),
+        'path': path('app_ajax_twitter_api_keys', {'query': 'following'}),
         'id': 'ajax-get-twapi-keys',
         'title': ' Update',
         'icon': 'fa-retweet'
       },
-    ],
+    ] %}
+  {% endif %}
+
+  {% include 'theme/admin/common/_title_wraper.html.twig' with {
+    'title': 'Following',
+    'actions': actions,
     'navs': [
       {'title': 'Following', 'path': path('app_following')},
     ]
@@ -66,7 +72,7 @@
                       </td>
                       <td class="min-width"><p title="{{ follow.twUser.twUsername }}">@{{ follow.twUser.twUsername|slice(0, 20) ~ '...' }}</p></td>
                       <td class="min-width"><p title="{{ follow.twUser.twUrl }}">{{ follow.twUser.twUrl|slice(0, 20) ~ '...' }}</p></td>
-                      <td class="min-width"><p>{{ follow.twUser.twUserId }}</p></td>
+                      <td class="min-width"><p>{{ follow.twUser.twAccountId }}</p></td>
                       <td class="min-width"><p>{{ follow.twUser.twCreatedAt|date('d/m/Y H:i') }}</p></td>
                       <td class="min-width"><p><span class="badge bg-secondary">{{ follow.twUser.twIsVerified ? 'Yes' : 'No' }}</span></p></td>
                       <td class="min-width"><p><span class="badge bg-secondary">{{ follow.isFollower ? 'Yes' : 'Platonic' }}</span></p></td>
@@ -103,9 +109,11 @@
     </div>
   </div>
 
-  {% import "theme/admin/common/macro/_modal.html.twig" as macroModal %}
+  {% if haveTwApiKeys|default(false) %}
+    {% import "theme/admin/common/macro/_modal.html.twig" as macroModal %}
 
-  {{ macroModal.withBtnOkClose('modal-twapi-keys', 'Settings', 'Do not close. It may take time...', 'btn-update-following') }}
+    {{ macroModal.withBtnOkClose('modal-twapi-keys', 'Settings', 'Do not close. It may take time...', 'btn-update-following') }}
 
-  {{ form(ajaxHiddenForm) }}
+    {{ form(ajaxTwApiForm) }}
+  {% endif %}
 {% endblock %}
