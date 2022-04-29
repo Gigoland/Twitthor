@@ -141,7 +141,7 @@ class TwUser
         return $this->twUrl;
     }
 
-    public function seTwtUrl(?string $twUrl): self
+    public function setTwUrl(?string $twUrl): self
     {
         $this->twUrl = $twUrl;
 

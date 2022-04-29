@@ -259,6 +259,7 @@ class TwApiCallService
                 || $twUser->getTwName() !== $row['name']
                 || $twUser->getTwProfileImage() !== $twProfileImage
                 || $twUser->getTwUrl() !== $twUrl
+                || $twUser->getTwTags() !== $twTags
                 || $twUser->getTwIsVerified() !== $row['verified']
             ) {
                 // Update
@@ -284,11 +285,9 @@ class TwApiCallService
                 $twUser->setTwUsername($row['username']);
                 $twUser->setTwName($row['name']);
                 $twUser->setTwProfileImage($twProfileImage);
-                $twUser->seTwtUrl($twUrl);
-
-                if (isset($row['verified'])) {
-                    $twUser->setTwIsVerified($row['verified']);
-                }
+                $twUser->setTwUrl($twUrl);
+                $twUser->setTwTags($twTags);
+                $twUser->setTwIsVerified($row['verified']);
 
                 $this->entityManager->persist($twUser);
                 $this->entityManager->flush();
@@ -405,6 +404,7 @@ class TwApiCallService
                 || $twUser->getTwName() !== $row['name']
                 || $twUser->getTwProfileImage() !== $twProfileImage
                 || $twUser->getTwUrl() !== $twUrl
+                || $twUser->getTwTags() !== $twTags
                 || $twUser->getTwIsVerified() !== $row['verified']
             ) {
                 // Update
@@ -430,11 +430,9 @@ class TwApiCallService
                 $twUser->setTwUsername($row['username']);
                 $twUser->setTwName($row['name']);
                 $twUser->setTwProfileImage($twProfileImage);
-                $twUser->seTwtUrl($twUrl);
-
-                if (isset($row['verified'])) {
-                    $twUser->setTwIsVerified($row['verified']);
-                }
+                $twUser->setTwUrl($twUrl);
+                $twUser->setTwTags($twTags);
+                $twUser->setTwIsVerified($row['verified']);
 
                 $this->entityManager->persist($twUser);
                 $this->entityManager->flush();

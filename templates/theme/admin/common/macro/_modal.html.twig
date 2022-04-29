@@ -2,31 +2,30 @@
   <div class="modal fade" id="{{ id|default('modal') }}" data-bs-backdrop="{{ backdrop|default('static') }}" data-bs-keyboard="{{ keyboard|default('false') }}" tabindex="-1" aria-labelledby="{{ id|default('modal') }}-label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
+
         <div class="modal-header">
           <h5 class="modal-title" id="{{ id|default('modal') }}-label">{{ title|default(null) }}</h5>
           <button type="button" class="btn btn-close ev" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+
         <div class="modal-body">
           {{ body|default(null) }}
         </div>
-        <div class="modal-footer">
-          <div class="row w-100">
-            <div class="col-md-2">
-              <div id="loader" class="spinner-grow text-primary" style="width:2rem;height:2rem;display:none;" role="status">
-                <span class="sr-only">Loading...</span>
-              </div>
+
+        <div class="modal-footer justify-content-between">
+          <div class="pull-left">
+            <div class="spinner-grow text-primary modal-loader" style="width:2rem;height:2rem;display:none;" role="status">
+              <span class="sr-only">Loading...</span>
             </div>
-            <div class="col-md-6 d-flex align-items-center justify-content-center text-sm">
-              {{ footerMessage|default(null) }}
-            </div>
-            <div class="col-md-4">
-              <div class="btn-content d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary ev btn-ko" data-bs-dismiss="modal"{% if btnCloseId is defined %} id="{{ btnCloseId }}"{% endif %}>{{ btnCloseTitle|default('Close') }}</button>
-                <button type="button" class="btn btn-primary ev btn-ok"{% if btnOkId is defined %} id="{{ btnOkId }}"{% endif %}>{{ btnOkTitle|default('OK') }}</button>
-              </div>
+          </div>
+          <div class="pull-right">
+            <div class="btn-content d-flex justify-content-end">
+              <button type="button" class="btn btn-secondary text-nowrap ev btn-ko" data-bs-dismiss="modal"{% if btnCloseId is defined %} id="{{ btnCloseId }}"{% endif %}>{{ btnCloseTitle|default('Close') }}</button>
+              <button type="button" class="btn btn-primary text-nowrap ev btn-ok"{% if btnOkId is defined %} id="{{ btnOkId }}"{% endif %}>{{ btnOkTitle|default('OK') }}</button>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>

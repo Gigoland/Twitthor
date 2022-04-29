@@ -46,10 +46,12 @@ const callbackUpdate = function(json) {
   if (json.code === 'success') {
     if (json.nextToken) {
       $twNextTokenInput.value = json.nextToken;
-      $twApiKeysModal.querySelector('.btn-ok').innerHTML = 'Next';
+      $twApiKeysModal.querySelector('.btn-ok').innerHTML = 'Go to next';
     } else {
-      $twApiKeysModal.querySelector('.btn-ok').style.display = 'none';
-      $twApiKeysModal.querySelector('.btn-ko').innerHTML = 'Done';
+      $twApiKeysModal.querySelector('.btn-ok').innerHTML = 'Done';
+      $twApiKeysModal.querySelector('.btn-ok').setAttribute('data-bs-dismiss', 'modal');
+      $twApiKeysModal.querySelector('.btn-ok').disabled = false;
+      $twApiKeysModal.querySelector('.btn-ko').style.display = 'none';
     }
     $twApiKeysModalSelect.options[$twApiKeysModalSelect.selectedIndex].setAttribute('data-value', json.callCount);
     $twApiKeysModalAlertCount.innerHTML = json.callCount;
@@ -120,11 +122,10 @@ window.onload = function() {
   // Modal
   if ($twApiKeysModal) {
     modalTwApiKeys = new Modal($twApiKeysModal);
-    $twApiKeysModalLoader = $twApiKeysModal.querySelector('#loader');
+    $twApiKeysModalLoader = $twApiKeysModal.querySelector('.modal-loader');
 
     // On show modal
     $twApiKeysModal.addEventListener('shown.bs.modal', function() {
-      console.log('Modal shown'); //@todo remove
       $twApiKeysModalSelect = $twApiKeysModal.querySelector('#twapi-keys');
       $twApiKeysModalAlertCount = $twApiKeysModal.querySelector('#twapi-call-counts');
       $twApiKeysModalAlertResult = $twApiKeysModal.querySelector('.alert-box-result');
@@ -136,7 +137,6 @@ window.onload = function() {
 
     // On close modal
     $twApiKeysModal.addEventListener('hide.bs.modal', function() {
-      console.log('Modal hide'); //@todo remove
       if (redirect) {
         window.location.href = redirect;
       }
