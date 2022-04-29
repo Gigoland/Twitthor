@@ -1727,7 +1727,6 @@ class FileValidator
     /**
      * @param $file
      * @param array $allowedExtensions
-     *
      * @return bool
      */
     public function isValidUploadFile($file, array $allowedExtensions): bool
@@ -1796,7 +1795,6 @@ class FileValidator
     /**
      * @param string $url
      * @param array $allowedExtensions
-     *
      * @return bool
      */
     public function isValidStreamFile(string $url, array $allowedExtensions): bool
@@ -1883,7 +1881,6 @@ class FileValidator
      *
      * @param string $location
      * @param array $allowedExtensions
-     *
      * @return bool
      */
     public function isValidLocalFile(string $location, array $allowedExtensions): bool
@@ -1966,7 +1963,6 @@ class FileValidator
     /**
      * @param string $extension
      * @param array $allowedExtensions
-     *
      * @return bool
      */
     private function isAllowedExtension(string $extension, array $allowedExtensions): bool
@@ -1984,7 +1980,6 @@ class FileValidator
      * @param string $extension
      * @param string $mimeContentType
      * @param string $fileName
-     *
      * @return bool
      */
     private function isOnlyDeniedFile(string $extension, string $mimeContentType, $fileName): bool
@@ -2018,7 +2013,6 @@ class FileValidator
     /**
      * @param string $filePath
      * @param string $extension
-     *
      * @return bool
      */
     private function isValidImageExif(string $filePath, string $extension): bool

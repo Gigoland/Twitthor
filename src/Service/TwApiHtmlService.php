@@ -12,16 +12,10 @@ class TwApiHtmlService
     const OK = 'success';
     const KO = 'error';
 
-    private $environment;
-    private $repository;
-
-	public function __construct(
-        Environment $environment,
-        TwApiRepository $repository
-    ) {
-        $this->environment = $environment;
-        $this->repository = $repository;
-	}
+    public function __construct(
+        private Environment $environment,
+        private TwApiRepository $repository
+    ) {}
 
     /**
      * Undocumented function

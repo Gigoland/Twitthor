@@ -9,7 +9,6 @@ class VarString
      *
      * @param string $string
      * @param string $symbol
-     *
      * @return string
      */
     public function camelize(string $string, string $symbol = '_'): string
