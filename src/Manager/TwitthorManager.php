@@ -2,9 +2,9 @@
 
 namespace App\Manager;
 
-use App\Api\Twitter\Api;
+use App\Api\Twitter\Api as TwitterApi;
 
-class TwitthorManager extends Api
+class TwitthorManager extends TwitterApi
 {
     /**
      * Get Twitter account public metrics

@@ -4,7 +4,7 @@
 		<div class="select-position">
 			<select class="ev"{% if id is defined %} id="{{ id }}"{% endif %}{% if name is defined %} name="{{ name }}"{% endif %}>
 				{% for option in options %}
-					<option{% if option.optionData is defined %} data-value="{{ option.optionData }}"{% endif %} value="{{ option.optionValue }}">{{ option.optionText }}</option>
+					<option{% if option.data is defined %} data-value="{{ option.data }}"{% endif %} value="{{ option.value }}">{{ option.text }}</option>
 				{% endfor %}
 			</select>
 		</div>

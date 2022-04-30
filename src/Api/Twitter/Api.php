@@ -8,15 +8,19 @@ use App\Utils\VarString;
 abstract class Api
 {
     // Twitter API v2
-    const TWITTER_API_SERVER = 'https://api.twitter.com/2/';
+    const API_SERVER = 'https://api.twitter.com/2/';
 
     // Users lookup
-    const TWITTER_API_USERS = 'users/%s';
+    const API_USERS = 'users/%s';
 
     // Follow or unfollow accounts, or retrieve an accounts followers or following.
-    const TWITTER_API_USERS_FOLLOWING = 'users/%s/following';
-    const TWITTER_API_USERS_FOLLOWERS = 'users/%s/followers';
-    const TWITTER_API_USERS_FOLLOWING_DELETE = 'users/%s/following/%s';
+    const API_USERS_FOLLOWING = 'users/%s/following';
+    const API_USERS_FOLLOWERS = 'users/%s/followers';
+    const API_USERS_FOLLOWING_DELETE = 'users/%s/following/%s';
+
+    // Requst limits [num, interval]
+    const LIMIT_USERS_FOLLOWING = [15, 15];
+    const LIMIT_USERS_FOLLOWERS = [15, 15];
 
     // Api settings
     protected ?string $twitterConsumerKey = null;
@@ -224,7 +228,7 @@ abstract class Api
         }
 
         $url = sprintf(
-            self::TWITTER_API_SERVER . self::TWITTER_API_USERS,
+            self::API_SERVER . self::API_USERS,
             $this->twitterAccountId
         );
 
@@ -252,7 +256,7 @@ abstract class Api
         }
 
         $url = sprintf(
-            self::TWITTER_API_SERVER . self::TWITTER_API_USERS_FOLLOWING,
+            self::API_SERVER . self::API_USERS_FOLLOWING,
             $this->twitterAccountId
         );
 
@@ -274,7 +278,7 @@ abstract class Api
         }
 
         $url = sprintf(
-            self::TWITTER_API_SERVER . self::TWITTER_API_USERS_FOLLOWERS,
+            self::API_SERVER . self::API_USERS_FOLLOWERS,
             $this->twitterAccountId
         );
 

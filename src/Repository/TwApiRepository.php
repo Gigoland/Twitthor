@@ -47,6 +47,48 @@ class TwApiRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get associative array
+     *
+     * @param User $user
+     * @param string $for
+     * @return array
+     */
+    public function findWithCallByUser(User $user, ?string $for): array
+    {
+        $qb = $this
+            ->createQueryBuilder('t')
+            ->select('t.id')
+            ->addSelect('t.name')
+            ->join('t.twApiCall', 'c')
+            ->where('t.user = :user')
+            ->andWhere('t.name IS NOT NULL')
+            ->setParameter(':user', $user)
+        ;
+
+        switch ($for) {
+            case 'following':
+                $qb
+                    ->addSelect('c.followingCnt')
+                    ->addSelect('c.followingAt')
+                    ->andWhere('t.bearerToken IS NOT NULL')
+                ;
+                break;
+            case 'followers':
+                $qb
+                    ->addSelect('c.followersCnt')
+                    ->addSelect('c.followersAt')
+                    ->andWhere('t.bearerToken IS NOT NULL')
+                ;
+                break;
+        }
+
+        return $qb
+            ->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
+    /**
      * Check valid settings for get following
      *
      * @param User $user
@@ -66,46 +108,6 @@ class TwApiRepository extends ServiceEntityRepository
     public function haveValidFollowersSettings(User $user): int
     {
         return $this->haveValidSettings($user, 'followers');
-    }
-
-    /**
-     * Get associative array
-     *
-     * @param User $user
-     * @param string $for
-     * @return array
-     */
-    public function findConsumerKeyByUser(User $user, ?string $for): array
-    {
-        $qb = $this
-            ->createQueryBuilder('t')
-            ->select('t.id AS optionValue')
-            ->addSelect('t.name AS optionText')
-            ->join('t.twApiCall', 'c')
-            ->where('t.user = :user')
-            ->andWhere('t.name IS NOT NULL')
-            ->setParameter(':user', $user)
-        ;
-
-        switch ($for) {
-            case 'following':
-                $qb
-                    ->addSelect('c.followingCnt AS optionData')
-                    ->andWhere('t.bearerToken IS NOT NULL')
-                ;
-                break;
-            case 'followers':
-                $qb
-                    ->addSelect('c.followersCnt AS optionData')
-                    ->andWhere('t.bearerToken IS NOT NULL')
-                ;
-                break;
-        }
-
-        return $qb
-            ->getQuery()
-            ->getArrayResult()
-        ;
     }
 
     /**

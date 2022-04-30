@@ -45,32 +45,53 @@ class TwApiCallRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return TwApiCall[] Returns an array of TwApiCall objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Init following calls by TwApi ids
+     *
+     * @param array $ids
+     * @return int
+     */
+    public function initFollowingCallsByIds(array $ids): int
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->initApiCallsByIds($ids, 'following');
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?TwApiCall
+    /**
+     * Init followers calls by TwApi ids
+     *
+     * @param array $ids
+     * @return int
+     */
+    public function initFollowersCallsByIds(array $ids): int
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->initApiCallsByIds($ids, 'followers');
+    }
+
+    /**
+     * Init calls by TwApi ids
+     *
+     * @param array $ids
+     * @param string $for
+     * @return int
+     */
+    private function initApiCallsByIds(array $ids, string $for): int
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb
+            ->update()
+            ->set('t.' . $for . 'Cnt', ':cnt')
+            ->set('t.' . $for . 'At', ':at')
+            ->where(
+                $qb->expr()->in('t.twApi', ':ids')
+            )
+            ->setParameter(':cnt', 0, \PDO::PARAM_INT)
+            ->setParameter(':at', null, \PDO::PARAM_NULL)
+            ->setParameter(':ids', $ids, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
+        ;
+
+        return $qb
             ->getQuery()
-            ->getOneOrNullResult()
+            ->execute()
         ;
     }
-    */
 }
