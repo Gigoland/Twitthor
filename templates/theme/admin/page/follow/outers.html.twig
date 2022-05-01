@@ -46,7 +46,7 @@
                       <td class="min-width">
                         <div class="lead">
                           <div class="lead-image">
-                            <img src="{{ follow.twUser.avatar }}" alt="Avatar" title="{{ follow.twUser.twName }}">
+                            <img src="{{ app.request.schemeAndHttpHost ~ follow.twUser.avatar }}" alt="Avatar" title="{{ follow.twUser.twName }}">
                           </div>
                           <div class="lead-text">
                             <p>{{ follow.twUser.twName|slice(0, 20) ~ '...' }}</p>

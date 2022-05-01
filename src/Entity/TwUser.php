@@ -245,7 +245,7 @@ class TwUser
      */
     public function getAvatar(): string
     {
-        return './uploads/images/avatar/'
+        return '/uploads/images/avatar/'
             . $this->getTwAccountId()
             . '/'
             . $this->getTwProfileImage();

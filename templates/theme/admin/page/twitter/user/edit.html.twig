@@ -24,7 +24,7 @@
               <div class="profile-info">
                 <div class="d-flex align-items-center mb-30">
                   <div class="profile-image">
-                    <img src="{{ twUser.avatar }}" alt="Avatar">
+                    <img src="{{ app.request.schemeAndHttpHost ~ twUser.avatar }}" alt="Avatar">
                   </div>
                   <div class="profile-meta">
                     <h5 class="text-bold text-dark mb-10">{{ twUser.twName }}</h5>
