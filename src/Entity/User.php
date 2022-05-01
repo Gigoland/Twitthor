@@ -49,17 +49,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotNull()]
     private array $roles = [];
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank()]
     private string $password = 'password';
 
     private ?string $plainPassword = null;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'string', length: 55, nullable: true)]
+    #[Assert\Length(max: 55)]
+    private $verifyToken;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     #[Assert\NotNull()]
     private \DateTimeImmutable $createAt;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 
@@ -208,6 +212,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getVerifydToken(): ?bool
+    {
+        return $this->verifyToken;
+    }
+
+    public function setVerifyToken(?string $verifyToken): self
+    {
+        $this->verifyToken = $verifyToken;
+
+        return $this;
+    }
+
     /**
      * @see UserInterface
      */
@@ -299,5 +315,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return (bool) empty($this->verifyToken);
+    }
+
+    public function isNotVerified(): bool
+    {
+        return (bool) !empty($this->verifyToken);
     }
 }

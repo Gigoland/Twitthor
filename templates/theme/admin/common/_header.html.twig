@@ -37,6 +37,11 @@
             </button>
 
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile">
+              {% if app.user.isNotVerified %}
+                <li>
+                  <a href="#" id="user-verify-request"><i class="fa-solid fa-address-card"></i> Send verification link</a>
+                </li>
+              {% endif %}
               <li>
                 <a href="{{ path('app_profile_edit') }}"><i class="fa-solid fa-address-card"></i> My Profile</a>
               </li>

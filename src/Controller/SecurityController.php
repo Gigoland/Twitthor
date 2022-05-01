@@ -8,8 +8,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class SecurityController extends AbstractController
 {
@@ -24,7 +26,8 @@ class SecurityController extends AbstractController
     #[Route('/signup', name: 'app_security_signup', methods: ['GET', 'POST'])]
     public function signUp(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        TokenGeneratorInterface $tokenGenerator
     ): Response {
         $user = new User();
         $user->setRoles(['ROLE_USER']);
@@ -34,6 +37,11 @@ class SecurityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
+
+            // Set token for email verification
+            $user->setVerifiedToken(
+                $tokenGenerator->generateToken()
+            );
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -54,7 +62,7 @@ class SecurityController extends AbstractController
      * @return Response
      */
     #[Route('/signin', name: 'app_security_signin', methods: ['GET', 'POST'])]
-    public function SignIn(
+    public function signIn(
         AuthenticationUtils $authenticationUtils
     ): Response {
         return $this->render('theme/front/page/security/signin.html.twig', [
@@ -72,5 +80,19 @@ class SecurityController extends AbstractController
     public function SignOut()
     {
         // No need code
+    }
+
+    #[Route('/verify/send', name: 'app_security_send_verify_token', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function sendVerifyToken()
+    {
+        //@todo
+    }
+
+    #[Route('/verify/check', name: 'app_security_check_verify_token', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function checkVerifyToken()
+    {
+        //@todo
     }
 }

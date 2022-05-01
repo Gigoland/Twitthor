@@ -44,11 +44,10 @@ class TwApiHtmlService
                 case 'following':
                     $callLimit = TwitterApi::LIMIT_USERS_FOLLOWING[0];
                     $callInterval = TwitterApi::LIMIT_USERS_FOLLOWING[1];
-                    $now = new \DateTimeImmutable();
 
                     // Check intervale
                     if (!empty($row['followingAt'])
-                     && $row['followingAt'] < $now->modify('-' . $callInterval . ' minute')
+                     && $row['followingAt'] < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
                     ) {
                         // For init in db
                         $callIdsForInit[] = $row['id'];
@@ -69,11 +68,10 @@ class TwApiHtmlService
                 case 'followers':
                     $callLimit = TwitterApi::LIMIT_USERS_FOLLOWERS[0];
                     $callInterval = TwitterApi::LIMIT_USERS_FOLLOWERS[1];
-                    $now = new \DateTimeImmutable();
 
                     // Check intervale
                     if (!empty($row['followersAt'])
-                     && $row['followersAt'] < $now->modify('-' . $callInterval . ' minute')
+                     && $row['followersAt'] < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
                     ) {
                         // For init in db
                         $callIdsForInit[] = $row['id'];
