@@ -32,25 +32,13 @@ class SecurityController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                $user = $form->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
 
-                $entityManager->persist($user);
-                $entityManager->flush();
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-                $this->addFlash(
-                    'success',
-                    'User created with success !'
-                );
-
-                return $this->redirectToRoute('app_security_signin');
-            } else {
-                $this->addFlash(
-                    'errors',
-                    'Something went wrong !'
-                );
-            }
+            return $this->redirectToRoute('app_security_signin');
         }
 
         return $this->render('theme/front/page/security/signup.html.twig', [

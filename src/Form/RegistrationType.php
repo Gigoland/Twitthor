@@ -34,7 +34,7 @@ class RegistrationType extends AbstractType
             ->add('email', EmailType::class, [
                 'attr' => [
                     'class' => 'form-control rounded-pill border-0 shadow-sm px-4',
-                    'minlength' => 1,
+                    'minlength' => 5,
                     'maxlength' => 55,
                 ],
                 'label' => 'Email',
@@ -42,38 +42,36 @@ class RegistrationType extends AbstractType
                     'class' => 'form-label mt-4',
                 ],
                 'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 55]),
+                    new Assert\Length(['min' => 5, 'max' => 55]),
                     new Assert\NotBlank(),
                 ],
             ])
             ->add('twAccountId', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control rounded-pill border-0 shadow-sm px-4',
-                    'minlength' => 1,
                     'maxlength' => 55,
                 ],
                 'label' => 'Twitter ID',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
+                'required' => false,
                 'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 55]),
-                    new Assert\NotBlank(),
+                    new Assert\Length(['max' => 55]),
                 ],
             ])
             ->add('twUsername', TextType::class, [
                 'attr' => [
                     'class' => 'form-control rounded-pill border-0 shadow-sm px-4',
-                    'minlength' => 1,
                     'maxlength' => 22,
                 ],
                 'label' => 'Twitter username',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
+                'required' => false,
                 'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 22]),
-                    new Assert\NotBlank(),
+                    new Assert\Length(['max' => 22]),
                 ],
             ])
             ->add('plainPassword', RepeatedType::class, [

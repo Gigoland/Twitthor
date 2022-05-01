@@ -37,7 +37,6 @@ const showTwApiKeysModal = function(response) {
 
 // After update
 const callbackUpdate = function(json) {
-  console.log(json);//@todo remove
   $twApiKeysModal.querySelectorAll('.ev').forEach(function($btn) {
     $btn.disabled = false;
   });

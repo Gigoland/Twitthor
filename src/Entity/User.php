@@ -34,15 +34,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $twAccountId;
 
     #[ORM\Column(type: 'string', length: 22, nullable: true)]
-    #[Assert\Length(min: 1, max: 55)]
+    #[Assert\Length(max: 55)]
     private ?string $twUsername;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
-    #[Assert\Length(min: 1, max: 55)]
+    #[Assert\Length(max: 55)]
     private ?string $walletEth;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
-    #[Assert\Length(min: 1, max: 55)]
+    #[Assert\Length(max: 55)]
     private ?string $walletSol;
 
     #[ORM\Column(type: 'json')]
