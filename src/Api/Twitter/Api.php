@@ -16,6 +16,7 @@ abstract class Api
     // Follow or unfollow accounts, or retrieve an accounts followers or following.
     const API_USERS_FOLLOWING = 'users/%s/following';
     const API_USERS_FOLLOWERS = 'users/%s/followers';
+    // https://api.twitter.com/2/users/:source_user_id/following/:target_user_id
     const API_USERS_FOLLOWING_DELETE = 'users/%s/following/%s';
 
     // Requst limits [num, interval]
@@ -286,15 +287,32 @@ abstract class Api
         return $this->getRequest($url, 'get', $isJson);
     }
 
+    public function unfollowByAccountId(bool $isJson = true)
+    {
+        if (empty($this->twitterAccountId)) {
+            throw new \InvalidArgumentException(
+                'Incomplete settings passed to Twitthor'
+            );
+        }
+
+        $url = sprintf(
+            self::API_SERVER . self::API_USERS_FOLLOWING_DELETE,
+            $this->twitterAccountId,
+            0
+        );
+
+        return $this->getRequest($url, 'delete', $isJson);
+    }
+
     /**
      * Call Twitter API with Curl request
      *
      * @param string $url
-     * @param string $methode
+     * @param string $method
      * @param bool $isJson
      * @return array|object
      */
-    private function getRequest(string $url, string $methode, bool $isJson = true)
+    private function getRequest(string $url, string $method, bool $isJson = true)
     {
         // For header (Bearer)
         $authorization = sprintf(
@@ -305,11 +323,6 @@ abstract class Api
         // Set pagination_token for get next
         if (!empty($this->getNextToken())) {
             $this->queryFields['pagination_token'] = $this->getNextToken();
-        }
-
-        // Fields for methode GET only
-        if ($methode === 'get' && !empty($this->queryFields)) {
-            $url .= '?' . http_build_query($this->queryFields, '', '&');
         }
 
         // Curl options
@@ -323,14 +336,25 @@ abstract class Api
             CURLOPT_SSL_VERIFYPEER => false, // Not recommended
         ];
 
-        // Set metodes PUT, DELETE
-        if (in_array($methode, ['put', 'delete'])) {
-            $options[CURLOPT_CUSTOMREQUEST] = $methode;
-        }
-
-        // Fields for POST methode only
-        if ($methode === 'post' && !empty($this->queryFields)) {
-            $options[CURLOPT_POSTFIELDS] = http_build_query($this->queryFields, '', '&');
+        // By method
+        switch (strtolower($method)) {
+            // Fields for method GET only
+            case 'get':
+                if (!empty($this->queryFields)) {
+                    $options[CURLOPT_URL] .= '?' . http_build_query($this->queryFields, '', '&');
+                }
+                break;
+            // Fields for POST method only
+            case 'post':
+                if (!empty($this->queryFields)) {
+                    $options[CURLOPT_POSTFIELDS] = http_build_query($this->queryFields, '', '&');
+                }
+                break;
+            // Set metodes PUT, DELETE
+            case 'put':
+            case 'delete':
+                $options[CURLOPT_CUSTOMREQUEST] = $method;
+                break;
         }
 
         // Curl init & set options

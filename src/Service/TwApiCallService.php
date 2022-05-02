@@ -535,54 +535,6 @@ class TwApiCallService
         return $result;
     }
 
-
-    /**
-     * Get find who’s not following back
-     *
-     * @param int $options
-     *
-     * @return array
-     */
-    public function getPlatonicSubscriptions(array $options = [])
-    {
-        // Search platonic subscriptions
-        $platonicUsers = $this->findPlatonicUsers($options);
-
-        return [
-            'platonic_users' => $platonicUsers,
-        ];
-    }
-
-        /**
-     * Found platonic subscriptions
-     *
-     * @param array $options
-     *
-     * @return array
-     */
-    private function findPlatonicUsers($options)
-    {
-        /*
-        // Storage
-        $storage = new Following();
-
-        return $storage->getPlatonicUsers($options);
-        */
-    }
-
-    /**
-     * Errors
-     *
-     * @param [type] $code
-     * @return array
-     */
-    private function error($code): array
-    {
-        return [
-            'code' => $code,
-        ];
-    }
-
     /**
      * Get url
      *
@@ -637,5 +589,18 @@ class TwApiCallService
         $json = new Json();
 
         return $json->encode($tags);
+    }
+
+    /**
+     * Errors
+     *
+     * @param [type] $code
+     * @return array
+     */
+    private function error($code): array
+    {
+        return [
+            'code' => $code,
+        ];
     }
 }

@@ -160,10 +160,9 @@ class TwitthorManager extends TwitterApi
             ];
         }
 
-        // Warning
-        if (isset($data['status'])
-         && $data['status'] == 429
-        ) {
+        // The API will return a HTTP 429 “Too Many Requests” response code, and the following error will be returned in the response body:
+        // { "errors": [ { "code": 88, "message": "Rate limit exceeded" } ] }
+        if (isset($data['status']) && $data['status'] == 429) {
             return [
                 'warning' => $data,
             ];
