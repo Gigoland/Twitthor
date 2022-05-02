@@ -31,12 +31,12 @@
               <table class="table table-hover-shadow">
                 <thead>
                   <tr class="text-nowrap">
-                    <th><h6>🐥 Name</h6></th>
-                    <th><h6>🐥 Usernme</h6></th>
-                    <th><h6>🐥 Url</h6></th>
-                    <th><h6>🐥 ID</h6></th>
-                    <th><h6>🐥 Joined</h6></th>
-                    <th><h6>🐥 Verified</h6></th>
+                    <th><h6><i class="fa-brands fa-twitter-square"></i> Name</h6></th>
+                    <th><h6><i class="fa-brands fa-twitter-square"></i> Usernme</h6></th>
+                    <th><h6><i class="fa-brands fa-twitter-square"></i> Url</h6></th>
+                    <th><h6><i class="fa-brands fa-twitter-square"></i> ID</h6></th>
+                    <th><h6><i class="fa-brands fa-twitter-square"></i> Joined</h6></th>
+                    <th><h6><i class="fa-brands fa-twitter-square"></i> Verified</h6></th>
                     <th><h6>Created</h6></th>
                     <th><h6>Updated</h6></th>
                     <th><h6>Edit</h6></th>
@@ -60,7 +60,7 @@
                       <td class="min-width"><p title="{{ twUser.twUrl }}">{{ twUser.twUrl|slice(0, 20) ~ '...' }}</p></td>
                       <td class="min-width"><p>{{ twUser.twAccountId }}</p></td>
                       <td class="min-width"><p>{{ twUser.twCreatedAt|date('d/m/Y H:i') }}</p></td>
-                      <td class="min-width"><p><span class="badge bg-secondary">{{ twUser.twIsVerified ? 'Yes' : 'No' }}</span></p></td>
+                      <td class="min-width"><p>{{ twUser.twIsVerified ? '<span class="badge bg-info">Yes' : '<span class="badge bg-secondary">No' }}</span></p></td>
                       <td class="min-width"><p>{{ twUser.createAt|date('d/m/Y h:i') }}</p></td>
                       <td class="min-width"><p>{{ twUser.updateAt|date('d/m/Y h:i') }}</p></td>
                       <td>

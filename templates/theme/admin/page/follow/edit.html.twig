@@ -28,11 +28,11 @@
                   </div>
                   <div class="profile-meta">
                     <h5 class="text-bold text-dark mb-10">{{ follow.twUser.twName }}</h5>
-                    <p class="text-sm text-gray">@{{ follow.twUser.twUsername }}</p>
-                    <p class="text-sm text-gray">Account ID : {{ follow.twUser.twAccountId }}</p>
-                    <p class="text-sm text-gray">Joined : {{ follow.twUser.twCreatedAt|date('d-m-Y H:s') }}</p>
-                    <p class="text-sm text-gray">Verified : {{ follow.twUser.twIsVerified ? 'Yes' : 'No' }}</p>
-                    <p class="text-sm text-gray">Url : {{ follow.twUser.twUrl }}</p>
+                    <p class="text-sm text-gray"><i class="fa-brands fa-twitter-square"></i> @{{ follow.twUser.twUsername }}</p>
+                    <p class="text-sm text-gray"><i class="fa-brands fa-twitter-square"></i> Account ID : {{ follow.twUser.twAccountId }}</p>
+                    <p class="text-sm text-gray"><i class="fa-brands fa-twitter-square"></i> Joined : {{ follow.twUser.twCreatedAt|date('d-m-Y H:s') }}</p>
+                    <p class="text-sm text-gray"><i class="fa-brands fa-twitter-square"></i> Verified : {{ follow.twUser.twIsVerified ? '<span class="badge bg-info">Yes' : '<span class="badge bg-secondary">No' }}</span></p>
+                    <p class="text-sm text-gray"><i class="fa-brands fa-twitter-square"></i> Url : {{ follow.twUser.twUrl }}</p>
                   </div>
                 </div>
               </div>
@@ -41,8 +41,8 @@
               <div class="profile-info">
                 <div class="d-flex align-items-center mb-30">
                   <div class="profile-meta">
-                    <p class="text-sm text-gray">Following : {{ follow.isFollowing ? 'Yes' : 'No' }}</p>
-                    <p class="text-sm text-gray">Follow me : {{ follow.isFollower ? 'Yes' : 'No' }}</p>
+                    <p class="text-sm text-gray">Following : {{ follow.isFollowing ? '<span class="badge bg-info">Yes' : '<span class="badge bg-secondary">No' }}</span></p>
+                    <p class="text-sm text-gray">Follow me : {{ follow.isFollower ? '<span class="badge bg-info">Yes' : '<span class="badge bg-secondary">No' }}</span></p>
                   </div>
                 </div>
               </div>
