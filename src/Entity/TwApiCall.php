@@ -28,6 +28,12 @@ class TwApiCall
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private $followersAt;
 
+    #[ORM\Column(type: 'string', length: 55, nullable: true)]
+    private $nextToken;
+
+    #[ORM\Column(type: 'string', length: 55, nullable: true)]
+    private $processToken;
+
     #[ORM\OneToOne(inversedBy: 'twApiCall', targetEntity: TwApi::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private $twApi;
@@ -81,6 +87,30 @@ class TwApiCall
     public function setFollowersAt(?\DateTimeImmutable $followersAt): self
     {
         $this->followersAt = $followersAt;
+
+        return $this;
+    }
+
+    public function getNextToken(): ?string
+    {
+        return $this->nextToken;
+    }
+
+    public function setNextToken(?string $nextToken): self
+    {
+        $this->nextToken = $nextToken;
+
+        return $this;
+    }
+
+    public function getProcessToken(): ?string
+    {
+        return $this->processToken;
+    }
+
+    public function setProcessToken(?string $processToken): self
+    {
+        $this->processToken = $processToken;
 
         return $this;
     }

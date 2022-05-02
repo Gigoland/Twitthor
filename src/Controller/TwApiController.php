@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\TwApi;
 use App\Form\TwApiType;
-use App\Form\AjaxTwApiType;
+use App\Form\AjaxHiddenType;
 use App\Manager\TwApiCallManager;
 use App\Service\TwApiCallService;
 use App\Service\TwApiHtmlService;
@@ -81,7 +81,7 @@ class TwApiController extends AbstractController
             $entityManager->flush();
 
             // Add new call limit counts
-            $twApiCallManager->newTwApiCall($twApi);
+            $twApiCallManager->createTwApiCall($twApi);
 
             $this->addFlash(
                 'success',
@@ -208,19 +208,24 @@ class TwApiController extends AbstractController
         TwApiCallService $service,
         TwApi $twApi
     ): JsonResponse {
-        $form = $this->createForm(AjaxTwApiType::class);
+        $form = $this->createForm(AjaxHiddenType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $service->updateFollowing(
+            $result = $service->updateFollowing(
                 $this->getUser(),
                 $twApi,
-                $form->getData()['next_token'],
-                $this->getParameter('app.path.uploads'),
-                $this->generateUrl('app_following')
+                $this->getParameter('app.path.uploads')
             );
+
+            // Set js redirect path
+            $result['path'] = $this->generateUrl('app_following');
+
+            // Ajax response
+            return new JsonResponse($result);
         }
 
+        // Ajax response
         return new JsonResponse([
             'code' => TwApiCallService::KO,
             'message' => 'Something went wrong !',
@@ -244,19 +249,24 @@ class TwApiController extends AbstractController
         TwApiCallService $service,
         TwApi $twApi
     ): JsonResponse {
-        $form = $this->createForm(AjaxTwApiType::class);
+        $form = $this->createForm(AjaxHiddenType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $service->updateFollowers(
+            $result = $service->updateFollowers(
                 $this->getUser(),
                 $twApi,
-                $form->getData()['next_token'],
-                $this->getParameter('app.path.uploads'),
-                $this->generateUrl('app_followers')
+                $this->getParameter('app.path.uploads')
             );
+
+            // Set js redirect path
+            $result['path'] = $this->generateUrl('app_followers');
+
+            // Ajax response
+            return new JsonResponse($result);
         }
 
+        // Ajax response
         return new JsonResponse([
             'code' => TwApiCallService::KO,
             'message' => 'Something went wrong !',

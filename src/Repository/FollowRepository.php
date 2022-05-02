@@ -47,68 +47,87 @@ class FollowRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get associative [key => value] array
+     * Set process token to follow by twUser ids
      *
      * @param User $user
-     * @return array
-     */
-/*
-    public function getFollowingTwAccountIds(User $user): array
-    {
-        $conn = $this->getEntityManager()->getConnection();
-
-        $stmt = $conn->prepare("
-            SELECT f.id, t.tw_account_id FROM follow f
-                RIGHT JOIN tw_user t ON t.id = f.tw_user_id
-            WHERE f.user_id = :user_id AND f.is_following = 1
-        ");
-        $stmt->bindValue(':user_id', $user->getId(), \PDO::PARAM_INT);
-
-        $result = $stmt->executeQuery();
-
-        return $result->fetchAllKeyValue();
-    }
-*/
-    /**
-     * Get associative [key => value] array
-     *
-     * @param User $user
-     * @return array
-     */
-/*
-    public function getFollowersTwAccountIds(User $user): array
-    {
-        $conn = $this->getEntityManager()->getConnection();
-
-        $stmt = $conn->prepare("
-            SELECT f.id, t.tw_account_id FROM follow f
-                RIGHT JOIN tw_user t ON t.id = f.tw_user_id
-            WHERE f.user_id = :user_id AND f.is_follower = 1
-        ");
-        $stmt->bindValue(':user_id', $user->getId(), \PDO::PARAM_INT);
-
-        $result = $stmt->executeQuery();
-
-        return $result->fetchAllKeyValue();
-    }
-*/
-    /**
-     * Update no following by ids array
-     *
      * @param array $ids
-     * @return array
+     * @param string|null $token
+     * @return integer
      */
-/*
-    public function updateNoFollowingByIds(array $ids)
+    public function setProcessTokenByTwUserIds(User $user, array $ids, string $token): int
     {
-        $conn = $this->getEntityManager()->getConnection();
+        $qb = $this->createQueryBuilder('t');
+        $qb
+            ->update()
+            ->set('t.processToken', ':token')
+            ->where('t.user = :user')
+            ->andWhere(
+                $qb->expr()->in('t.twUser', ':ids')
+            )
+            ->setParameter(':token', $token, \PDO::PARAM_STR)
+            ->setParameter(':user', $user)
+            ->setParameter(':ids', $ids, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
+        ;
 
-        $stmt = $conn->prepare("
-            UPDATE follow SET is_favorite = 0 WHERE id IN(:ids);
-        ");
-        $stmt->bindValue(':ids', $ids, Connection::PARAM_INT_ARRAY);
-
-        return $stmt->executeQuery();
+        return $qb
+            ->getQuery()
+            ->execute()
+        ;
     }
-*/
+
+    /**
+     * Set null for all follow by user
+     *
+     * @param User $user
+     * @return integer
+     */
+    public function setNullProcessTokenByUser(User $user): int
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb
+            ->update()
+            ->set('t.processToken', ':token')
+            ->where('t.user = :user')
+            ->andWhere('t.processToken IS NOT NULL')
+            ->setParameter(':user', $user)
+            ->setParameter(':token', null, \PDO::PARAM_NULL)
+        ;
+
+        return $qb
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    /**
+     * Update no follow users by process token
+     *
+     * @param User $user
+     * @param string $token
+     * @param string $for
+     * @return integer
+     */
+    public function updateNoFollowByProcessToken(User $user, string $token, string $for): int
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb
+            ->update()
+            ->set('t.is' . ucfirst($for), ':is')
+            ->where('t.user = :user')
+            ->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->isNull('t.processToken'),
+                    $qb->expr()->neq('t.processToken', ':token')
+                )
+            )
+            ->setParameter(':is', 0, \PDO::PARAM_INT)
+            ->setParameter(':user', $user)
+            ->setParameter(':token', $token, \PDO::PARAM_STR)
+        ;
+
+        return $qb
+            ->getQuery()
+            ->execute()
+        ;
+    }
 }

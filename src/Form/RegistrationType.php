@@ -49,6 +49,7 @@ class RegistrationType extends AbstractType
             ->add('twAccountId', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control rounded-pill border-0 shadow-sm px-4',
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Twitter ID',
@@ -63,6 +64,7 @@ class RegistrationType extends AbstractType
             ->add('twUsername', TextType::class, [
                 'attr' => [
                     'class' => 'form-control rounded-pill border-0 shadow-sm px-4',
+                    'autocomplete' => 'off',
                     'maxlength' => 22,
                 ],
                 'label' => 'Twitter username',
@@ -79,6 +81,7 @@ class RegistrationType extends AbstractType
                 'first_options' => [
                     'attr' => [
                         'class' => 'form-control rounded-pill border-0 shadow-sm px-4 text-primary',
+                        'autocomplete' => 'off',
                     ],
                     'label' => 'Password',
                     'label_attr' => [
@@ -91,6 +94,7 @@ class RegistrationType extends AbstractType
                 'second_options' => [
                     'attr' => [
                         'class' => 'form-control rounded-pill border-0 shadow-sm px-4 text-primary',
+                        'autocomplete' => 'off',
                     ],
                     'label' => 'Repeat paswword',
                     'label_attr' => [

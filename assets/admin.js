@@ -13,13 +13,13 @@ import './admin/js/main';
 var modalTwApiKeys = null,
     $twUpdateFollowingForm = null,
     $twUpdateFollowersForm = null,
-    $twNextTokenInput = null,
     $twApiKeysModal = null,
     $twApiKeysModalSelect = null,
     $twApiKeysModalLoader = null,
     $twApiKeysModalAlertCount = null,
     $twApiKeysModalAlertResult = null,
     $twApiKeysModalAlertMessage = null,
+    updateDone = false,
     redirect = null;
 
 // Modal content
@@ -43,10 +43,11 @@ const callbackUpdate = function(json) {
   $twApiKeysModal.querySelector('.btn-ko').innerHTML = 'Finish';
   $twApiKeysModalLoader.style.display = 'none';
   if (json.code === 'success') {
-    if (json.nextToken) {
-      $twNextTokenInput.value = json.nextToken;
+    if (json.next) {
+      updateDone = false;
       $twApiKeysModal.querySelector('.btn-ok').innerHTML = 'Go to next';
     } else {
+      updateDone = true;
       $twApiKeysModal.querySelector('.btn-ok').innerHTML = 'Done';
       $twApiKeysModal.querySelector('.btn-ok').setAttribute('data-bs-dismiss', 'modal');
       $twApiKeysModal.querySelector('.btn-ok').disabled = false;
@@ -96,7 +97,6 @@ const callUpdateFollowers = function(callback) {
 window.onload = function() {
   $twUpdateFollowingForm = document.querySelector('#ajax-update-following');
   $twUpdateFollowersForm = document.querySelector('#ajax-update-followers');
-  $twNextTokenInput = document.querySelector('#ajax_tw_api_next_token');
   $twApiKeysModal = document.querySelector('#modal-twapi-keys');
 
   // Get modal content
@@ -125,6 +125,7 @@ window.onload = function() {
 
     // On show modal
     $twApiKeysModal.addEventListener('shown.bs.modal', function() {
+      updateDone = false;
       $twApiKeysModalSelect = $twApiKeysModal.querySelector('#twapi-keys');
       $twApiKeysModalAlertCount = $twApiKeysModal.querySelector('#twapi-call-counts');
       $twApiKeysModalAlertResult = $twApiKeysModal.querySelector('.alert-box-result');
@@ -144,27 +145,31 @@ window.onload = function() {
     // Update following
     if ($twApiKeysModal.querySelector('#btn-update-following')) {
       $twApiKeysModal.querySelector('#btn-update-following').addEventListener('click', function(e) {
-        $twApiKeysModalAlertResult.style.display = 'none';
-        $twApiKeysModalLoader.style.display = 'block';
-        $twApiKeysModal.querySelectorAll('.ev').forEach(function($btn) {
-          $btn.disabled = true;
-        });
-        callUpdateFollowing(function(json) {
-          callbackUpdate(json);
-        });
+        if (!updateDone) {
+          $twApiKeysModalAlertResult.style.display = 'none';
+          $twApiKeysModalLoader.style.display = 'block';
+          $twApiKeysModal.querySelectorAll('.ev').forEach(function($btn) {
+            $btn.disabled = true;
+          });
+          callUpdateFollowing(function(json) {
+            callbackUpdate(json);
+          });
+        }
       });
     }
 
     // Update followers
     if ($twApiKeysModal.querySelector('#btn-update-followers')) {
       $twApiKeysModal.querySelector('#btn-update-followers').addEventListener('click', function(e) {
-        $twApiKeysModalLoader.style.display = 'block';
-        $twApiKeysModal.querySelectorAll('.ev').forEach(function($btn) {
-          $btn.disabled = true;
-        });
-        callUpdateFollowers(function(json) {
-          callbackUpdate(json);
-        });
+        if (!updateDone) {
+          $twApiKeysModalLoader.style.display = 'block';
+          $twApiKeysModal.querySelectorAll('.ev').forEach(function($btn) {
+            $btn.disabled = true;
+          });
+          callUpdateFollowers(function(json) {
+            callbackUpdate(json);
+          });
+        }
       });
     }
   }

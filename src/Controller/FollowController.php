@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Follow;
 use App\Form\FollowType;
 use App\Form\AjaxEasyType;
-use App\Form\AjaxTwApiType;
+use App\Form\AjaxHiddenType;
 use App\Repository\TwApiRepository;
 use App\Repository\FollowRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,7 +50,7 @@ class FollowController extends AbstractController
         $ajaxEasyForm = $this->createForm(AjaxEasyType::class);
 
         // For ajax hidden form for update following
-        $ajaxTwApiForm = $this->createForm(AjaxTwApiType::class, null, [
+        $ajaxHiddenForm = $this->createForm(AjaxHiddenType::class, null, [
             'action' => $this->generateUrl('app_ajax_update_following', ['id' => 0]),
             'attr' => ['id' => 'ajax-update-following'],
         ]);
@@ -59,7 +59,7 @@ class FollowController extends AbstractController
             'following' => $following,
             'haveTwApiKeys' => $twApirepository->haveValidFollowingSettings($this->getUser()),
             'ajaxEasyForm' => $ajaxEasyForm->createView(),
-            'ajaxTwApiForm' => $ajaxTwApiForm->createView(),
+            'ajaxHiddenForm' => $ajaxHiddenForm->createView(),
         ]);
     }
 
@@ -94,7 +94,7 @@ class FollowController extends AbstractController
         $ajaxEasyForm = $this->createForm(AjaxEasyType::class);
 
         // For ajax hidden form for update followers
-        $ajaxTwApiForm = $this->createForm(AjaxTwApiType::class, null, [
+        $ajaxHiddenForm = $this->createForm(AjaxHiddenType::class, null, [
             'action' => $this->generateUrl('app_ajax_update_followers', ['id' => 0]),
             'attr' => ['id' => 'ajax-update-followers'],
         ]);
@@ -103,7 +103,7 @@ class FollowController extends AbstractController
             'followers' => $followers,
             'haveTwApiKeys' => $twApirepository->haveValidFollowersSettings($this->getUser()),
             'ajaxEasyForm' => $ajaxEasyForm->createView(),
-            'ajaxTwApiForm' => $ajaxTwApiForm->createView(),
+            'ajaxHiddenForm' => $ajaxHiddenForm->createView(),
         ]);
     }
 

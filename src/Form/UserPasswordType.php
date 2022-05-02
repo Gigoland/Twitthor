@@ -23,6 +23,7 @@ class UserPasswordType extends AbstractType
             ->add('plainPassword', PasswordType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                 ],
                 'label' => 'Current password',
                 'label_attr' => [
@@ -37,6 +38,7 @@ class UserPasswordType extends AbstractType
                 'first_options' => [
                     'attr' => [
                         'class' => 'form-control',
+                        'autocomplete' => 'off',
                     ],
                     'label' => 'Password',
                     'label_attr' => [
@@ -49,6 +51,7 @@ class UserPasswordType extends AbstractType
                 'second_options' => [
                     'attr' => [
                         'class' => 'form-control',
+                        'autocomplete' => 'off',
                     ],
                     'label' => 'Repeat paswword',
                     'label_attr' => [

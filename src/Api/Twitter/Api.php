@@ -133,20 +133,21 @@ abstract class Api
     /**
      * Get nextToken
      *
-     * @return string
+     * @return string|null
      */
     public function getNextToken(): ?string
     {
-        return $this->nextToken;
+        return empty($this->nextToken) ? null : $this->nextToken;
     }
 
     /**
      * Set nextToken
+     *
      * @param string $nextToken
      */
     public function setNextToken(?string $nextToken)
     {
-        $this->nextToken = $nextToken;
+        $this->nextToken = empty($nextToken) ? null : $nextToken;
     }
 
     /**

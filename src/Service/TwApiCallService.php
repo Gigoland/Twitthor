@@ -9,13 +9,12 @@ use App\Entity\User;
 use App\Entity\TwApi;
 use App\Entity\Follow;
 use App\Entity\TwUser;
+use App\Manager\FollowManager;
 use App\Manager\TwitthorManager;
 use App\Manager\TwApiCallManager;
-use App\Repository\FollowRepository;
 use App\Repository\TwUserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TwApiCallService
 {
@@ -28,7 +27,7 @@ class TwApiCallService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private TwUserRepository $twUserRepository,
-        private FollowRepository $followRepository,
+        private FollowManager $followManager,
         private TwApiCallManager $twApiCallManager
     ) {}
 
@@ -39,19 +38,19 @@ class TwApiCallService
      * @param TwApi $twApi
      * @param string $nextToken
      * @param string $uploadsPath
-     * @param string $rediretPath
-     * @return JsonResponse
+     * @return array
      */
     public function updateFollowing(
         User $user,
         TwApi $twApi,
-        ?string $nextToken,
-        string $uploadsPath,
-        string $rediretPath
-    ): JsonResponse {
+        string $uploadsPath
+    ): array {
         if (!$twApi || !$user) {
             return $this->error(self::KO);
         }
+
+        // Load TwApiCall in manager
+        $this->twApiCallManager->loadTwApiCall($twApi);
 
         // Initialisation
         $this->twitthorManager = new TwitthorManager([
@@ -62,22 +61,68 @@ class TwApiCallService
             // Set for user twitter account
             ->setTwitterAccountId($twApi->getAccountId())
             // Set next pagination token
-            ->setNextToken($nextToken)
+            ->setNextToken(
+                $this->twApiCallManager->getNextToken()
+            )
         ;
 
-        // Do update
+        // If NextToken is empty generate new process token (first call) (before api call only)
+        if (empty($this->twApiCallManager->getNextToken())) {
+            $this->twApiCallManager->setGeneratedProcessToken();
+        }
+
+        // Add api call count and save before call
+        $this->twApiCallManager
+            ->setPlusOneCallFollowing()
+            ->saveTwApiCall()
+        ;
+
+        // Do call Twitter API & update following
         $this->avatarsPath = $uploadsPath . 'images/avatar/';
         $result = $this->updateFollowingByUser($user);
 
-        return new JsonResponse([
+        // Set next token and save for api next call
+        $this->twApiCallManager
+            ->setNextToken(
+                $this->twitthorManager->getNextToken()
+            )
+            ->saveTwApiCall()
+        ;
+
+        // Set process token to follow
+        if (!empty($result['twUserIds'])) {
+            $this->followManager->setProcessTokenByTwUserIds(
+                $user,
+                $result['twUserIds'],
+                $this->twApiCallManager->getProcessToken()
+            );
+        }
+
+        // If not have next token process is finished
+        if (empty($this->twitthorManager->getNextToken())) {
+            // Found and update no following users
+            $this->followManager->updateNoFollowingByProcessToken(
+                $user,
+                $this->twApiCallManager->getProcessToken()
+            );
+            // Destroy process token for all follow
+            $this->followManager->destroyProcessTokenByUser($user);
+            // Set and save destroy process token for api call
+            $this->twApiCallManager
+                ->setDestroyProcessToken()
+                ->saveTwApiCall()
+            ;
+        }
+
+        // Response
+        return [
             'code' => self::OK,
-            'checked' => $result['check'],
-            'created' => count($result['insert']),
-            'updated' => count($result['update']),
-            'nextToken' => $this->twitthorManager->getNextToken(),
-            'callCount' => $this->twApiCallManager->appendOneCallFollowing($twApi),
-            'path' => $rediretPath,
-        ]);
+            'checked' => count($result['twUserIds']), // Total found
+            'created' => count($result['insert']), // Follow created
+            'updated' => count($result['update']), // Follow updated
+            'callCount' => $this->twApiCallManager->getFollowingCnt(),
+            'next' => !empty($this->twitthorManager->getNextToken()),
+        ];
     }
 
     /**
@@ -87,19 +132,19 @@ class TwApiCallService
      * @param TwApi $twApi
      * @param string $nextToken
      * @param string $uploadsPath
-     * @param string $rediretPath
-     * @return JsonResponse
+     * @return array
      */
     public function updateFollowers(
         User $user,
         TwApi $twApi,
-        ?string $nextToken,
-        string $uploadsPath,
-        string $rediretPath
-    ): JsonResponse {
+        string $uploadsPath
+    ): array {
         if (!$twApi || !$user) {
             return $this->error(self::KO);
         }
+
+        // Load TwApiCall in manager
+        $this->twApiCallManager->loadTwApiCall($twApi);
 
         // Initialisation
         $this->twitthorManager = new TwitthorManager([
@@ -110,22 +155,68 @@ class TwApiCallService
             // Set for user twitter account
             ->setTwitterAccountId($twApi->getAccountId())
             // Set next pagination token
-            ->setNextToken($nextToken)
+            ->setNextToken(
+                $this->twApiCallManager->getNextToken()
+            )
         ;
 
-        // Do update
+        // If NextToken iqs empty generate call token (first call) (before api call only)
+        if (empty($this->twApiCallManager->getNextToken())) {
+            $this->twApiCallManager->setGeneratedProcessToken();
+        }
+
+        // Add api call count + Save before call
+        $this->twApiCallManager
+            ->setPlusOneCallFollowers()
+            ->saveTwApiCall()
+        ;
+
+        // Do update followers
         $this->avatarsPath = $uploadsPath . 'images/avatar/';
         $result = $this->updateFollowersByUser($user);
 
-        return new JsonResponse([
+        // Set and save for api next call
+        $this->twApiCallManager
+            ->setNextToken(
+                $this->twitthorManager->getNextToken()
+            )
+            ->saveTwApiCall()
+        ;
+
+        // Set process token to follow
+        if (!empty($result['twUserIds'])) {
+            $this->followManager->setProcessTokenByTwUserIds(
+                $user,
+                $result['twUserIds'],
+                $this->twApiCallManager->getProcessToken()
+            );
+        }
+
+        // Process finished
+        if (empty($this->twApiCallManager->getNextToken())) {
+            // Found and update no folower users
+            $this->followManager->updateNoFollowersByProcessToken(
+                $user,
+                $this->twApiCallManager->getProcessToken()
+            );
+            // Destroy process token for all follow
+            $this->followManager->destroyProcessTokenByUser($user);
+            // Set and save destroy process token for api call
+            $this->twApiCallManager
+                ->setDestroyProcessToken()
+                ->saveTwApiCall()
+            ;
+        }
+
+        // Response
+        return [
             'code' => self::OK,
-            'checked' => $result['check'],
-            'created' => count($result['insert']),
-            'updated' => count($result['update']),
-            'nextToken' => $this->twitthorManager->getNextToken(),
-            'callCount' => $this->twApiCallManager->appendOneCallFollowers($twApi),
-            'path' => $rediretPath,
-        ]);
+            'checked' => count($result['twUserIds']), // Total found
+            'created' => count($result['insert']), // Follow created
+            'updated' => count($result['update']), // Follow updated
+            'callCount' => $this->twApiCallManager->getFollowersCnt(),
+            'next' => !empty($this->twApiCallManager->getNextToken()),
+        ];
     }
 
     /**
@@ -192,9 +283,9 @@ class TwApiCallService
     private function saveFollowing(User $user, array $rows): array
     {
         $result = [
-            'check' => 0,
-            'insert' => [],
-            'update' => [],
+            'twUserIds' => [], // Total found
+            'insert' => [], // Follow insert
+            'update' => [], // Follow update
         ];
 
         if (empty($rows)) {
@@ -204,9 +295,6 @@ class TwApiCallService
         $fs = new Filesystem();
         $file = new File();
         $url = new Url();
-
-        // Get all following from db before update
-        //$noFollowingTwAccountIds = $this->twUserRepository->getFollowingTwAccountIds($user);
 
         // Set max execution time
         if (count($rows) > 999) {
@@ -218,11 +306,6 @@ class TwApiCallService
             if (empty($row['id'])) {
                 continue;
             }
-
-            // Found no following
-            //if (isset($noFollowingTwAccountIds[$row['id']])) {
-            //    unset($noFollowingTwAccountIds[$row['id']]);
-            //}
 
             $saveTwUser = false;
             $saveFollow = false;
@@ -293,10 +376,7 @@ class TwApiCallService
                 $this->entityManager->flush();
             }
 
-            $follow = $this->followRepository->findOneBy([
-                'user' => $user,
-                'twUser' => $twUser,
-            ]);
+            $follow = $this->followManager->getFollowByUser($user, $twUser);
 
             if (!$follow) {
                 // New
@@ -318,11 +398,8 @@ class TwApiCallService
                 $result[$saveFollow][] = $follow->getId();
             }
 
-            $result['check']++;
+            $result['twUserIds'][] = $twUser->getId();
         }
-
-        // Update no following
-        //$this->twUserRepository->updateNoFollowingByIds($noFollowingTwAccountIds);
 
         return $result;
     }
@@ -337,9 +414,9 @@ class TwApiCallService
     private function saveFollowers(User $user, array $rows): array
     {
         $result = [
-            'check' => 0,
-            'insert' => [],
-            'update' => [],
+            'twUserIds' => [], // Total found
+            'insert' => [], // Follow insert
+            'update' => [], // Follow update
         ];
 
         if (empty($rows)) {
@@ -349,9 +426,6 @@ class TwApiCallService
         $fs = new Filesystem();
         $file = new File();
         $url = new Url();
-
-        // Get all followers from db before update
-        //$noFollowersTwAccountIds = $this->twUserRepository->getFollowersTwAccountIds($user);
 
         // Set max execution time
         if (count($rows) > 999) {
@@ -363,11 +437,6 @@ class TwApiCallService
             if (empty($row['id'])) {
                 continue;
             }
-
-            // Found no follower
-            //if (isset($noFollowersTwAccountIds[$row['id']])) {
-            //    unset($noFollowersTwAccountIds[$row['id']]);
-            //}
 
             $saveTwUser = false;
             $saveFollow = false;
@@ -438,10 +507,7 @@ class TwApiCallService
                 $this->entityManager->flush();
             }
 
-            $follow = $this->followRepository->findOneBy([
-                'user' => $user,
-                'twUser' => $twUser,
-            ]);
+            $follow = $this->followManager->getFollowByUser($user, $twUser);
 
             if (!$follow) {
                 // New
@@ -463,7 +529,7 @@ class TwApiCallService
                 $result[$saveFollow][] = $follow->getId();
             }
 
-            $result['check']++;
+            $result['twUserIds'][] = $twUser->getId();
         }
 
         return $result;
@@ -505,13 +571,16 @@ class TwApiCallService
     }
 
     /**
-     * @return JsonResponse
+     * Errors
+     *
+     * @param [type] $code
+     * @return array
      */
-    private function error($code): JsonResponse
+    private function error($code): array
     {
-        return new JsonResponse([
+        return [
             'code' => $code,
-        ]);
+        ];
     }
 
     /**

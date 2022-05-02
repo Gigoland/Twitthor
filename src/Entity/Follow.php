@@ -37,6 +37,9 @@ class Follow
     #[Assert\Length(min: 1, max: 55)]
     private ?string $walletSol = null;
 
+    #[ORM\Column(type: 'string', length: 55, nullable: true)]
+    private $processToken;
+
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
     private \DateTimeImmutable $createAt;
@@ -130,6 +133,18 @@ class Follow
     public function setWalletSol(?string $walletSol): self
     {
         $this->walletSol = $walletSol;
+
+        return $this;
+    }
+
+    public function getProcessToken(): ?string
+    {
+        return $this->processToken;
+    }
+
+    public function setProcessToken(?string $processToken): self
+    {
+        $this->processToken = $processToken;
 
         return $this;
     }
