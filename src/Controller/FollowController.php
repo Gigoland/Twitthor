@@ -37,7 +37,7 @@ class FollowController extends AbstractController
         PaginatorInterface $paginator
     ): Response {
         // Get connected user followers
-        $following = $paginator->paginate(
+        $rows = $paginator->paginate(
             $followRepository->findBy([
                 'user' => $this->getUser(),
                 'isFollowing' => true,
@@ -56,7 +56,7 @@ class FollowController extends AbstractController
         ]);
 
         return $this->render('theme/admin/page/follow/following.html.twig', [
-            'following' => $following,
+            'rows' => $rows,
             'haveTwApiKeys' => $twApirepository->haveValidFollowingSettings($this->getUser()),
             'ajaxEasyForm' => $ajaxEasyForm->createView(),
             'ajaxHiddenForm' => $ajaxHiddenForm->createView(),
@@ -81,7 +81,7 @@ class FollowController extends AbstractController
         TwApiRepository $twApirepository
     ): Response {
         // Get connected user followers
-        $followers = $paginator->paginate(
+        $rows = $paginator->paginate(
             $followRepository->findBy([
                 'user' => $this->getUser(),
                 'isFollower' => true,
@@ -100,10 +100,41 @@ class FollowController extends AbstractController
         ]);
 
         return $this->render('theme/admin/page/follow/followers.html.twig', [
-            'followers' => $followers,
+            'rows' => $rows,
             'haveTwApiKeys' => $twApirepository->haveValidFollowersSettings($this->getUser()),
             'ajaxEasyForm' => $ajaxEasyForm->createView(),
             'ajaxHiddenForm' => $ajaxHiddenForm->createView(),
+        ]);
+    }
+
+    /**
+     * No follower "platonic" manager
+     *
+     * @param Request $request
+     * @param PaginatorInterface $paginator
+     * @param FollowRepository $followRepository
+     * @return Response
+     */
+    #[Route('/platonics', name: 'app_platonics', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function platonics(
+        Request $request,
+        PaginatorInterface $paginator,
+        FollowRepository $followRepository
+    ): Response {
+        // Get connected user platonics
+        $rows = $paginator->paginate(
+            $followRepository->findBy([
+                'user' => $this->getUser(),
+                'isFollowing' => true,
+                'isFollower' => false,
+            ]),
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('theme/admin/page/follow/platonics.html.twig', [
+            'rows' => $rows,
         ]);
     }
 
@@ -123,7 +154,7 @@ class FollowController extends AbstractController
         FollowRepository $followRepository
     ): Response {
         // Get connected user followers
-        $outers = $paginator->paginate(
+        $rows = $paginator->paginate(
             $followRepository->findBy([
                 'user' => $this->getUser(),
                 'isFollowing' => false,
@@ -134,7 +165,7 @@ class FollowController extends AbstractController
         );
 
         return $this->render('theme/admin/page/follow/outers.html.twig', [
-            'outers' => $outers,
+            'rows' => $rows,
         ]);
     }
 

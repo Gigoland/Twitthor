@@ -1,12 +1,12 @@
 {% extends 'theme/admin/base.html.twig' %}
 
-{% block title %}Twitthor - Outers{% endblock %}
+{% block title %}Twitthor - Platonics{% endblock %}
 
 {% block body %}
   {% include 'theme/admin/common/_title_wraper.html.twig' with {
-    'title': 'Outers',
+    'title': 'Platonics',
     'navs': [
-      {'title': 'Outers', 'path': path('app_outers')},
+      {'title': 'Platonics', 'path': path('app_platonics')},
     ]
   } %}
 
@@ -22,7 +22,7 @@
             </p>
           {% else %}
             <p class="text-sm mb-20">
-              Total: {{ rows.getTotalItemCount }} outers found.
+              Total: {{ rows.getTotalItemCount }} platonics found.
             </p>
             <div class="table-wrapper table-responsive">
               <table class="table table-hover-shadow">
@@ -37,7 +37,6 @@
                     <th><h6>Favorite</h6></th>
                     <th><h6>Edit</h6></th>
                     <th><h6>Action</h6></th>
-                    <th><h6>Delete</h6></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -66,12 +65,7 @@
                       </td>
                       <td>
                         <div class="action">
-                          <a href="#" class="btn btn-secondary">Follow</a>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="action">
-                          <a href="{{ path('app_follow_delete', {'id': row.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
+                          <a href="#" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }}">Unfollow</a>
                         </div>
                       </td>
                     </tr>
