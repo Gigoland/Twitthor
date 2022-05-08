@@ -29,33 +29,78 @@ class TwApiCallService
     ) {}
 
     /**
-     * Undocumented function
+     * Unfollow by Api
      *
      * @param User $user
      * @param TwApi $twApi
-     * @param integer $targetUserId
-     * @return void
+     * @param Follow $follow
+     * @return array
      */
     public function unfollow(
         User $user,
         TwApi $twApi,
-        int $targetUserId
-    ) {
-        if (!$twApi || !$user || empty($targetUserId)) {
+        Follow $follow
+    ): array {
+        if (!$user || !$twApi || !$follow) {
             return $this->error('Error'); // @todo message
         }
+
+        // Check if is not following
+        if (!$follow->getIsFollowing()) {
+            // Response
+            return [
+                'success' => true,
+                'message' => 'Unfollow',
+            ];
+        }
+
+        // Load TwApiCall in manager
+        $this->twApiCallManager->loadTwApiCall($twApi);
+
+        // Get twitter user
+        $twUser = $follow->getTwUser();
 
         // Initialisation
         $this->twitthorManager = new TwitthorManager([
             'twitter_bearer_token' => $twApi->getBearerToken(),
         ]);
 
-        $result = $this->twitthorManager
-            ->setTargetUserId($targetUserId)
-            ->unfollowByAccountId()
+        // Set params
+        $this->twitthorManager
+            // Set for user twitter account (source_user_id)
+            ->setTwitterAccountId(
+                $twApi->getAccountId()
+            )
+            // Unfollow target user id (target_user_id)
+            ->setTargetUserId(
+                $twUser->getTwAccountId()
+            )
         ;
 
-        dump($result);
+        // Add api call count and save before call
+        $this->twApiCallManager
+            ->setPlusOneCallUnfollow()
+            ->saveTwApiCall()
+        ;
+
+        // Do unfollow
+        $result = $this->twitthorManager->unfollow();
+
+        // Error
+        if (!empty($result['errors'])) {
+            // Response
+            return [
+                'success' => false,
+                'errors' => $result['errors'],
+            ];
+        }
+
+        // Response
+        return [
+            'success' => true,
+            'message' => 'Unfollowed',
+            'result' => $result,
+        ];
     }
 
     /**
@@ -63,7 +108,6 @@ class TwApiCallService
      *
      * @param User $user
      * @param TwApi $twApi
-     * @param string $nextToken
      * @param string $uploadsPath
      * @return array
      */
@@ -72,7 +116,7 @@ class TwApiCallService
         TwApi $twApi,
         string $uploadsPath
     ): array {
-        if (!$twApi || !$user) {
+        if (!$user || !$twApi) {
             return $this->error('Error'); // @todo message
         }
 
@@ -166,7 +210,6 @@ class TwApiCallService
      *
      * @param User $user
      * @param TwApi $twApi
-     * @param string $nextToken
      * @param string $uploadsPath
      * @return array
      */
@@ -175,7 +218,7 @@ class TwApiCallService
         TwApi $twApi,
         string $uploadsPath
     ): array {
-        if (!$twApi || !$user) {
+        if (!$user || !$twApi) {
             return $this->error('Error'); // @todo message
         }
 

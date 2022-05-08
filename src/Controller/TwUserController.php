@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\TwUser;
 use App\Form\TwUserType;
-use App\Repository\TwUserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,24 +16,26 @@ use Symfony\Component\Filesystem\Filesystem;
 #[IsGranted('ROLE_ADMIN')]
 class TwUserController extends AbstractController
 {
+    public function __construct(
+        private EntityManagerInterface $entityManager
+    ) {}
+
     /**
      * Twitter users manager
      * Admin only
      *
      * @param Request $request
      * @param PaginatorInterface $paginator
-     * @param TwUserRepository $repository
      * @return Response
      */
     #[Route('/tw/users', name: 'app_twitter_users', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function users(
         Request $request,
-        PaginatorInterface $paginator,
-        TwUserRepository $repository
+        PaginatorInterface $paginator
     ): Response {
         $rows = $paginator->paginate(
-            $repository->findAll(),
+            $$this->entityManager->getRepository(TwUser::class)->findAll(),
             $request->query->getInt('page', 1),
             10
         );
@@ -50,26 +51,23 @@ class TwUserController extends AbstractController
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
      * @return Response
      */
     #[Route('/tw/user/add', name: 'app_twitter_user_add', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function new(
-        Request $request,
-        EntityManagerInterface $entityManager
+        Request $request
     ): Response {
         $twUser = new TwUser();
         $form = $this->createForm(TwUserType::class, $twUser);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 $twUser = $form->getData();
 
-                $entityManager->persist($twUser);
-                $entityManager->flush();
+                $this->entityManager->persist($twUser);
+                $this->entityManager->flush();
 
                 $this->addFlash(
                     'success',
@@ -98,7 +96,6 @@ class TwUserController extends AbstractController
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
      * @param TwUser $twUser
      * @return Response
      */
@@ -106,19 +103,17 @@ class TwUserController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function edit(
         Request $request,
-        EntityManagerInterface $entityManager,
         TwUser $twUser
     ): Response {
         $form = $this->createForm(TwUserType::class, $twUser);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 $twUser = $form->getData();
 
-                $entityManager->persist($twUser);
-                $entityManager->flush();
+                $this->entityManager->persist($twUser);
+                $this->entityManager->flush();
 
                 $this->addFlash(
                     'success',
@@ -146,20 +141,18 @@ class TwUserController extends AbstractController
      * Delete twitter user by form post
      * Admin only
      *
-     * @param EntityManagerInterface $entityManager
      * @param TwUser $twUser
      * @return Response
      */
     #[Route('/tw/user/{id}/delete', name: 'app_twitter_user_delete', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(
-        EntityManagerInterface $entityManager,
         TwUser $twUser
     ): Response {
         $twAccountId = $twUser->getTwAccountId();
 
-        $entityManager->remove($twUser);
-        $entityManager->flush();
+        $this->entityManager->remove($twUser);
+        $this->entityManager->flush();
 
         // Remove avatar
         $fs = new Filesystem();

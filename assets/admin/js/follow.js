@@ -41,10 +41,8 @@ import {Modal} from 'bootstrap';
   };
 
   // After update
-  const ajaxCallback = function(data) {
-    $twApiSettingsModal.querySelectorAll('.ev').forEach(function(that) {
-      that.disabled = false;
-    });
+  const ajaxFollowCallback = function(data) {
+    $twApiSettingsModal.querySelectorAll('.ev').forEach(el => el.disabled = false);
     $twApiSettingsModal.querySelector('.btn-ko').innerHTML = 'Finish';
     $twApiSettingsModalLoader.style.display = 'none';
     if (data.success) {
@@ -68,20 +66,28 @@ import {Modal} from 'bootstrap';
     }
   };
 
+  // After unfollow
+  const ajaxUnfollowCallback = function(data) {
+    console.log(data);
+    if (data.success) {
+
+    } else {
+      ajaxResponseError(data);
+    }
+  };
+
   // Get update following/folowers
   const callUpdateFollow = function() {
     if (!updateDone) {
       $twApiSettingsModalAlertResult.style.display = 'none';
       $twApiSettingsModalLoader.style.display = 'block';
-      $twApiSettingsModal.querySelectorAll('.ev').forEach(function(that) {
-        that.disabled = true;
-      });
+      $twApiSettingsModal.querySelectorAll('.ev').forEach(el => el.disabled = true);
       setTimeout(() => {
         axios.post(this.value)
         .then(response => response.data)
         .then(data => {
           setTimeout(() => {
-            ajaxCallback(data);
+            ajaxFollowCallback(data);
           }, 50);
         })
         .catch(error => {
@@ -89,6 +95,22 @@ import {Modal} from 'bootstrap';
         });
       }, 50);
     }
+  };
+
+  // Unfollow
+  const callUnfollow = function() {
+    setTimeout(() => {
+      axios.post(this.value)
+      .then(response => response.data)
+      .then(data => {
+        setTimeout(() => {
+          ajaxUnfollowCallback(data);
+        }, 50);
+      })
+      .catch(error => {
+        ajaxError(error);
+      });
+    }, 50);
   };
 
   // Modal
@@ -120,5 +142,10 @@ import {Modal} from 'bootstrap';
   // Get modal content
   if (document.querySelector('#js-btn-update')) {
     document.querySelector('#js-btn-update').addEventListener('click', getAwApiKeysModal);
+  }
+
+  // Get modal content
+  if (document.querySelector('.js-btn-unfollow')) {
+    document.querySelectorAll('.js-btn-unfollow').forEach(el => el.addEventListener('click', callUnfollow));
   }
 })();

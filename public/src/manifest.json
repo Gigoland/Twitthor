@@ -5,8 +5,8 @@
   "src/admin.js": "/src/admin.js",
   "src/runtime.js": "/src/runtime.js",
   "src/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-6a5154.js": "/src/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-6a5154.js",
-  "src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-c6c18f.css": "/src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-c6c18f.css",
-  "src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-c6c18f.js": "/src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-c6c18f.js",
+  "src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-10a5f0.css": "/src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-10a5f0.css",
+  "src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-10a5f0.js": "/src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-10a5f0.js",
   "src/fonts/materialdesignicons-webfont.eot": "/src/fonts/materialdesignicons-webfont.eot",
   "src/fonts/materialdesignicons-webfont.ttf": "/src/fonts/materialdesignicons-webfont.ttf",
   "src/fonts/LineIcons.svg": "/src/fonts/LineIcons.svg",
@@ -74,7 +74,5 @@
   "src/images/cards/card-style-1/admin-3.png": "/src/images/cards/card-style-1/admin-3.9fff6b9b.png",
   "src/images/favicon.svg": "/src/images/favicon.96e4818a.svg",
   "src/images/logo/logo-2.svg": "/src/images/logo/logo-2.b15d37af.svg",
-  "src/images/auth/shape.svg": "/src/images/auth/shape.9a553e9e.svg",
-  "src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-10a5f0.css": "/src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-10a5f0.css",
-  "src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-10a5f0.js": "/src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_for-each_js-node_mo-10a5f0.js"
+  "src/images/auth/shape.svg": "/src/images/auth/shape.9a553e9e.svg"
 }

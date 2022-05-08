@@ -75,9 +75,7 @@
                         </div>
                       </td>
                       <td>
-                        <div class="action">
-                          <a href="#" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }}">Unfollow</a>
-                        </div>
+                        <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }} btn-hover js-btn-unfollow">Unfollow</button>
                       </td>
                     </tr>
                   {% endfor %}

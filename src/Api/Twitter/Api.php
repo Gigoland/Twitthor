@@ -22,6 +22,7 @@ abstract class Api
     // Requst limits [num, interval]
     const LIMIT_USERS_FOLLOWING = [15, 15];
     const LIMIT_USERS_FOLLOWERS = [15, 15];
+    const LIMIT_USERS_UNFOLLOW = [50, 15];
 
     // Api settings
     protected ?string $twitterConsumerKey = null;
@@ -313,7 +314,7 @@ abstract class Api
     {
         if (empty($this->twitterAccountId) || empty($this->targetUserId)) {
             throw new \InvalidArgumentException(
-                'Incomplete settings passed to Twitthor'
+                'Incomplete settings passed to Twitthor - Unfollow'
             );
         }
 

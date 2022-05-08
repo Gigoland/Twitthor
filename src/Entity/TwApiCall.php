@@ -28,6 +28,13 @@ class TwApiCall
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private $followersAt;
 
+    #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
+    #[Assert\NotNull()]
+    private $unfollowCnt = 0;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private $unfollowAt;
+
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     private $nextToken;
 
@@ -87,6 +94,30 @@ class TwApiCall
     public function setFollowersAt(?\DateTimeImmutable $followersAt): self
     {
         $this->followersAt = $followersAt;
+
+        return $this;
+    }
+
+    public function getUnfollowCnt(): ?int
+    {
+        return $this->unfollowCnt;
+    }
+
+    public function setUnfollowCnt(int $unfollowCnt): self
+    {
+        $this->unfollowCnt = $unfollowCnt;
+
+        return $this;
+    }
+
+    public function getUnfollowAt(): ?\DateTimeImmutable
+    {
+        return $this->unfollowAt;
+    }
+
+    public function setUnfollowAt(?\DateTimeImmutable $unfollowAt): self
+    {
+        $this->unfollowAt = $unfollowAt;
 
         return $this;
     }

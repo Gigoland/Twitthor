@@ -5,9 +5,7 @@ const swal = require('sweetalert2');
 //
 const setTwApiSettingActive = function() {
   let $loader = this.parentElement.querySelector('.switch-loader');
-  document.querySelectorAll('.switch-is-active').forEach(function(that) {
-    that.style.display = 'none';
-  });
+  document.querySelectorAll('.js-switch-is-active').forEach(el => el.style.display = 'none');
   $loader.style.display = 'block';
   setTimeout(() => {
     axios.post(this.value, {
@@ -22,9 +20,7 @@ const setTwApiSettingActive = function() {
         timer: 1500
       });
       $loader.style.display = 'none';
-      document.querySelectorAll('.switch-is-active').forEach(function(that) {
-        that.style.display = 'block';
-      });
+      document.querySelectorAll('.js-switch-is-active').forEach(el => el.style.display = 'block');
     })
     .catch(error => {
       ajaxError(error);
@@ -34,5 +30,7 @@ const setTwApiSettingActive = function() {
 
 // Onload
 (function() {
-  document.querySelectorAll('.switch-is-active').forEach(el => el.addEventListener('change', setTwApiSettingActive));
+  if (document.querySelector('.js-switch-is-active')) {
+    document.querySelectorAll('.js-switch-is-active').forEach(el => el.addEventListener('change', setTwApiSettingActive));
+  }
 })();

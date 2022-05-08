@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Follow;
+use App\Entity\TwApi;
 use App\Form\FollowType;
-use App\Repository\TwApiRepository;
-use App\Repository\FollowRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,12 +16,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class FollowController extends AbstractController
 {
+    public function __construct(
+        private EntityManagerInterface $entityManager
+    ) {}
+
     /**
      * Following manager
      *
      * @param Request $request
-     * @param FollowRepository $followRepository
-     * @param TwApiRepository $twApirepository
      * @param PaginatorInterface $paginator
      * @return Response
      */
@@ -30,13 +31,11 @@ class FollowController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function following(
         Request $request,
-        FollowRepository $followRepository,
-        TwApiRepository $twApirepository,
         PaginatorInterface $paginator
     ): Response {
         // Get connected user followers
         $rows = $paginator->paginate(
-            $followRepository->findBy([
+            $this->entityManager->getRepository(Follow::class)->findBy([
                 'user' => $this->getUser(),
                 'isFollowing' => true,
             ]),
@@ -44,9 +43,12 @@ class FollowController extends AbstractController
             10
         );
 
+        /** @var TwApiRepository $twApiRepository */
+        $twApiRepository = $this->entityManager->getRepository(TwApi::class);
+
         return $this->render('theme/admin/page/follow/following.html.twig', [
             'rows' => $rows,
-            'haveTwApiKeys' => $twApirepository->haveValidFollowingSettings($this->getUser()),
+            'haveTwApiKeys' => $twApiRepository->haveValidFollowingSettings($this->getUser()),
         ]);
     }
 
@@ -55,21 +57,17 @@ class FollowController extends AbstractController
      *
      * @param Request $request
      * @param PaginatorInterface $paginator
-     * @param FollowRepository $followRepository
-     * @param TwApiRepository $twApirepository
      * @return Response
      */
     #[Route('/followers', name: 'app_followers', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function followers(
         Request $request,
-        PaginatorInterface $paginator,
-        FollowRepository $followRepository,
-        TwApiRepository $twApirepository
+        PaginatorInterface $paginator
     ): Response {
         // Get connected user followers
         $rows = $paginator->paginate(
-            $followRepository->findBy([
+            $this->entityManager->getRepository(Follow::class)->findBy([
                 'user' => $this->getUser(),
                 'isFollower' => true,
             ]),
@@ -77,9 +75,12 @@ class FollowController extends AbstractController
             10
         );
 
+        /** @var TwApiRepository $twApiRepository */
+        $twApiRepository = $this->entityManager->getRepository(TwApi::class);
+
         return $this->render('theme/admin/page/follow/followers.html.twig', [
             'rows' => $rows,
-            'haveTwApiKeys' => $twApirepository->haveValidFollowersSettings($this->getUser()),
+            'haveTwApiKeys' => $twApiRepository->haveValidFollowersSettings($this->getUser()),
         ]);
     }
 
@@ -88,19 +89,17 @@ class FollowController extends AbstractController
      *
      * @param Request $request
      * @param PaginatorInterface $paginator
-     * @param FollowRepository $followRepository
      * @return Response
      */
     #[Route('/platonics', name: 'app_platonics', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function platonics(
         Request $request,
-        PaginatorInterface $paginator,
-        FollowRepository $followRepository
+        PaginatorInterface $paginator
     ): Response {
         // Get connected user platonics
         $rows = $paginator->paginate(
-            $followRepository->findBy([
+            $this->entityManager->getRepository(Follow::class)->findBy([
                 'user' => $this->getUser(),
                 'isFollowing' => true,
                 'isFollower' => false,
@@ -119,19 +118,17 @@ class FollowController extends AbstractController
      *
      * @param Request $request
      * @param PaginatorInterface $paginator
-     * @param FollowRepository $followRepository
      * @return Response
      */
     #[Route('/outers', name: 'app_outers', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function outers(
         Request $request,
-        PaginatorInterface $paginator,
-        FollowRepository $followRepository
+        PaginatorInterface $paginator
     ): Response {
         // Get connected user followers
         $rows = $paginator->paginate(
-            $followRepository->findBy([
+            $this->entityManager->getRepository(Follow::class)->findBy([
                 'user' => $this->getUser(),
                 'isFollowing' => false,
                 'isFollower' => false,
@@ -150,19 +147,16 @@ class FollowController extends AbstractController
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
      * @param Follow $follow
      * @return Response
      */
-    #[Route('/follow/edit/{id}', name: 'app_follow_edit', methods: ['GET', 'POST'])]
+    #[Route('/follow/{id}/edit', name: 'app_follow_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === follow.getUser()")]
     public function edit(
         Request $request,
-        EntityManagerInterface $entityManager,
         Follow $follow
     ): Response {
         $form = $this->createForm(FollowType::class, $follow);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -173,8 +167,8 @@ class FollowController extends AbstractController
                 $follow->setUser($this->getUser()); // Connected user
                 $follow->setTwUser($twUser); // Twitter user
 
-                $entityManager->persist($follow);
-                $entityManager->flush();
+                $this->entityManager->persist($follow);
+                $this->entityManager->flush();
 
                 $this->addFlash(
                     'success',
@@ -201,18 +195,16 @@ class FollowController extends AbstractController
     /**
      * Delete follow user
      *
-     * @param EntityManagerInterface $entityManager
      * @param Follow $follow
      * @return Response
      */
-    #[Route('/follow/delete/{id}', name: 'app_follow_delete', methods: ['GET', 'POST'])]
+    #[Route('/follow/{id}/delete', name: 'app_follow_delete', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === follow.getUser()")]
     public function delete(
-        EntityManagerInterface $entityManager,
         Follow $follow
     ): Response {
-        $entityManager->remove($follow);
-        $entityManager->flush();
+        $this->entityManager->remove($follow);
+        $this->entityManager->flush();
 
         $this->addFlash(
             'success',

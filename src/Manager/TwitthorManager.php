@@ -26,9 +26,21 @@ class TwitthorManager extends TwitterApi
         ;
     }
 
+    /**
+     * Unfollow target user
+     *
+     * @return void
+     */
     public function unfollow()
     {
-        $this->getFollowersByAccountId();
+        $result = $this->unfollowByAccountId();
+
+        // Check error
+        if ($errors = $this->checkError($result)) {
+            return $errors;
+        }
+
+        return $result;
     }
 
     /**

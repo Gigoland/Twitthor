@@ -94,6 +94,11 @@ class TwApiRepository extends ServiceEntityRepository
                     ->andWhere('t.bearerToken IS NOT NULL')
                 ;
                 break;
+            case 'unfollow':
+                $qb
+                    ->andWhere('t.bearerToken IS NOT NULL')
+                ;
+                break;
         }
 
         return $qb

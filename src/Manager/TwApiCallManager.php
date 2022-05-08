@@ -166,6 +166,33 @@ class TwApiCallManager
     }
 
     /**
+     * Add new limits counter
+     *
+     * @return TwApiCallManager
+     */
+    public function setPlusOneCallUnfollow(): TwApiCallManager
+    {
+        // Add call limit counts
+        $count = $this->twApiCall->getUnfollowCnt() + 1;
+        $at = new \DateTimeImmutable();
+
+        $this->twApiCall->setUnfollowCnt($count);
+        $this->twApiCall->setUnfollowAt($at);
+
+        return $this;
+    }
+
+    /**
+     * Get api call count int
+     *
+     * @return integer
+     */
+    public function getUnfollowCnt(): int
+    {
+        return $this->twApiCall->getUnfollowCnt();
+    }
+
+    /**
      * Save TwApiCall
      *
      * @return TwApiCall

@@ -15,12 +15,15 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ProfileController extends AbstractController
 {
+    public function __construct(
+        private EntityManagerInterface $entityManager
+    ) {}
+
     /**
      * Edit connected user only
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
      * @param UserPasswordHasherInterface $hasher
      * @return Response
      */
@@ -28,7 +31,6 @@ class ProfileController extends AbstractController
     #[Security("is_granted('ROLE_USER')")]
     public function editMyProfile(
         Request $request,
-        EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $hasher
     ): Response {
         /** @var User $user */
@@ -50,8 +52,8 @@ class ProfileController extends AbstractController
 
                 $user = $form->getData();
 
-                $entityManager->persist($user);
-                $entityManager->flush();
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
 
                 $this->addFlash(
                     'success',
@@ -77,7 +79,6 @@ class ProfileController extends AbstractController
      * Protected by CSRF
      *
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
      * @param UserPasswordHasherInterface $hasher
      * @return Response
      */
@@ -85,7 +86,6 @@ class ProfileController extends AbstractController
     #[Security("is_granted('ROLE_USER')")]
     public function editMyPassword(
         Request $request,
-        EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $hasher
     ): Response {
         /** @var User $user */
@@ -112,8 +112,8 @@ class ProfileController extends AbstractController
                     $form->getData()['newPassword']
                 );
 
-                $entityManager->persist($user);
-                $entityManager->flush();
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
 
                 $this->addFlash(
                     'success',
