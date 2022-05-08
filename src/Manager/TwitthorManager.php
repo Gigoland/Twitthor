@@ -156,7 +156,7 @@ class TwitthorManager extends TwitterApi
      * @param array $data
      * @return false|array
      */
-    private function checkError($data): ?array
+    private function checkError($data)
     {
         // Errors
         if (isset($data['errors'])) {

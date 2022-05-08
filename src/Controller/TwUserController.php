@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 
 #[IsGranted('ROLE_ADMIN')]
 class TwUserController extends AbstractController
@@ -101,7 +102,7 @@ class TwUserController extends AbstractController
      * @param TwUser $twUser
      * @return Response
      */
-    #[Route('/tw/user/edit/{id}', name: 'app_twitter_user_edit', methods: ['GET', 'POST'])]
+    #[Route('/tw/user/{id}/edit', name: 'app_twitter_user_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(
         Request $request,
@@ -149,14 +150,22 @@ class TwUserController extends AbstractController
      * @param TwUser $twUser
      * @return Response
      */
-    #[Route('/tw/user/delete/{id}', name: 'app_twitter_user_delete', methods: ['GET', 'POST'])]
+    #[Route('/tw/user/{id}/delete', name: 'app_twitter_user_delete', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(
         EntityManagerInterface $entityManager,
         TwUser $twUser
     ): Response {
+        $twAccountId = $twUser->getTwAccountId();
+
         $entityManager->remove($twUser);
         $entityManager->flush();
+
+        // Remove avatar
+        $fs = new Filesystem();
+        $fs->remove(
+            $this->getParameter('app.path.uploads') . 'images/avatar/' . $twAccountId
+        );
 
         $this->addFlash(
             'success',
