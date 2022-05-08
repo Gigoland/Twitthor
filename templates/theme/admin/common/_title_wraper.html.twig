@@ -11,7 +11,9 @@
               {{ form_start(action.form, {
                 'method': 'POST',
                 'action': action.path|default(''),
-                'attr': {'id': action.id|default('')}
+                'attr': {
+                  'id': action.id|default(''),
+                }
               }) }}
                 {% if action.icon is defined %}
                   {{ form_row(action.form.submit, {'label': '<i class="fa-solid ' ~ action.icon ~ '"></i>' ~ action.title|default('')}) }}
@@ -23,6 +25,12 @@
             {% elseif action.type|default(null) == 'modal' %}
 
               <a href="#" class="main-btn primary-btn btn-hover btn-sm" data-bs-toggle="modal" data-bs-target="#{{ action.target|default('modal') }}">
+                <i class="fa-solid {{ action.icon|default('fa-triangle-exclamation') }}"></i> {{ action.title|default('') }}
+              </a>
+
+            {% elseif action.type|default(null) == 'ajax' %}
+
+              <a href="{{ action.path|default('#') }}" onclick="event.preventDefault();" class="main-btn primary-btn btn-hover btn-sm"{% if action.id|default(null) %} id="{{ action.id }}"{% endif %}>
                 <i class="fa-solid {{ action.icon|default('fa-triangle-exclamation') }}"></i> {{ action.title|default('') }}
               </a>
 

@@ -38,6 +38,7 @@ class TwApiType extends AbstractType
             ->add('consumerKey', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                     'maxlength' => 255,
                 ],
                 'label' => 'CONSUMER KEY',
@@ -52,6 +53,7 @@ class TwApiType extends AbstractType
             ->add('consumerSecret', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                     'maxlength' => 255,
                 ],
                 'label' => 'CONSUMER SECRET',
@@ -66,6 +68,7 @@ class TwApiType extends AbstractType
             ->add('accessToken', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                     'maxlength' => 255,
                 ],
                 'label' => 'ACCESS TOKEN',
@@ -80,6 +83,7 @@ class TwApiType extends AbstractType
             ->add('accessTokenSecret', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                     'maxlength' => 255,
                 ],
                 'label' => 'ACCESS TOKEN SECRET',
@@ -94,6 +98,7 @@ class TwApiType extends AbstractType
             ->add('bearerToken', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                     'maxlength' => 255,
                 ],
                 'label' => 'BEARER TOKEN',
@@ -108,6 +113,7 @@ class TwApiType extends AbstractType
             ->add('accountId', NumberType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                 ],
                 'label' => 'ACCOUNT ID',
                 'label_attr' => [
@@ -118,6 +124,7 @@ class TwApiType extends AbstractType
             ->add('accountName', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                     'maxlength' => 255,
                 ],
                 'label' => 'ACCOUNT NAME',

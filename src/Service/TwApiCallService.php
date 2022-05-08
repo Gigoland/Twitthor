@@ -18,9 +18,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class TwApiCallService
 {
-    const OK = 'success';
-    const KO = 'error';
-
     private TwitthorManager $twitthorManager;
     private string $avatarsPath;
 
@@ -30,6 +27,36 @@ class TwApiCallService
         private FollowManager $followManager,
         private TwApiCallManager $twApiCallManager
     ) {}
+
+    /**
+     * Undocumented function
+     *
+     * @param User $user
+     * @param TwApi $twApi
+     * @param integer $targetUserId
+     * @return void
+     */
+    public function unfollow(
+        User $user,
+        TwApi $twApi,
+        int $targetUserId
+    ) {
+        if (!$twApi || !$user || empty($targetUserId)) {
+            return $this->error('Error'); // @todo message
+        }
+
+        // Initialisation
+        $this->twitthorManager = new TwitthorManager([
+            'twitter_bearer_token' => $twApi->getBearerToken(),
+        ]);
+
+        $result = $this->twitthorManager
+            ->setTargetUserId($targetUserId)
+            ->unfollowByAccountId()
+        ;
+
+        dump($result);
+    }
 
     /**
      * Update by Api
@@ -46,7 +73,7 @@ class TwApiCallService
         string $uploadsPath
     ): array {
         if (!$twApi || !$user) {
-            return $this->error(self::KO);
+            return $this->error('Error'); // @todo message
         }
 
         // Load TwApiCall in manager
@@ -116,7 +143,7 @@ class TwApiCallService
 
         // Response
         return [
-            'code' => self::OK,
+            'success' => true,
             'checked' => count($result['twUserIds']), // Total found
             'created' => count($result['insert']), // Follow created
             'updated' => count($result['update']), // Follow updated
@@ -140,7 +167,7 @@ class TwApiCallService
         string $uploadsPath
     ): array {
         if (!$twApi || !$user) {
-            return $this->error(self::KO);
+            return $this->error('Error'); // @todo message
         }
 
         // Load TwApiCall in manager
@@ -210,7 +237,7 @@ class TwApiCallService
 
         // Response
         return [
-            'code' => self::OK,
+            'success' => true,
             'checked' => count($result['twUserIds']), // Total found
             'created' => count($result['insert']), // Follow created
             'updated' => count($result['update']), // Follow updated
@@ -594,13 +621,14 @@ class TwApiCallService
     /**
      * Errors
      *
-     * @param [type] $code
+     * @param string $message
      * @return array
      */
-    private function error($code): array
+    private function error(string $message): array
     {
         return [
-            'code' => $code,
+            'success' => false,
+            'message' => $message,
         ];
     }
 }

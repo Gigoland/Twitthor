@@ -19,13 +19,13 @@
         <div class="card-style mb-30">
           <h6 class="mb-10">Data Table</h6>
 
-          {% if twUsers.getTotalItemCount == 0 %}
+          {% if rows.getTotalItemCount == 0 %}
             <p class="text-sm mb-20">
               Zero data.
             </p>
           {% else %}
             <p class="text-sm mb-20">
-              Total: {{ twUsers.getTotalItemCount }} Twitter users found.
+              Total: {{ rows.getTotalItemCount }} Twitter users found.
             </p>
             <div class="table-wrapper table-responsive">
               <table class="table table-hover-shadow">
@@ -44,33 +44,33 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for twUser in twUsers %}
+                  {% for row in rows %}
                     <tr>
                       <td class="min-width">
                         <div class="lead">
                           <div class="lead-image">
-                            <img src="{{ app.request.schemeAndHttpHost ~ twUser.avatar }}" alt="Avatar" title="{{ twUser.twName }}">
+                            <img src="{{ app.request.schemeAndHttpHost ~ row.avatar }}" alt="Avatar" title="{{ row.twName }}">
                           </div>
                           <div class="lead-text">
-                            <p>{{ twUser.twName|slice(0, 20) ~ '...' }}</p>
+                            <p>{{ row.twName|slice(0, 20) ~ '...' }}</p>
                           </div>
                         </div>
                       </td>
-                      <td class="min-width"><p title="{{ twUser.twUsername }}">@{{ twUser.twUsername|slice(0, 20) ~ '...' }}</p></td>
-                      <td class="min-width"><p title="{{ twUser.twUrl }}">{{ twUser.twUrl|slice(0, 20) ~ '...' }}</p></td>
-                      <td class="min-width"><p>{{ twUser.twAccountId }}</p></td>
-                      <td class="min-width"><p>{{ twUser.twCreatedAt|date('d/m/Y H:i') }}</p></td>
-                      <td class="min-width"><p>{{ twUser.twIsVerified ? '<span class="badge bg-info">Yes' : '<span class="badge bg-secondary">No' }}</span></p></td>
-                      <td class="min-width"><p>{{ twUser.createAt|date('d/m/Y h:i') }}</p></td>
-                      <td class="min-width"><p>{{ twUser.updateAt|date('d/m/Y h:i') }}</p></td>
+                      <td class="min-width"><p title="{{ row.twUsername }}">@{{ row.twUsername|slice(0, 20) ~ '...' }}</p></td>
+                      <td class="min-width"><p title="{{ row.twUrl }}">{{ row.twUrl|slice(0, 20) ~ '...' }}</p></td>
+                      <td class="min-width"><p>{{ row.twAccountId }}</p></td>
+                      <td class="min-width"><p>{{ row.twCreatedAt|date('d/m/Y H:i') }}</p></td>
+                      <td class="min-width"><p>{{ row.twIsVerified ? '<span class="badge bg-info">Yes' : '<span class="badge bg-secondary">No' }}</span></p></td>
+                      <td class="min-width"><p>{{ row.createAt|date('d/m/Y h:i') }}</p></td>
+                      <td class="min-width"><p>{{ row.updateAt|date('d/m/Y h:i') }}</p></td>
                       <td>
                         <div class="action">
-                          <a href="{{ path('app_twitter_user_edit', {'id': twUser.id}) }}" class="btn btn-secondary">Edit</a>
+                          <a href="{{ path('app_twitter_user_edit', {'id': row.id}) }}" class="btn btn-secondary">Edit</a>
                         </div>
                       </td>
                       <td>
                         <div class="action">
-                          <a href="{{ path('app_twitter_user_delete', {'id': twUser.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
+                          <a href="{{ path('app_twitter_user_delete', {'id': row.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
                         </div>
                       </td>
                     </tr>
@@ -80,7 +80,7 @@
 
               {# display navigation #}
               <div class="table-pagination navigation d-flex justify-content-center mt-4">
-                {{ knp_pagination_render(twUsers) }}
+                {{ knp_pagination_render(rows) }}
               </div>
             </div>
           {% endif %}

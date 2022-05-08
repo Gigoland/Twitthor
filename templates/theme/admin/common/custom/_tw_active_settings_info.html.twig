@@ -1,0 +1,29 @@
+<p>
+  <i class="fa-solid fa-gear"></i> {{ settings.name }}
+</p>
+
+<p>
+  <div class="alert-box secondary-alert">
+    <div class="alert">
+      <p class="text-medium">
+        Rate limit : <span id="twapi-call-counts">{{ settings.callCnt|default(0) }}</span> / {{ twApiCallLimit|default(0) }} per {{ twApiCallIntervale|default(15) }} minutes
+      </p>
+    </div>
+  </div>
+</p>
+
+<p>
+  <div class="alert-box success-alert alert-box-result" style="display:none;">
+    <div class="alert">
+      <p id="alert-box-result-message" class="text-medium">
+        Created : 0 / Updated : 0
+      </p>
+    </div>
+  </div>
+</p>
+
+<p>
+  <strong class="text-sm">
+    <i class="fa-solid fa-triangle-exclamation"></i> After launch, please do not close. It may take time...
+  </strong>
+</p>

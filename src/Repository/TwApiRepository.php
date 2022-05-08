@@ -47,36 +47,50 @@ class TwApiRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get associative array
+     * Deactivate all activated settings
+     *
+     * @param User $user
+     * @return integer
+     */
+    public function deactivateAllByUser(User $user): int
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb
+            ->update()
+            ->set('t.isActive', ':is')
+            ->where('t.user = :user')
+            ->andWhere('t.isActive != :is')
+            ->setParameter(':is', false, \PDO::PARAM_BOOL)
+            ->setParameter(':user', $user)
+        ;
+
+        return $qb
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    /**
+     * Get activated TwApi
      *
      * @param User $user
      * @param string $for
-     * @return array
+     * @return TwApi
      */
-    public function findWithCallByUser(User $user, ?string $for): array
+    public function findActiveSettingsByUser(User $user, ?string $for): TwApi
     {
         $qb = $this
             ->createQueryBuilder('t')
-            ->select('t.id')
-            ->addSelect('t.name')
-            ->join('t.twApiCall', 'c')
             ->where('t.user = :user')
+            ->andWhere('t.isActive = 1')
             ->andWhere('t.name IS NOT NULL')
             ->setParameter(':user', $user)
         ;
 
         switch ($for) {
             case 'following':
-                $qb
-                    ->addSelect('c.followingCnt')
-                    ->addSelect('c.followingAt')
-                    ->andWhere('t.bearerToken IS NOT NULL')
-                ;
-                break;
             case 'followers':
                 $qb
-                    ->addSelect('c.followersCnt')
-                    ->addSelect('c.followersAt')
                     ->andWhere('t.bearerToken IS NOT NULL')
                 ;
                 break;
@@ -84,7 +98,7 @@ class TwApiRepository extends ServiceEntityRepository
 
         return $qb
             ->getQuery()
-            ->getArrayResult()
+            ->getOneOrNullResult()
         ;
     }
 

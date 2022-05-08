@@ -24,6 +24,7 @@ class ProfileType extends AbstractType
             ->add('walletEth', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Wallet ETH',
@@ -38,6 +39,7 @@ class ProfileType extends AbstractType
             ->add('walletSol', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Wallet SOL',
@@ -52,6 +54,7 @@ class ProfileType extends AbstractType
             ->add('plainPassword', PasswordType::class, [
                 'attr' => [
                     'class' => 'form-control',
+                    'autocomplete' => 'off',
                 ],
                 'label' => 'Password',
                 'label_attr' => [

@@ -24,6 +24,7 @@ class UserEditType extends AbstractType
 
             ->add('twAccountId', NumberType::class, [
                 'attr' => [
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Twitter ID',
@@ -34,6 +35,7 @@ class UserEditType extends AbstractType
             ])
             ->add('twUsername', TextType::class, [
                 'attr' => [
+                    'autocomplete' => 'off',
                     'maxlength' => 22,
                 ],
                 'label' => 'Twitter username',
@@ -44,6 +46,7 @@ class UserEditType extends AbstractType
             ])
             ->add('walletEth', TextType::class, [
                 'attr' => [
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Wallet ETH',
@@ -54,6 +57,7 @@ class UserEditType extends AbstractType
             ])
             ->add('walletSol', TextType::class, [
                 'attr' => [
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Wallet SOL',
@@ -63,6 +67,9 @@ class UserEditType extends AbstractType
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
+                'attr' => [
+                    'autocomplete' => 'off',
+                ],
                 'label' => 'Password',
                 'required' => false,
             ])

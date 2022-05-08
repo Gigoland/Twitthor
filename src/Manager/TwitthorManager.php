@@ -26,6 +26,11 @@ class TwitthorManager extends TwitterApi
         ;
     }
 
+    public function unfollow()
+    {
+        $this->getFollowersByAccountId();
+    }
+
     /**
      * Get all following
      *

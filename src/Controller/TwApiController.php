@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Utils\Ajax;
 use App\Entity\TwApi;
 use App\Form\TwApiType;
-use App\Form\AjaxHiddenType;
 use App\Manager\TwApiCallManager;
 use App\Service\TwApiCallService;
 use App\Service\TwApiHtmlService;
@@ -37,7 +37,7 @@ class TwApiController extends AbstractController
         TwApiRepository $repository
     ): Response {
         // Get connected user twitter API keys
-        $apiKeys = $paginator->paginate(
+        $rows = $paginator->paginate(
             $repository->findBy([
                 'user' => $this->getUser(),
             ]),
@@ -46,7 +46,7 @@ class TwApiController extends AbstractController
         );
 
         return $this->render('theme/admin/page/twitter/api/keys.html.twig', [
-            'apiKeys' => $apiKeys,
+            'rows' => $rows,
         ]);
     }
 
@@ -105,7 +105,7 @@ class TwApiController extends AbstractController
      * @param TwApi $twApi
      * @return Response
      */
-    #[Route('/tw/settings/edit/{id}', name: 'app_twitter_api_settings_edit', methods: ['GET', 'POST'])]
+    #[Route('/tw/settings/{id}/edit', name: 'app_twitter_api_settings_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
     public function edit(
         Request $request,
@@ -121,7 +121,6 @@ class TwApiController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 $twApi = $form->getData();
-                $twApi->setUser($this->getUser()); // Connected user
 
                 $entityManager->persist($twApi);
                 $entityManager->flush();
@@ -153,7 +152,7 @@ class TwApiController extends AbstractController
      * @param TwApi $twApi
      * @return Response
      */
-    #[Route('/tw/settings/delete/{id}', name: 'app_twitter_api_settings_delete', methods: ['GET', 'POST'])]
+    #[Route('/tw/settings/{id}/delete', name: 'app_twitter_api_settings_delete', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
     public function delete(
         EntityManagerInterface $entityManager,
@@ -170,6 +169,46 @@ class TwApiController extends AbstractController
         return $this->redirectToRoute('app_twitter_api_settings');
     }
 
+    #[Route('/tw/settings/{id}/active/ajax', name: 'app_twitter_api_settings_active_ajax', methods: ['POST'])]
+    #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
+    public function ajaxUpdateIsActive(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        TwApi $twApi
+    ): JsonResponse {
+        // Check is ajax type
+        if (!$request->isXmlHttpRequest()
+         || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
+        ) {
+            return $this->json([
+                'code' => 403,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
+
+        // Deactivate all activated settings
+        $entityManager
+            ->getRepository(TwApi::class)
+            ->deactivateAllByUser($this->getUser())
+        ;
+
+        $ajax = new Ajax($request);
+
+        // Activate
+        $twApi->setIsActive(
+            $ajax->getBool('isActive')
+        );
+
+        $entityManager->persist($twApi);
+        $entityManager->flush();
+
+        // Ajax response
+        return $this->json([
+            'success' => true,
+            'message' => 'Updated with success !',
+        ]);
+    }
+
     /**
      * Get twitter api keys select html
      * Protected by CSRF
@@ -179,16 +218,29 @@ class TwApiController extends AbstractController
      * @param TwApiHtmlService $service
      * @return JsonResponse
      */
-    #[Route('/tw/ajax/keys', name: 'app_ajax_twitter_api_keys', methods: ['POST'])]
+    #[Route('/tw/settings/html/ajax', name: 'app_twitter_api_settings_html_ajax', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER')")]
-    public function ajaxGetMyKeys(
+    public function ajaxGetSettingsHtml(
         Request $request,
         TwApiHtmlService $service
     ): JsonResponse {
-        return $service->getSelectKeysByUser(
+        // Check is ajax type
+        if (!$request->isXmlHttpRequest()
+         || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
+        ) {
+            return $this->json([
+                'code' => 403,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
+
+        $result = $service->getActiveSettingsByUser(
             $this->getUser(),
             $request->query->get('query')
         );
+
+        // Ajax response
+        return $this->json($result);
     }
 
     /**
@@ -197,21 +249,33 @@ class TwApiController extends AbstractController
      * Ajax only
      *
      * @param Request $request
+     * @param EntityManagerInterface $entityManager
      * @param TwApiCallService $service
-     * @param TwApi $twApi
      * @return JsonResponse
      */
-    #[Route('/tw/ajax/following/update/{id}', name: 'app_ajax_update_following', methods: ['POST'])]
-    #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
+    #[Route('/tw/following/update/ajax', name: 'app_twitter_api_update_following_ajax', methods: ['POST'])]
+    #[Security("is_granted('ROLE_USER')")]
     public function ajaxUpdateFollowing(
         Request $request,
-        TwApiCallService $service,
-        TwApi $twApi
+        EntityManagerInterface $entityManager,
+        TwApiCallService $service
     ): JsonResponse {
-        $form = $this->createForm(AjaxHiddenType::class);
-        $form->handleRequest($request);
+        // Check is ajax type
+        if (!$request->isXmlHttpRequest()
+         || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
+        ) {
+            return $this->json([
+                'code' => 403,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $twApi = $entityManager
+            ->getRepository(TwApi::class)
+            ->findActiveSettingsByUser($this->getUser(), 'following')
+        ;
+
+        if ($twApi) {
             $result = $service->updateFollowing(
                 $this->getUser(),
                 $twApi,
@@ -222,12 +286,12 @@ class TwApiController extends AbstractController
             $result['path'] = $this->generateUrl('app_following');
 
             // Ajax response
-            return new JsonResponse($result);
+            return $this->json($result);
         }
 
         // Ajax response
-        return new JsonResponse([
-            'code' => TwApiCallService::KO,
+        return $this->json([
+            'success' => false,
             'message' => 'Something went wrong !',
         ]);
     }
@@ -238,21 +302,33 @@ class TwApiController extends AbstractController
      * Ajax only
      *
      * @param Request $request
+     * @param EntityManagerInterface $entityManager
      * @param TwApiCallService $service
-     * @param TwApi $twApi
      * @return JsonResponse
      */
-    #[Route('/tw/ajax/followers/update/{id}', name: 'app_ajax_update_followers', methods: ['POST'])]
-    #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
+    #[Route('/tw/followers/update/ajax', name: 'app_twitter_api_update_followers_ajax', methods: ['POST'])]
+    #[Security("is_granted('ROLE_USER')")]
     public function ajaxUpdateFollowers(
         Request $request,
-        TwApiCallService $service,
-        TwApi $twApi
+        EntityManagerInterface $entityManager,
+        TwApiCallService $service
     ): JsonResponse {
-        $form = $this->createForm(AjaxHiddenType::class);
-        $form->handleRequest($request);
+        // Check is ajax type
+        if (!$request->isXmlHttpRequest()
+         || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
+        ) {
+            return $this->json([
+                'code' => 403,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $twApi = $entityManager
+            ->getRepository(TwApi::class)
+            ->findActiveSettingsByUser($this->getUser(), 'followers')
+        ;
+
+        if ($twApi) {
             $result = $service->updateFollowers(
                 $this->getUser(),
                 $twApi,
@@ -263,12 +339,48 @@ class TwApiController extends AbstractController
             $result['path'] = $this->generateUrl('app_followers');
 
             // Ajax response
-            return new JsonResponse($result);
+            return $this->json($result);
         }
 
         // Ajax response
-        return new JsonResponse([
-            'code' => TwApiCallService::KO,
+        return $this->json([
+            'success' => false,
+            'message' => 'Something went wrong !',
+        ]);
+    }
+
+    /**
+     * Unfollow by Twitter Api with Twitthor
+     * Protected by CSRF
+     * Ajax only
+     *
+     * @param Request $request
+     * @param TwApiCallService $service
+     * @param TwApi $twApi
+     * @return JsonResponse
+     */
+    #[Route('/tw/ajax/unfollow/{id}', name: 'app_ajax_unfollow', methods: ['POST'])]
+    #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
+    public function ajaxUnfollow(
+        Request $request,
+        TwApiCallService $service,
+        TwApi $twApi
+    ): JsonResponse {
+        // Check is ajax type
+        if (!$request->isXmlHttpRequest()
+         || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
+        ) {
+            return $this->json([
+                'code' => 403,
+                'message' => 'Unauthorized',
+            ], 403);
+        }
+
+
+
+        // Ajax response
+        return $this->json([
+            'success' => false,
             'message' => 'Something went wrong !',
         ]);
     }

@@ -23,6 +23,7 @@ class FollowType extends AbstractType
 
             ->add('walletEth', TextType::class, [
                 'attr' => [
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Wallet ETH',
@@ -33,6 +34,7 @@ class FollowType extends AbstractType
             ])
             ->add('walletSol', TextType::class, [
                 'attr' => [
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Wallet SOL',
@@ -44,6 +46,7 @@ class FollowType extends AbstractType
             ->add('isFavorite', CheckboxType::class, [
                 'attr' => [
                     'class' => 'form-check-input',
+                    'autocomplete' => 'off',
                 ],
                 'label' => 'My favorite',
                 'label_attr' => [

@@ -19,18 +19,19 @@
         <div class="card-style mb-30">
           <h6 class="mb-10">Data Table</h6>
 
-          {% if apiKeys.getTotalItemCount == 0 %}
+          {% if rows.getTotalItemCount == 0 %}
             <p class="text-sm mb-20">
               Zero data...
             </p>
           {% else %}
             <p class="text-sm mb-20">
-              Total: {{ apiKeys.getTotalItemCount }} keys settings found.
+              Total: {{ rows.getTotalItemCount }} keys settings found.
             </p>
             <div class="table-wrapper table-responsive">
               <table class="table table-hover-shadow">
                 <thead>
                   <tr class="text-nowrap">
+                    <th><h6>#</h6></th>
                     <th><h6>Name</h6></th>
                     <th><h6>CONSUMER KEY</h6></th>
                     <th><h6>CONSUMER SECRET</h6></th>
@@ -44,24 +45,32 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for keys in apiKeys %}
+                  {% for row in rows %}
                     <tr>
-                      <td class="min-width"><p><strong>{{ keys.name }}</strong></p></td>
-                      <td class="min-width"><p>{{ keys.consumerKey|slice(0, 10) ~ '...' }}</p></td>
-                      <td class="min-width"><p>{{ keys.consumerSecret|slice(0, 10) ~ '...' }}</p></td>
-                      <td class="min-width"><p>{{ keys.accessToken|slice(0, 10) ~ '...' }}</p></td>
-                      <td class="min-width"><p>{{ keys.accessTokenSecret|slice(0, 10) ~ '...' }}</p></td>
-                      <td class="min-width"><p>{{ keys.bearerToken|slice(0, 10) ~ '...' }}</p></td>
-                      <td class="min-width"><p>{{ keys.accountId|slice(0, 10) ~ '...' }}</p></td>
-                      <td class="min-width"><p>{{ keys.accountName|slice(0, 10) ~ '...' }}</p></td>
+                      <td class="min-width">
+                        <div class="form-check form-switch toggle-switch">
+                          <div class="spinner-grow text-primary switch-loader pull-left" style="width:2rem;height:2rem;margin-left:-60px;display:none;" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                          <input class="form-check-input switch-is-active" type="radio" name="is_active" value="{{ path('app_twitter_api_settings_active_ajax', {'id': row.id}) }}" autocomplete="off"{% if row.isActive %} checked="checked"{% endif %}>
+                        </div>
+                      </td>
+                      <td class="min-width"><p><strong>{{ row.name }}</strong></p></td>
+                      <td class="min-width"><p>{{ row.consumerKey|slice(0, 10) ~ '...' }}</p></td>
+                      <td class="min-width"><p>{{ row.consumerSecret|slice(0, 10) ~ '...' }}</p></td>
+                      <td class="min-width"><p>{{ row.accessToken|slice(0, 10) ~ '...' }}</p></td>
+                      <td class="min-width"><p>{{ row.accessTokenSecret|slice(0, 10) ~ '...' }}</p></td>
+                      <td class="min-width"><p>{{ row.bearerToken|slice(0, 10) ~ '...' }}</p></td>
+                      <td class="min-width"><p>{{ row.accountId|slice(0, 10) ~ '...' }}</p></td>
+                      <td class="min-width"><p>{{ row.accountName|slice(0, 10) ~ '...' }}</p></td>
                       <td>
                         <div class="action">
-                          <a href="{{ path('app_twitter_api_settings_edit', {'id': keys.id}) }}" class="btn btn-secondary">Edit</a>
+                          <a href="{{ path('app_twitter_api_settings_edit', {'id': row.id}) }}" class="btn btn-secondary">Edit</a>
                         </div>
                       </td>
                       <td>
                         <div class="action">
-                          <a href="{{ path('app_twitter_api_settings_delete', {'id': keys.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
+                          <a href="{{ path('app_twitter_api_settings_delete', {'id': row.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
                         </div>
                       </td>
                     </tr>
@@ -71,7 +80,7 @@
 
               {# display navigation #}
               <div class="table-pagination navigation d-flex justify-content-center mt-4">
-                {{ knp_pagination_render(apiKeys) }}
+                {{ knp_pagination_render(rows) }}
               </div>
             </div>
           {% endif %}

@@ -26,20 +26,22 @@ class UserNewType extends AbstractType
 
             ->add('email', EmailType::class, [
                 'attr' => [
-                    'minlength' => 1,
-                    'maxlength' => 55,
+                    'autocomplete' => 'off',
+                    'minlength' => 5,
+                    'maxlength' => 180,
                 ],
                 'label' => 'Email',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
                 'constraints' => [
-                    new Assert\Length(['min' => 1, 'max' => 55]),
+                    new Assert\Length(['min' => 5, 'max' => 180]),
                     new Assert\NotBlank(),
                 ],
             ])
             ->add('twAccountId', NumberType::class, [
                 'attr' => [
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Twitter ID',
@@ -50,6 +52,7 @@ class UserNewType extends AbstractType
             ])
             ->add('twUsername', TextType::class, [
                 'attr' => [
+                    'autocomplete' => 'off',
                     'maxlength' => 22,
                 ],
                 'label' => 'Twitter username',
@@ -60,6 +63,7 @@ class UserNewType extends AbstractType
             ])
             ->add('walletEth', TextType::class, [
                 'attr' => [
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Wallet ETH',
@@ -70,6 +74,7 @@ class UserNewType extends AbstractType
             ])
             ->add('walletSol', TextType::class, [
                 'attr' => [
+                    'autocomplete' => 'off',
                     'maxlength' => 55,
                 ],
                 'label' => 'Wallet SOL',

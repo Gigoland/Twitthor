@@ -50,6 +50,9 @@ abstract class Api
     // Select fields
     protected array $responseFields = [];
 
+    // target_user_id
+    protected int $targetUserId = 0;
+
     // For CURLINFO_HTTP_CODE storage
     protected $httpStatusCode;
 
@@ -216,6 +219,19 @@ abstract class Api
     }
 
     /**
+     * Set target_user_id
+     *
+     * @param integer $targetUserId
+     * @return Api
+     */
+    public function setTargetUserId(int $targetUserId): Api
+    {
+        $this->targetUserId = $targetUserId;
+
+        return $this;
+    }
+
+    /**
      * Get user info by Twitter account id
      *
      * @param bool $isJson
@@ -287,9 +303,15 @@ abstract class Api
         return $this->getRequest($url, 'get', $isJson);
     }
 
+    /**
+     * Unfollow by Twitter source_user_id and target_user_id
+     *
+     * @param bool $isJson
+     * @return array|object
+     */
     public function unfollowByAccountId(bool $isJson = true)
     {
-        if (empty($this->twitterAccountId)) {
+        if (empty($this->twitterAccountId) || empty($this->targetUserId)) {
             throw new \InvalidArgumentException(
                 'Incomplete settings passed to Twitthor'
             );
@@ -298,7 +320,7 @@ abstract class Api
         $url = sprintf(
             self::API_SERVER . self::API_USERS_FOLLOWING_DELETE,
             $this->twitterAccountId,
-            0
+            $this->targetUserId
         );
 
         return $this->getRequest($url, 'delete', $isJson);

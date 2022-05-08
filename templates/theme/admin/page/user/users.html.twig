@@ -19,13 +19,13 @@
         <div class="card-style mb-30">
           <h6 class="mb-10">Data Table</h6>
 
-          {% if users.getTotalItemCount == 0 %}
+          {% if rows.getTotalItemCount == 0 %}
             <p class="text-sm mb-20">
               Zero data...
             </p>
           {% else %}
             <p class="text-sm mb-20">
-              Total: {{ users.getTotalItemCount }} users found.
+              Total: {{ rows.getTotalItemCount }} users found.
             </p>
             <div class="table-wrapper table-responsive">
               <table class="table table-hover-shadow">
@@ -43,7 +43,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for user in users %}
+                  {% for row in rows %}
                     <tr>
                       <td class="min-width">
                         <div class="lead">
@@ -51,24 +51,24 @@
                             <img src="{{ asset('src/images/lead/lead-1.png') }}" alt="Avatar">
                           </div>
                           <div class="lead-text">
-                            <p>{{ user.email }}</p>
+                            <p>{{ row.email }}</p>
                           </div>
                         </div>
                       </td>
-                      <td class="min-width"><p>{{ user.twAccountId }}</p></td>
-                      <td class="min-width"><p>@{{ user.twUsername }}</p></td>
-                      <td class="min-width"><p>{{ user.walletEth }}</p></td>
-                      <td class="min-width"><p>{{ user.walletSol }}</p></td>
-                      <td class="min-width"><p>{{ user.createAt|date('d/m/Y h:i') }}</p></td>
-                      <td class="min-width"><p>{{ user.updateAt|date('d/m/Y h:i') }}</p></td>
+                      <td class="min-width"><p>{{ row.twAccountId }}</p></td>
+                      <td class="min-width"><p>@{{ row.twUsername }}</p></td>
+                      <td class="min-width"><p>{{ row.walletEth }}</p></td>
+                      <td class="min-width"><p>{{ row.walletSol }}</p></td>
+                      <td class="min-width"><p>{{ row.createAt|date('d/m/Y h:i') }}</p></td>
+                      <td class="min-width"><p>{{ row.updateAt|date('d/m/Y h:i') }}</p></td>
                       <td>
                         <div class="action">
-                          <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-secondary">Edit</a>
+                          <a href="{{ path('app_user_edit', {'id': row.id}) }}" class="btn btn-secondary">Edit</a>
                         </div>
                       </td>
                       <td>
                         <div class="action">
-                          <a href="{{ path('app_user_delete', {'id': user.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
+                          <a href="{{ path('app_user_delete', {'id': row.id}) }}" class="btn btn-danger"><i class="lni lni-trash-can"></i></a>
                         </div>
                       </td>
                     </tr>
@@ -78,7 +78,7 @@
 
               {# display navigation #}
               <div class="table-pagination navigation d-flex justify-content-center mt-4">
-                {{ knp_pagination_render(users) }}
+                {{ knp_pagination_render(rows) }}
               </div>
             </div>
           {% endif %}

@@ -33,14 +33,14 @@ class UserController extends AbstractController
         PaginatorInterface $paginator,
         UserRepository $repository
     ): Response {
-        $users = $paginator->paginate(
+        $rows = $paginator->paginate(
             $repository->findAll(),
             $request->query->getInt('page', 1),
             10
         );
 
         return $this->render('theme/admin/page/user/users.html.twig', [
-            'users' => $users,
+            'rows' => $rows,
         ]);
     }
 

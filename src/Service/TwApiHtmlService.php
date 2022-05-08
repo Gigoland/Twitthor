@@ -6,14 +6,10 @@ use App\Api\Twitter\Api as TwitterApi;
 use App\Entity\User;
 use App\Repository\TwApiCallRepository;
 use App\Repository\TwApiRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Twig\Environment;
 
 class TwApiHtmlService
 {
-    const OK = 'success';
-    const KO = 'error';
-
     public function __construct(
         private Environment $environment,
         private TwApiRepository $twApiRepository,
@@ -25,71 +21,72 @@ class TwApiHtmlService
      *
      * @param User $user
      * @param string $for
-     * @return JsonResponse
+     * @return array
      */
-    public function getSelectKeysByUser(User $user, ?string $for): JsonResponse
+    public function getActiveSettingsByUser(User $user, ?string $for): array
     {
         if (!$user) {
-            return $this->error(self::KO);
+            return $this->error('Error'); // @todo message
         }
 
-        // Get select options data
-        $rows = $this->twApiRepository->findWithCallByUser($user, $for);
+        // Get activated settings
+        $twApi = $this->twApiRepository->findActiveSettingsByUser($user, $for);
+        $twApiCall = $twApi->getTwApiCall();
         $callIdsForInit = [];
-        $options = [];
+        $settings = [];
 
         // Check & generate select options
-        foreach ($rows as $index => $row) {
-            switch ($for) {
-                case 'following':
-                    $callLimit = TwitterApi::LIMIT_USERS_FOLLOWING[0];
-                    $callInterval = TwitterApi::LIMIT_USERS_FOLLOWING[1];
+        switch ($for) {
+            case 'following':
+                list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWING;
 
-                    // Check intervale
-                    if (!empty($row['followingAt'])
-                     && $row['followingAt'] < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
-                    ) {
-                        // For init in db
-                        $callIdsForInit[] = $row['id'];
-                        // Set zero
-                        $row['followingCnt'] = 0;
-                    }
+                // Check intervale
+                if (!empty($twApiCall->getFollowingAt())
+                 && $twApiCall->getFollowingAt() < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
+                ) {
+                    // For init in db
+                    $callIdsForInit[] = $twApi->getId();
+                    // Set zero
+                    $twApiCall->setFollowingCnt(0);
+                }
 
-                    // Check limit out
-                    if ($row['followingCnt'] < $callLimit) {
-                        // Set option
-                        $options[$index] = [
-                            'value' => $row['id'],
-                            'text' => $row['name'],
-                            'data' => $row['followingCnt'],
-                        ];
-                    }
-                    break;
-                case 'followers':
-                    $callLimit = TwitterApi::LIMIT_USERS_FOLLOWERS[0];
-                    $callInterval = TwitterApi::LIMIT_USERS_FOLLOWERS[1];
+                // Check limit out
+                if ($twApiCall->getFollowingCnt() < $callLimit) {
+                    // Set settings
+                    $settings = [
+                        'name' => $twApi->getName(),
+                        'callCnt' => $twApiCall->getFollowingCnt(),
+                    ];
+                } else {
+                    // Set warning message
+                    $settings['warning'] = 'You have exceeded the limit. Please try later.';
+                }
+                break;
+            case 'followers':
+                list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWERS;
 
-                    // Check intervale
-                    if (!empty($row['followersAt'])
-                     && $row['followersAt'] < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
-                    ) {
-                        // For init in db
-                        $callIdsForInit[] = $row['id'];
-                        // Set zero
-                        $row['followersCnt'] = 0;
-                    }
+                // Check intervale
+                if (!empty($twApiCall->getFollowersAt())
+                 && $twApiCall->getFollowersAt() < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
+                ) {
+                    // For init in db
+                    $callIdsForInit[] = $twApi->getId();
+                    // Set zero
+                    $twApiCall->setFollowersCnt(0);
+                }
 
-                    // Check limit out
-                    if ($row['followersCnt'] < $callLimit) {
-                        // Set option
-                        $options[$index] = [
-                            'value' => $row['id'],
-                            'text' => $row['name'],
-                            'data' => $row['followersCnt'],
-                        ];
-                    }
-                    break;
-            }
+                // Check limit out
+                if ($twApiCall->getFollowersCnt() < $callLimit) {
+                    // Set settings
+                    $settings = [
+                        'name' => $twApi->getName(),
+                        'callCnt' => $twApiCall->getFollowersCnt(),
+                    ];
+                } else {
+                    // Set warning message
+                    $settings['warning'] = 'You have exceeded the limit. Please try later.';
+                }
+                break;
         }
 
         // Init api calls
@@ -106,32 +103,33 @@ class TwApiHtmlService
 
         $html = 'No settings available. Check in menu "Configurations"';
 
-        // Generate <select/> html
-        if (!empty($options)) {
-            $html = $this->environment->render('theme/admin/common/custom/_select_with_keys.html.twig', [
-                'options' => $options,
-                'twApiCallCount' => $options[0]['data'], // Get first for selected option
+        // Generate settings info html
+        if (!empty($settings)) {
+            $html = $this->environment->render('theme/admin/common/custom/_tw_active_settings_info.html.twig', [
+                'settings' => $settings,
                 'twApiCallLimit' => $callLimit,
-                'twApiCallIntervale' => $callInterval . ' mins',
+                'twApiCallIntervale' => $callInterval,
             ]);
         }
 
         // Response
-        return new JsonResponse([
-            'code' => self::OK,
+        return [
+            'success' => true,
             'html' => $html,
-        ]);
+        ];
     }
 
     /**
-     * @todo
+     * Errors
      *
-     * @return JsonResponse
+     * @param string $message
+     * @return array
      */
-    private function error($code): JsonResponse
+    private function error(string $message): array
     {
-        return new JsonResponse([
-            'code' => $code,
-        ]);
+        return [
+            'success' => false,
+            'message' => $message,
+        ];
     }
 }

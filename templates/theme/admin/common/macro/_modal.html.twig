@@ -1,4 +1,4 @@
-{% macro withBtnOkClose(id, title, btnOkId, btnOkTitle, btnCloseId, btnCloseTitle, body, footerMessage) %}
+{% macro withBtnOkClose(id, title, btnOkParams, btnCloseParams, body, footerMessage) %}
   <div class="modal fade" id="{{ id|default('modal') }}" data-bs-backdrop="{{ backdrop|default('static') }}" data-bs-keyboard="{{ keyboard|default('false') }}" tabindex="-1" aria-labelledby="{{ id|default('modal') }}-label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -20,8 +20,8 @@
           </div>
           <div class="pull-right">
             <div class="btn-content d-flex justify-content-end">
-              <button type="button" class="btn btn-secondary text-nowrap ev btn-ko" data-bs-dismiss="modal"{% if btnCloseId is defined %} id="{{ btnCloseId }}"{% endif %}>{{ btnCloseTitle|default('Close') }}</button>
-              <button type="button" class="btn btn-primary text-nowrap ev btn-ok"{% if btnOkId is defined %} id="{{ btnOkId }}"{% endif %}>{{ btnOkTitle|default('OK') }}</button>
+              <button type="button" onclick="event.preventDefault();" class="btn btn-secondary text-nowrap ev btn-ko" data-bs-dismiss="modal"{% if btnCloseParams.path is defined %} value="{{ btnCloseParams.path }}"{% endif %}{% if btnCloseParams.Id is defined %} id="{{ btnCloseParams.id }}"{% endif %}>{{ btnCloseParams.title|default('Close') }}</button>
+              <button type="button" onclick="event.preventDefault();" class="btn btn-primary text-nowrap ev btn-ok"{% if btnOkParams.path is defined %} value="{{ btnOkParams.path }}"{% endif %}{% if btnOkParams.id is defined %} id="{{ btnOkParams.id }}"{% endif %}>{{ btnOkParams.title|default('OK') }}</button>
             </div>
           </div>
         </div>

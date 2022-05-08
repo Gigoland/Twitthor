@@ -6,6 +6,7 @@ class Json
 {
     /**
      * Json encode
+     * @todo error manager
      *
      * @param array $data
      * @return void
@@ -17,10 +18,10 @@ class Json
 
     /**
      * Json decode
+     * @todo error manager
      *
      * @param string $data
      * @param bool $isAssoc
-     *
      * @return void
      */
     public function decode($data, $isAssoc = true): ?array

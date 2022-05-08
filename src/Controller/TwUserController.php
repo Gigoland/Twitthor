@@ -32,14 +32,14 @@ class TwUserController extends AbstractController
         PaginatorInterface $paginator,
         TwUserRepository $repository
     ): Response {
-        $twUsers = $paginator->paginate(
+        $rows = $paginator->paginate(
             $repository->findAll(),
             $request->query->getInt('page', 1),
             10
         );
 
         return $this->render('theme/admin/page/twitter/user/users.html.twig', [
-            'twUsers' => $twUsers,
+            'rows' => $rows,
         ]);
     }
 

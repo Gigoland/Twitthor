@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Follow;
 use App\Form\FollowType;
-use App\Form\AjaxEasyType;
-use App\Form\AjaxHiddenType;
 use App\Repository\TwApiRepository;
 use App\Repository\FollowRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,20 +44,9 @@ class FollowController extends AbstractController
             10
         );
 
-        // For ajax with submit button for get keys select
-        $ajaxEasyForm = $this->createForm(AjaxEasyType::class);
-
-        // For ajax hidden form for update following
-        $ajaxHiddenForm = $this->createForm(AjaxHiddenType::class, null, [
-            'action' => $this->generateUrl('app_ajax_update_following', ['id' => 0]),
-            'attr' => ['id' => 'ajax-update-following'],
-        ]);
-
         return $this->render('theme/admin/page/follow/following.html.twig', [
             'rows' => $rows,
             'haveTwApiKeys' => $twApirepository->haveValidFollowingSettings($this->getUser()),
-            'ajaxEasyForm' => $ajaxEasyForm->createView(),
-            'ajaxHiddenForm' => $ajaxHiddenForm->createView(),
         ]);
     }
 
@@ -90,20 +77,9 @@ class FollowController extends AbstractController
             10
         );
 
-        // For ajax with submit button for get keys select
-        $ajaxEasyForm = $this->createForm(AjaxEasyType::class);
-
-        // For ajax hidden form for update followers
-        $ajaxHiddenForm = $this->createForm(AjaxHiddenType::class, null, [
-            'action' => $this->generateUrl('app_ajax_update_followers', ['id' => 0]),
-            'attr' => ['id' => 'ajax-update-followers'],
-        ]);
-
         return $this->render('theme/admin/page/follow/followers.html.twig', [
             'rows' => $rows,
             'haveTwApiKeys' => $twApirepository->haveValidFollowersSettings($this->getUser()),
-            'ajaxEasyForm' => $ajaxEasyForm->createView(),
-            'ajaxHiddenForm' => $ajaxHiddenForm->createView(),
         ]);
     }
 

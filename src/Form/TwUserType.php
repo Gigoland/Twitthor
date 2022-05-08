@@ -65,6 +65,7 @@ class TwUserType extends AbstractType
             ->add('twIsVerified', CheckboxType::class, [
                 'attr' => [
                     'class' => 'form-check-input',
+                    'autocomplete' => 'off',
                 ],
                 'label' => 'Verified',
                 'label_attr' => [

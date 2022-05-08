@@ -7,14 +7,7 @@
   {% set actions = [] %}
   {% if haveTwApiKeys|default(false) %}
     {% set actions = [
-      {
-        'type': 'form',
-        'form': ajaxEasyForm,
-        'path': path('app_ajax_twitter_api_keys', {'query': 'following'}),
-        'id': 'ajax-get-twapi-keys',
-        'title': ' Update',
-        'icon': 'fa-retweet'
-      },
+      {'type': 'ajax', 'title': 'Update', 'icon': 'fa-retweet', 'id': 'js-btn-update', 'path': path('app_twitter_api_settings_html_ajax', {'query': 'following'})}
     ] %}
   {% endif %}
 
@@ -105,9 +98,6 @@
 
   {% if haveTwApiKeys|default(false) %}
     {% import "theme/admin/common/macro/_modal.html.twig" as macroModal %}
-
-    {{ macroModal.withBtnOkClose('modal-twapi-keys', 'Settings', 'btn-update-following', 'Go') }}
-
-    {{ form(ajaxHiddenForm) }}
+    {{ macroModal.withBtnOkClose('modal-twapi-settings', 'Following update', {'path': path('app_twitter_api_update_following_ajax'), 'id': 'js-btn-update-follow', 'title': 'Go'}) }}
   {% endif %}
 {% endblock %}

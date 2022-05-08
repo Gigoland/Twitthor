@@ -46,6 +46,10 @@ class TwApi
     #[Assert\Length(min: 1, max: 255)]
     private ?string $accountName = null;
 
+    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => 0])]
+    #[Assert\NotNull()]
+    private $isActive;
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'twApis')]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
@@ -150,6 +154,18 @@ class TwApi
     public function setAccountName(?string $accountName): self
     {
         $this->accountName = $accountName;
+
+        return $this;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }
