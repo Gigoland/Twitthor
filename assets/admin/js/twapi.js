@@ -1,5 +1,6 @@
 import axios from 'axios';
-const swal = require('sweetalert2')
+
+const swal = require('sweetalert2');
 
 //
 const setTwApiSettingActive = function() {
@@ -14,7 +15,6 @@ const setTwApiSettingActive = function() {
     })
     .then(response => response.data)
     .then(data => {
-      console.log(data.message);
       swal.fire({
         icon: 'success',
         title: data.message,

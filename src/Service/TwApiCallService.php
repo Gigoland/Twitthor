@@ -108,6 +108,15 @@ class TwApiCallService
         $this->avatarsPath = $uploadsPath . 'images/avatar/';
         $result = $this->updateFollowingByUser($user);
 
+        // Error
+        if (!empty($result['errors'])) {
+            // Response
+            return [
+                'success' => false,
+                'errors' => $result['errors'],
+            ];
+        }
+
         // Set next token and save for api next call
         $this->twApiCallManager
             ->setNextToken(
@@ -202,6 +211,15 @@ class TwApiCallService
         $this->avatarsPath = $uploadsPath . 'images/avatar/';
         $result = $this->updateFollowersByUser($user);
 
+        // Error
+        if (!empty($result['errors'])) {
+            // Response
+            return [
+                'success' => false,
+                'errors' => $result['errors'],
+            ];
+        }
+
         // Set and save for api next call
         $this->twApiCallManager
             ->setNextToken(
@@ -254,7 +272,7 @@ class TwApiCallService
      */
     private function updateFollowingByUser(User $user): array
     {
-        $following = $this->twitthorManager
+        $result = $this->twitthorManager
             ->setSettings([
                 'max_pagination' => 1,
                 'sleep_pagination_token' => 5,
@@ -270,7 +288,12 @@ class TwApiCallService
             ->getFollowing()
         ;
 
-        return $this->saveFollowing($user, $following);
+        // Errors
+        if (!empty($result['errors'])) {
+            return $result;
+        }
+
+        return $this->saveFollowing($user, $result);
     }
 
     /**
@@ -281,7 +304,7 @@ class TwApiCallService
      */
     private function updateFollowersByUser(User $user): array
     {
-        $following = $this->twitthorManager
+        $result = $this->twitthorManager
             ->setSettings([
                 'max_pagination' => 1,
                 'sleep_pagination_token' => 5,
@@ -297,7 +320,12 @@ class TwApiCallService
             ->getFollowers()
         ;
 
-        return $this->saveFollowers($user, $following);
+        // Errors
+        if (!empty($result['errors'])) {
+            return $result;
+        }
+
+        return $this->saveFollowers($user, $result);
     }
 
     /**

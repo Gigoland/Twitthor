@@ -283,7 +283,9 @@ class TwApiController extends AbstractController
             );
 
             // Set js redirect path
-            $result['path'] = $this->generateUrl('app_following');
+            if (empty($result['errors'])) {
+                $result['path'] = $this->generateUrl('app_following');
+            }
 
             // Ajax response
             return $this->json($result);
@@ -336,7 +338,9 @@ class TwApiController extends AbstractController
             );
 
             // Set js redirect path
-            $result['path'] = $this->generateUrl('app_followers');
+            if (empty($result['errors'])) {
+                $result['path'] = $this->generateUrl('app_followers');
+            }
 
             // Ajax response
             return $this->json($result);

@@ -1,3 +1,23 @@
+const swal = require('sweetalert2');
+
+// @todo error manager
+window.ajaxError = function(errors) {
+  console.error('Errors:', errors);
+};
+
+// @todo error manager
+window.ajaxResponseError = function(response) {
+  response.errors.forEach(error => {
+    swal.fire({
+      icon: 'error',
+      title: error.title,
+      text: error.detail,
+      footer: '<strong>' + error.status + '</strong>'
+    });
+  });
+  console.error('Errors:', response);
+};
+
 (function() {
   const sidebarNavWrapper = document.querySelector('.sidebar-nav-wrapper');
   const mainWrapper = document.querySelector('.main-wrapper');
@@ -24,18 +44,10 @@
       }
     }
   });
+
   overlay.addEventListener('click', () => {
     sidebarNavWrapper.classList.remove('active');
     overlay.classList.remove('active');
     mainWrapper.classList.remove('active');
   });
 })();
-
-// @todo error manager
-window.ajaxError = function(error) {
-  console.error('Error:', error);
-};
-// @todo error manager
-window.ajaxResponseError = function(error) {
-  console.error('Error:', error);
-};

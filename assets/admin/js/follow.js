@@ -63,6 +63,7 @@ import {Modal} from 'bootstrap';
       $twApiSettingsModalAlertResult.style.display = 'block';
       redirect = data.path;
     } else {
+      twApiSettingsModalPlugin.hide();
       ajaxResponseError(data);
     }
   };

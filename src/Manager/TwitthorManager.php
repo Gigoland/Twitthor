@@ -76,8 +76,8 @@ class TwitthorManager extends TwitterApi
             ;
 
             // Check error
-            if ($error = $this->checkError($rows)) {
-                return $error;
+            if ($errors = $this->checkError($rows)) {
+                return $errors;
             }
 
             // Merge
@@ -122,8 +122,8 @@ class TwitthorManager extends TwitterApi
             ;
 
             // Check error
-            if ($error = $this->checkError($rows)) {
-                return $error;
+            if ($errors = $this->checkError($rows)) {
+                return $errors;
             }
 
             // Merge
@@ -156,20 +156,19 @@ class TwitthorManager extends TwitterApi
      * @param array $data
      * @return false|array
      */
-    private function checkError($data)
+    private function checkError($data): ?array
     {
         // Errors
         if (isset($data['errors'])) {
             return [
-                'errors' => $data,
+                'errors' => [$data],
             ];
         }
 
-        // The API will return a HTTP 429 “Too Many Requests” response code, and the following error will be returned in the response body:
-        // { "errors": [ { "code": 88, "message": "Rate limit exceeded" } ] }
-        if (isset($data['status']) && $data['status'] == 429) {
+        // Errors & wrnings
+        if (isset($data['status']) && $data['status'] != 200) {
             return [
-                'warning' => $data,
+                'errors' => [$data],
             ];
         }
 
