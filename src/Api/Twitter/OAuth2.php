@@ -12,6 +12,10 @@ class OAuth2
     const CODE_VERIFIER_ID = 'twitter-oauth2-code-verifier';
     const REDIRECT_URI = 'http://127.0.0.1:8000/tw/oauth/2/token';
 
+    //@todo
+    const CLIENT_ID = 'LTNlOVZsSmk3LVhBa3MzdU1WRWo6MTpjaQ';
+    const CLIENT_SECRET = 'YhGJodL5Z5H1EtAdTEqmnFAs112XuDJqBvrsVFMAFUggvihdiL';
+
     /**
      * Twitter OAuth2 - Get code url
      *
@@ -24,7 +28,7 @@ class OAuth2
 
         return 'https://twitter.com/i/oauth2/authorize?' . http_build_query([
             'response_type' => 'code',
-            'client_id' => 'LTNlOVZsSmk3LVhBa3MzdU1WRWo6MTpjaQ',
+            'client_id' => self::CLIENT_ID,
             'redirect_uri' => self::REDIRECT_URI,
             'scope' => 'tweet.write like.write users.read follows.write offline.access',
             'code_challenge' => $varString->getHash(self::CODE_VERIFIER_ID),
@@ -34,7 +38,14 @@ class OAuth2
     }
 
     /**
-     * Undocumented function
+     * Twitter OAuth2 - Get access_token
+     *
+     * Response :
+     * "token_type" => "bearer"
+     * "expires_in" => 7200
+     * "access_token" => "R2dWd3k3bk90SF9teHZNa18xeWZzb0ZtcnNYTlp4cllXRVJTZ2wybE54WWVQOjE2NTI0ODEzMTQzNjQ6MToxOmF0OjE"
+     * "scope" => "offline.access tweet.write like.write users.read follows.write"
+     * "refresh_token" => "QV9HUkVRNUpkdFdDNHhsTUN0LWtEVkNrZUZaY212MmdaV01Ebl9oUlNGNFZkOjE2NTI0ODEzMTQzNjQ6MToxOnJ0OjE"
      *
      * @param string $code
      * @return void
@@ -50,8 +61,8 @@ class OAuth2
             'Content-Type' => 'application/x-www-form-urlencoded;charset=UTF-8',
             'Authorization' => 'Basic ' . base64_encode(sprintf(
                 '%s:%s',
-                'LTNlOVZsSmk3LVhBa3MzdU1WRWo6MTpjaQ',
-                'YhGJodL5Z5H1EtAdTEqmnFAs112XuDJqBvrsVFMAFUggvihdiL'
+                self::CLIENT_ID,
+                self::CLIENT_SECRET
             )),
         ];
 

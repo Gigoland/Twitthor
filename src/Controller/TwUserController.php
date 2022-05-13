@@ -77,12 +77,12 @@ class TwUserController extends AbstractController
                 return $this->redirectToRoute('app_twitter_user_edit', [
                     'id' => $twUser->getId(),
                 ]);
-            } else {
-                $this->addFlash(
-                    'errors',
-                    'Something went wrong !'
-                );
             }
+
+            $this->addFlash(
+                'errors',
+                'Something went wrong !'
+            );
         }
 
         return $this->render('theme/admin/page/twitter/user/new.html.twig', [
@@ -123,12 +123,12 @@ class TwUserController extends AbstractController
                 return $this->redirectToRoute('app_twitter_user_edit', [
                     'id' => $twUser->getId(),
                 ]);
-            } else {
-                $this->addFlash(
-                    'errors',
-                    'Something went wrong !'
-                );
             }
+
+            $this->addFlash(
+                'errors',
+                'Something went wrong !'
+            );
         }
 
         return $this->render('theme/admin/page/twitter/user/edit.html.twig', [

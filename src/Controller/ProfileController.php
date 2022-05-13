@@ -61,12 +61,12 @@ class ProfileController extends AbstractController
                 );
 
                 return $this->redirectToRoute('app_profile_edit');
-            } else {
-                $this->addFlash(
-                    'errors',
-                    'Something went wrong !'
-                );
             }
+
+            $this->addFlash(
+                'errors',
+                'Something went wrong !'
+            );
         }
 
         return $this->render('theme/admin/page/profile/edit_my_profile.html.twig', [
@@ -121,12 +121,12 @@ class ProfileController extends AbstractController
                 );
 
                 return $this->redirectToRoute('app_profile_password');
-            } else {
-                $this->addFlash(
-                    'errors',
-                    'Something went wrong !'
-                );
             }
+
+            $this->addFlash(
+                'errors',
+                'Something went wrong !'
+            );
         }
 
         return $this->render('theme/admin/page/profile/edit_my_password.html.twig', [

@@ -80,12 +80,12 @@ class UserController extends AbstractController
                 return $this->redirectToRoute('app_user_edit', [
                     'id' => $user->getId(),
                 ]);
-            } else {
-                $this->addFlash(
-                    'errors',
-                    'Something went wrong !'
-                );
             }
+
+            $this->addFlash(
+                'errors',
+                'Something went wrong !'
+            );
         }
 
         return $this->render('theme/admin/page/user/new.html.twig', [
@@ -129,12 +129,12 @@ class UserController extends AbstractController
                 return $this->redirectToRoute('app_user_edit', [
                     'id' => $user->getId(),
                 ]);
-            } else {
-                $this->addFlash(
-                    'errors',
-                    'Something went wrong !'
-                );
             }
+
+            $this->addFlash(
+                'errors',
+                'Something went wrong !'
+            );
         }
 
         return $this->render('theme/admin/page/user/edit.html.twig', [

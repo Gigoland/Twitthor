@@ -178,12 +178,12 @@ class FollowController extends AbstractController
                 return $this->redirectToRoute('app_follow_edit', [
                     'id' => $follow->getId(),
                 ]);
-            } else {
-                $this->addFlash(
-                    'errors',
-                    'Something went wrong !'
-                );
             }
+
+            $this->addFlash(
+                'errors',
+                'Something went wrong !'
+            );
         }
 
         return $this->render('theme/admin/page/follow/edit.html.twig', [
