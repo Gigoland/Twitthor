@@ -7,15 +7,29 @@ window.ajaxError = function(errors) {
 
 // @todo error manager
 window.ajaxResponseError = function(response) {
-  response.errors.forEach(error => {
+  if (response.error) {
     swal.fire({
       icon: 'error',
-      title: error.title,
-      text: error.detail,
-      footer: '<strong>' + error.status + '</strong>'
+      title: response.error.title,
+      text: response.error.detail,
+      footer: '<strong>' + response.error.status + '</strong>'
     });
-  });
-  console.error('Errors:', response);
+  } else if (response.warning) {
+    swal.fire({
+      icon: 'warning',
+      title: response.warning.title,
+      text: response.warning.detail,
+      footer: '<strong>' + response.warning.status + '</strong>'
+    });
+  } else {
+    swal.fire({
+      icon: 'info',
+      title: response.info.title,
+      text: response.info.detail,
+      footer: '<strong>' + response.info.status + '</strong>'
+    });
+  }
+  console.error('Erros:', response);
 };
 
 (function() {

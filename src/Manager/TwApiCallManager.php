@@ -2,6 +2,7 @@
 
 namespace App\Manager;
 
+use App\Api\Twitter\Api as TwitterApi;
 use App\Entity\TwApi;
 use App\Entity\TwApiCall;
 use Doctrine\ORM\EntityManagerInterface;
@@ -203,5 +204,86 @@ class TwApiCallManager
         $this->entityManager->flush();
 
         return $this->twApiCall;
+    }
+
+    /**
+     * Check & Update - Following
+     *
+     * @return boolean
+     */
+    public function isFollowingLimitExceeded(): bool
+    {
+        list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWING;
+
+        // Check intervale
+        if (!empty($this->twApiCall->getFollowingAt())
+         && $this->twApiCall->getFollowingAt() < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
+        ) {
+            // Init
+            $this->twApiCall->setFollowingCnt(0);
+            $this->twApiCall->setFollowingAt(null);
+            $this->saveTwApiCall();
+        }
+
+        // Check limit out
+        if ($this->twApiCall->getFollowingCnt() < $callLimit) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check & Update - Followers
+     *
+     * @return boolean
+     */
+    public function isFollowersLimitExceeded(): bool
+    {
+        list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWERS;
+
+        // Check intervale
+        if (!empty($this->twApiCall->getFollowersAt())
+         && $this->twApiCall->getFollowersAt() < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
+        ) {
+            // Init
+            $this->twApiCall->setFollowersCnt(0);
+            $this->twApiCall->setFollowersAt(null);
+            $this->saveTwApiCall();
+        }
+
+        // Check limit out
+        if ($this->twApiCall->getFollowersCnt() < $callLimit) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check & Update - Followers
+     *
+     * @return boolean
+     */
+    public function isUnfollowLimitExceeded(): bool
+    {
+        list($callLimit, $callInterval) = TwitterApi::LIMIT_USER_UNFOLLOW;
+
+        // Check intervale
+        if (!empty($this->twApiCall->getUnfollowAt())
+         && $this->twApiCall->getUnfollowAt() < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
+        ) {
+            // Init
+            $this->twApiCall->setUnfollowCnt(0);
+            $this->twApiCall->setUnfollowAt(null);
+            $this->saveTwApiCall();
+        }
+
+        // Check limit out
+        if ($this->twApiCall->getUnfollowCnt() < $callLimit) {
+            return false;
+        }
+
+        return true;
     }
 }

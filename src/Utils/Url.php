@@ -63,4 +63,35 @@ class Url
 
         return null;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param string $url
+     * @param boolean $withRaw
+     * @return string|null
+     */
+    public function getEncoded(string $url, $withRaw = false): ?string
+    {
+        if (empty($url)) {
+            return '';
+        }
+
+        if ($withRaw) {
+            return rawurlencode($url);
+        }
+
+        return urlencode($url);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param string $url
+     * @return string|null
+     */
+    public function getRawEncoded(string $url): ?string
+    {
+        return $this->getEncoded($url, true);
+    }
 }

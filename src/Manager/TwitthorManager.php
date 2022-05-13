@@ -31,13 +31,13 @@ class TwitthorManager extends TwitterApi
      *
      * @return void
      */
-    public function unfollow()
+    public function unfollow(): ?array
     {
         $result = $this->unfollowByAccountId();
 
         // Check error
-        if ($errors = $this->checkError($result)) {
-            return $errors;
+        if ($error = $this->checkError($result)) {
+            return $error;
         }
 
         return $result;
@@ -88,8 +88,8 @@ class TwitthorManager extends TwitterApi
             ;
 
             // Check error
-            if ($errors = $this->checkError($rows)) {
-                return $errors;
+            if ($error = $this->checkError($rows)) {
+                return $error;
             }
 
             // Merge
@@ -134,8 +134,8 @@ class TwitthorManager extends TwitterApi
             ;
 
             // Check error
-            if ($errors = $this->checkError($rows)) {
-                return $errors;
+            if ($error = $this->checkError($rows)) {
+                return $error;
             }
 
             // Merge
@@ -170,17 +170,10 @@ class TwitthorManager extends TwitterApi
      */
     private function checkError($data)
     {
-        // Errors
-        if (isset($data['errors'])) {
-            return [
-                'errors' => [$data],
-            ];
-        }
-
         // Errors & wrnings
         if (isset($data['status']) && $data['status'] != 200) {
             return [
-                'errors' => [$data],
+                'error' => $data,
             ];
         }
 

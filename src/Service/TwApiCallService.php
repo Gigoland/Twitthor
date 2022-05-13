@@ -47,22 +47,43 @@ class TwApiCallService
 
         // Check if is not following
         if (!$follow->getIsFollowing()) {
-            // Response
+            // Info
             return [
-                'success' => true,
-                'message' => 'Unfollow',
+                'success' => false,
+                'info' => [
+                    'title' => 'Todo title',
+                    'message' => 'Unfollow',
+                    'status' => 0,
+                ],
             ];
         }
 
         // Load TwApiCall in manager
         $this->twApiCallManager->loadTwApiCall($twApi);
 
+        // Limit Check & Update
+        if ($this->twApiCallManager->isUnfollowLimitExceeded()) {
+            // Warning
+            return [
+                'success' => false,
+                'warning' => [
+                    'title' => 'Exceeded Limit',
+                    'message' => 'You have exceeded the limit. Please try later.',
+                    'status' => 0,
+                ]
+            ];
+        }
+
         // Get twitter user
         $twUser = $follow->getTwUser();
 
         // Initialisation
         $this->twitthorManager = new TwitthorManager([
+            'twitter_consumer_key' => $twApi->getConsumerKey(),
+            'twitter_consumer_secret' => $twApi->getConsumerSecret(),
             'twitter_bearer_token' => $twApi->getBearerToken(),
+            'twitter_access_token' => $twApi->getAccessToken(),
+            'twitter_access_token_secret' => $twApi->getAccessTokenSecret(),
         ]);
 
         // Set params
@@ -86,20 +107,20 @@ class TwApiCallService
         // Do unfollow
         $result = $this->twitthorManager->unfollow();
 
-        // Error
-        if (!empty($result['errors'])) {
-            // Response
+        // Check error
+        if (!empty($result['error'])) {
+            // Error
             return [
                 'success' => false,
-                'errors' => $result['errors'],
+                'error' => $result['error'],
             ];
         }
 
-        // Response
+        // Success
         return [
             'success' => true,
             'message' => 'Unfollowed',
-            'result' => $result,
+            'result' => $result,//test
         ];
     }
 
@@ -153,11 +174,11 @@ class TwApiCallService
         $result = $this->updateFollowingByUser($user);
 
         // Error
-        if (!empty($result['errors'])) {
+        if (!empty($result['error'])) {
             // Response
             return [
                 'success' => false,
-                'errors' => $result['errors'],
+                'error' => $result['error'],
             ];
         }
 
@@ -255,11 +276,11 @@ class TwApiCallService
         $result = $this->updateFollowersByUser($user);
 
         // Error
-        if (!empty($result['errors'])) {
+        if (!empty($result['error'])) {
             // Response
             return [
                 'success' => false,
-                'errors' => $result['errors'],
+                'error' => $result['error'],
             ];
         }
 
@@ -332,7 +353,7 @@ class TwApiCallService
         ;
 
         // Errors
-        if (!empty($result['errors'])) {
+        if (!empty($result['error'])) {
             return $result;
         }
 
@@ -364,7 +385,7 @@ class TwApiCallService
         ;
 
         // Errors
-        if (!empty($result['errors'])) {
+        if (!empty($result['error'])) {
             return $result;
         }
 
@@ -690,7 +711,7 @@ class TwApiCallService
     }
 
     /**
-     * Errors
+     * Error
      *
      * @param string $message
      * @return array
@@ -699,7 +720,11 @@ class TwApiCallService
     {
         return [
             'success' => false,
-            'message' => $message,
+            'error' => [
+                'title' => 'Error',
+                'message' => $message,
+                'status' => 0,
+            ],
         ];
     }
 }

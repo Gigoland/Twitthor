@@ -36,7 +36,7 @@
                     <th><h6><i class="fa-brands fa-twitter-square"></i> Verified</h6></th>
                     <th><h6>Favorite</h6></th>
                     <th><h6>Edit</h6></th>
-                    <th><h6>Action</h6></th>
+                    <th><h6>Show</h6></th>
                     <th><h6>Delete</h6></th>
                   </tr>
                 </thead>
@@ -66,7 +66,8 @@
                       </td>
                       <td>
                         <div class="action">
-                          <a href="#" onclick="event.preventDefault();" class="btn btn-secondary js-btn-follow">Follow</a>
+                          <a href="https://twitter.com/{{ row.twUser.twUsername }}" onclick="event.preventDefault();" class="btn btn-info btn-hover js-btn-tw-profile" rel="noreferrer">Profile</a>
+                          {#<a href="#" onclick="event.preventDefault();" class="btn btn-secondary js-btn-follow">Follow</a>#}
                         </div>
                       </td>
                       <td>

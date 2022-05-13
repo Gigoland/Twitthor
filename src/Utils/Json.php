@@ -24,7 +24,7 @@ class Json
      * @param bool $isAssoc
      * @return void
      */
-    public function decode($data, $isAssoc = true): ?array
+    public function decode(string $data, $isAssoc = true): ?array
     {
         return json_decode($data, $isAssoc);
     }

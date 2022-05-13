@@ -2,6 +2,7 @@
 
 namespace App\Api\Twitter;
 
+use App\Api\Twitter\OAuth as TwitterOAuth;
 use App\Utils\Json;
 use App\Utils\VarString;
 
@@ -22,7 +23,8 @@ abstract class Api
     // Requst limits [num, interval]
     const LIMIT_USERS_FOLLOWING = [15, 15];
     const LIMIT_USERS_FOLLOWERS = [15, 15];
-    const LIMIT_USERS_UNFOLLOW = [50, 15];
+
+    const LIMIT_USER_UNFOLLOW = [50, 15];
 
     // Api settings
     protected ?string $twitterConsumerKey = null;
@@ -30,6 +32,10 @@ abstract class Api
     protected ?string $twitterBearerToken = null;
     protected ?string $twitterAccessToken = null;
     protected ?string $twitterAccessTokenSecret = null;
+
+    // OAuth 2.0 Client ID and Client Secret
+    protected ?string $twitterClientId = null;
+    protected ?string $twitterClientSecret = null;
 
     // Acount settings
     protected ?string $twitterAccountId = null;
@@ -338,10 +344,7 @@ abstract class Api
     private function getRequest(string $url, string $method, bool $isJson = true)
     {
         // For header (Bearer)
-        $authorization = sprintf(
-            'Authorization: Bearer %s',
-            $this->twitterBearerToken
-        );
+        $authorization = sprintf('Authorization: Bearer %s', $this->twitterBearerToken);
 
         // Set pagination_token for get next
         if (!empty($this->getNextToken())) {
@@ -357,7 +360,18 @@ abstract class Api
             CURLOPT_HEADER => false,
             CURLOPT_TIMEOUT => 10,
             CURLOPT_SSL_VERIFYPEER => false, // Not recommended
+            CURLOPT_VERBOSE => true,
         ];
+
+        /*
+        if (!empty($this->proxy)) {
+            $options[CURLOPT_PROXY] = $this->proxy['CURLOPT_PROXY'];
+            $options[CURLOPT_PROXYUSERPWD] = $this->proxy['CURLOPT_PROXYUSERPWD'];
+            $options[CURLOPT_PROXYPORT] = $this->proxy['CURLOPT_PROXYPORT'];
+            $options[CURLOPT_PROXYAUTH] = CURLAUTH_BASIC;
+            $options[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP;
+        }
+        */
 
         // By method
         switch (strtolower($method)) {
@@ -369,6 +383,8 @@ abstract class Api
                 break;
             // Fields for POST method only
             case 'post':
+                $options[CURLOPT_POST] = true;
+
                 if (!empty($this->queryFields)) {
                     $options[CURLOPT_POSTFIELDS] = http_build_query($this->queryFields, '', '&');
                 }
@@ -376,7 +392,7 @@ abstract class Api
             // Set metodes PUT, DELETE
             case 'put':
             case 'delete':
-                $options[CURLOPT_CUSTOMREQUEST] = $method;
+                $options[CURLOPT_CUSTOMREQUEST] = strtoupper($method);
                 break;
         }
 

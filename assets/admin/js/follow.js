@@ -97,19 +97,11 @@ import {Modal} from 'bootstrap';
     }
   };
 
-  // Unfollow
-  const callUnfollow = function() {
+  // Tw profile
+  const shwoTwProfile = function() {
     setTimeout(() => {
-      axios.post(this.value)
-      .then(response => response.data)
-      .then(data => {
-        setTimeout(() => {
-          ajaxUnfollowCallback(data);
-        }, 50);
-      })
-      .catch(error => {
-        ajaxError(error);
-      });
+      let unfollowWindowObj = window.open(this.href, "_blank", "location=no,menubar=no,status=no,titilebar=no,resizable=no,top=0,left=0,width=600,height=500");
+      unfollowWindowObj.focus();
     }, 50);
   };
 
@@ -145,7 +137,7 @@ import {Modal} from 'bootstrap';
   }
 
   // Get modal content
-  if (document.querySelector('.js-btn-unfollow')) {
-    document.querySelectorAll('.js-btn-unfollow').forEach(el => el.addEventListener('click', callUnfollow));
+  if (document.querySelector('.js-btn-tw-profile')) {
+    document.querySelectorAll('.js-btn-tw-profile').forEach(el => el.addEventListener('click', shwoTwProfile));
   }
 })();

@@ -24,4 +24,22 @@ class VarString
             )
         );
     }
+
+    /**
+     * Get generated hashe by string
+     *
+     * @param string $string
+     * @return string
+     */
+    public function getHash(string $string): string
+    {
+        return rtrim(
+            strtr(
+                base64_encode($string),
+                '+/',
+                '-_'
+            ),
+            '='
+        );
+    }
 }

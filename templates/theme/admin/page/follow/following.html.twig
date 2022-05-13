@@ -46,7 +46,7 @@
                     <th><h6>Follow me</h6></th>
                     <th><h6>Favorite</h6></th>
                     <th><h6>Edit</h6></th>
-                    <th><h6>Action</h6></th>
+                    <th><h6>Show</h6></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -75,7 +75,10 @@
                         </div>
                       </td>
                       <td>
-                        <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }} btn-hover js-btn-unfollow">Unfollow</button>
+                        <div class="action">
+                          <a href="https://twitter.com/{{ row.twUser.twUsername }}" onclick="event.preventDefault();" class="btn btn-info btn-hover js-btn-tw-profile" rel="noreferrer">Profile</a>
+                        </div>
+                        {#<button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }} btn-hover js-btn-unfollow">Unfollow</button>#}
                       </td>
                     </tr>
                   {% endfor %}

@@ -2,18 +2,18 @@
 
 namespace App\Service;
 
-use App\Api\Twitter\Api as TwitterApi;
 use App\Entity\User;
-use App\Repository\TwApiCallRepository;
-use App\Repository\TwApiRepository;
 use Twig\Environment;
+use App\Manager\TwApiCallManager;
+use App\Repository\TwApiRepository;
+use App\Api\Twitter\Api as TwitterApi;
 
 class TwApiHtmlService
 {
     public function __construct(
         private Environment $environment,
-        private TwApiRepository $twApiRepository,
-        private TwApiCallRepository $twApiCallRepository
+        private TwApiCallManager $twApiCallManager,
+        private TwApiRepository $twApiRepository
     ) {}
 
     /**
@@ -29,10 +29,22 @@ class TwApiHtmlService
             return $this->error('Error'); // @todo message
         }
 
+        $html = 'No settings available. Check in menu "Configurations"';
+
         // Get activated settings
         $twApi = $this->twApiRepository->findActiveSettingsByUser($user, $for);
-        $twApiCall = $twApi->getTwApiCall();
-        $callIdsForInit = [];
+
+        // Not have settings
+        if (!$twApi) {
+            // Response
+            return [
+                'success' => true,
+                'html' => $html,
+            ];
+        }
+
+        // Load TwApiCall in manager
+        $this->twApiCallManager->loadTwApiCall($twApi);
         $settings = [];
 
         // Check & generate select options
@@ -40,68 +52,34 @@ class TwApiHtmlService
             case 'following':
                 list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWING;
 
-                // Check intervale
-                if (!empty($twApiCall->getFollowingAt())
-                 && $twApiCall->getFollowingAt() < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
-                ) {
-                    // For init in db
-                    $callIdsForInit[] = $twApi->getId();
-                    // Set zero
-                    $twApiCall->setFollowingCnt(0);
-                }
-
-                // Check limit out
-                if ($twApiCall->getFollowingCnt() < $callLimit) {
+                // Check & Update
+                if ($this->twApiCallManager->isFollowingLimitExceeded()) {
+                    // Set warning message
+                    $settings['warning'] = 'You have exceeded the limit. Please try later.';
+                } else {
                     // Set settings
                     $settings = [
                         'name' => $twApi->getName(),
-                        'callCnt' => $twApiCall->getFollowingCnt(),
+                        'callCnt' => $this->twApiCallManager->getFollowingCnt(),
                     ];
-                } else {
-                    // Set warning message
-                    $settings['warning'] = 'You have exceeded the limit. Please try later.';
                 }
                 break;
             case 'followers':
                 list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWERS;
 
-                // Check intervale
-                if (!empty($twApiCall->getFollowersAt())
-                 && $twApiCall->getFollowersAt() < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
-                ) {
-                    // For init in db
-                    $callIdsForInit[] = $twApi->getId();
-                    // Set zero
-                    $twApiCall->setFollowersCnt(0);
-                }
-
-                // Check limit out
-                if ($twApiCall->getFollowersCnt() < $callLimit) {
+                // Check & Update
+                if ($this->twApiCallManager->isFollowingLimitExceeded()) {
+                    // Set warning message
+                    $settings['warning'] = 'You have exceeded the limit. Please try later.';
+                } else {
                     // Set settings
                     $settings = [
                         'name' => $twApi->getName(),
-                        'callCnt' => $twApiCall->getFollowersCnt(),
+                        'callCnt' => $this->twApiCallManager->getFollowersCnt(),
                     ];
-                } else {
-                    // Set warning message
-                    $settings['warning'] = 'You have exceeded the limit. Please try later.';
                 }
                 break;
         }
-
-        // Init api calls
-        if (!empty($callIdsForInit)) {
-            switch ($for) {
-                case 'following':
-                    $this->twApiCallRepository->initFollowingCallsByIds($callIdsForInit);
-                    break;
-                case 'followers':
-                    $this->twApiCallRepository->initFollowersCallsByIds($callIdsForInit);
-                    break;
-            }
-        }
-
-        $html = 'No settings available. Check in menu "Configurations"';
 
         // Generate settings info html
         if (!empty($settings)) {
