@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\TwApiCallRepository;
+use App\Entity\TwApi;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TwApiCallRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TwApiCallRepository::class)]
@@ -12,38 +13,38 @@ class TwApiCall
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
     #[Assert\NotNull()]
-    private $followingCnt = 0;
+    private int $followingCnt = 0;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $followingAt;
+    private ?\DateTimeImmutable $followingAt;
 
     #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
     #[Assert\NotNull()]
-    private $followersCnt = 0;
+    private int $followersCnt = 0;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $followersAt;
+    private ?\DateTimeImmutable $followersAt;
 
     #[ORM\Column(type: 'integer', nullable: false, options: ['default' => 0])]
     #[Assert\NotNull()]
-    private $unfollowCnt = 0;
+    private int $unfollowCnt = 0;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $unfollowAt;
+    private ?\DateTimeImmutable $unfollowAt;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
-    private $nextToken;
+    private ?string $nextToken;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
-    private $processToken;
+    private ?string $processToken;
 
     #[ORM\OneToOne(inversedBy: 'twApiCall', targetEntity: TwApi::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $twApi;
+    private ?TwApi $twApi;
 
     public function getId(): ?int
     {

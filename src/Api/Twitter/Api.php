@@ -26,16 +26,16 @@ abstract class Api
 
     const LIMIT_USER_UNFOLLOW = [50, 15];
 
+    // OAuth 2.0 Client ID and Client Secret
+    protected ?string $twitterClientId = null;
+    protected ?string $twitterClientSecret = null;
+
     // Api settings
     protected ?string $twitterConsumerKey = null;
     protected ?string $twitterConsumerSecret = null;
     protected ?string $twitterBearerToken = null;
     protected ?string $twitterAccessToken = null;
     protected ?string $twitterAccessTokenSecret = null;
-
-    // OAuth 2.0 Client ID and Client Secret
-    protected ?string $twitterClientId = null;
-    protected ?string $twitterClientSecret = null;
 
     // Acount settings
     protected ?string $twitterAccountId = null;
@@ -82,6 +82,8 @@ abstract class Api
             $var = $varString->camelize($key);
 
             if (!in_array($var, [
+                'twitterClientId',
+                'twitterClientSecret',
                 'twitterConsumerKey',
                 'twitterConsumerSecret',
                 'twitterBearerToken',

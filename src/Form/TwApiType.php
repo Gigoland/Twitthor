@@ -35,6 +35,36 @@ class TwApiType extends AbstractType
                     new Assert\Length(['max' => 55]),
                 ],
             ])
+            ->add('clientId', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'autocomplete' => 'off',
+                    'maxlength' => 255,
+                ],
+                'label' => 'CLIENT ID',
+                'label_attr' => [
+                    'class' => 'form-label mt-4',
+                ],
+                'required' => false,
+                'constraints' => [
+                    new Assert\Length(['max' => 255]),
+                ],
+            ])
+            ->add('clientSecret', TextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'autocomplete' => 'off',
+                    'maxlength' => 255,
+                ],
+                'label' => 'CLIENT SECRET',
+                'label_attr' => [
+                    'class' => 'form-label mt-4',
+                ],
+                'required' => false,
+                'constraints' => [
+                    new Assert\Length(['max' => 255]),
+                ],
+            ])
             ->add('consumerKey', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',

@@ -67,6 +67,7 @@ class TwApiController extends AbstractController
         TwApiCallManager $twApiCallManager
     ): Response {
         $twApi = new TwApi();
+
         $form = $this->createForm(TwApiType::class, $twApi, [
             'method' => 'POST',
         ]);
@@ -172,7 +173,7 @@ class TwApiController extends AbstractController
      */
     #[Route('/tw/settings/{id}/active/ajax', name: 'app_twitter_api_settings_active_ajax', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
-    public function ajaxUpdateIsActive(
+    public function ajaxSwitchIsActive(
         Request $request,
         TwApi $twApi
     ): JsonResponse {
@@ -268,7 +269,7 @@ class TwApiController extends AbstractController
             ], 403);
         }
 
-        // Get api settings
+        // Get api params from activate setting
         $twApi = $this->entityManager
             ->getRepository(TwApi::class)
             ->findActiveSettingsByUser($this->getUser(), 'following')

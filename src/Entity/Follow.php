@@ -38,7 +38,7 @@ class Follow
     private ?string $walletSol = null;
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
-    private $processToken;
+    private ?string $processToken;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull()]
@@ -50,11 +50,11 @@ class Follow
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'follows')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private ?User $user;
 
     #[ORM\ManyToOne(targetEntity: TwUser::class, inversedBy: 'follows')]
     #[ORM\JoinColumn(nullable: false)]
-    private $twUser;
+    private ?TwUser $twUser;
 
     /**
      * Constructor

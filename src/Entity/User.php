@@ -57,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(max: 55)]
-    private $verifyToken;
+    private ?string $verifyToken;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     #[Assert\NotNull()]
@@ -68,10 +68,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private \DateTimeImmutable $updateAt;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: TwApi::class, cascade: ['remove'], orphanRemoval: true)]
-    private $twApis;
+    private ?Collection $twApis;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Follow::class, cascade: ['remove'], orphanRemoval: true)]
-    private $follows;
+    private ?Collection $follows;
 
     /**
      * Constructor

@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\TwApi;
 use App\Api\Twitter\OAuth2;
+use App\Entity\TwApiOAuth2;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +32,18 @@ class TwOAuthController extends AbstractController
         CsrfTokenManagerInterface $csrfTokenManager,
         OAuth2 $oAuth2
     ): Response {
+        // Get api params from activate setting
+        $twApi = $this->entityManager
+            ->getRepository(TwApi::class)
+            ->findActiveSettingsByUser($this->getUser(), 'access_token')
+        ;
+
+        // Set params
+        $oAuth2
+            ->setClientId($twApi->getClientId())
+            ->setClientSecret($twApi->getClientSecret())
+        ;
+
         return $this->redirect(
             $oAuth2->getCodeUrl(
                 $csrfTokenManager->refreshToken(OAuth2::CSRF_ID)
@@ -70,12 +84,53 @@ class TwOAuthController extends AbstractController
             return $this->redirectToRoute('app_twitter_api_settings');
         }
 
+        // Get api params from activate setting
+        $twApi = $this->entityManager
+            ->getRepository(TwApi::class)
+            ->findActiveSettingsByUser($this->getUser(), 'access_token')
+        ;
+
+        // Set params
+        $oAuth2
+            ->setClientId($twApi->getClientId())
+            ->setClientSecret($twApi->getClientSecret())
+        ;
+
         // Call
-        $result = $oAuth2->getAuthorizationCode(
+        $result = $oAuth2->getAccessTokenByCode(
             $request->query->get('code')
         );
 
-        dd($result);
+        // Not have access_token
+        if (empty($result['access_token'])) {
+            $this->addFlash(
+                'errors',
+                'Something went wrong !'
+            );
+
+            return $this->redirectToRoute('app_twitter_api_settings');
+        }
+
+        // Load for update
+        $twApiOAuth2 = $this->entityManager
+            ->getRepository(TwApiOAuth2::class)
+            ->findOneBy(['twApi' => $twApi])
+        ;
+
+        // Not found / Add new
+        if (!$twApiOAuth2) {
+            $twApiOAuth2 = new TwApiOAuth2();
+            $twApiOAuth2->setTwApi($twApi);
+        }
+
+        $twApiOAuth2->setTokenType($result['token_type']);
+        $twApiOAuth2->setAccessToken($result['access_token']);
+        $twApiOAuth2->setRefreshToken($result['refresh_token']);
+        $twApiOAuth2->setScope($result['scope']);
+        $twApiOAuth2->setExpiresIn($result['expires_in']);
+
+        $this->entityManager->persist($twApiOAuth2);
+        $this->entityManager->flush();
 
         $this->addFlash(
             'success',

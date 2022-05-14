@@ -44,7 +44,7 @@ class TwUser
     private ?string $twUrl;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private $twTags;
+    private ?string $twTags;
 
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => 0])]
     #[Assert\NotNull()]
@@ -63,7 +63,7 @@ class TwUser
     private \DateTimeImmutable $updateAt;
 
     #[ORM\OneToMany(mappedBy: 'twUser', targetEntity: Follow::class, orphanRemoval: true)]
-    private $follows;
+    private ?Collection $follows;
 
     /**
      * Constructor

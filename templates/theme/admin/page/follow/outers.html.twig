@@ -45,9 +45,11 @@
                     <tr>
                       <td class="min-width">
                         <div class="lead">
-                          <div class="lead-image">
-                            <img src="{{ app.request.schemeAndHttpHost ~ row.twUser.avatar }}" alt="Avatar" title="{{ row.twUser.twName }}">
-                          </div>
+                          <a href="https://twitter.com/{{ row.twUser.twUsername }}" onclick="event.preventDefault();" class="js-btn-tw-profile" rel="noreferrer">
+                            <div class="lead-image">
+                              <img src="{{ app.request.schemeAndHttpHost ~ row.twUser.avatar }}" alt="Avatar" title="{{ row.twUser.twName }}">
+                            </div>
+                          </a>
                           <div class="lead-text">
                             <p>{{ row.twUser.twName|slice(0, 20) ~ '...' }}</p>
                           </div>
@@ -65,10 +67,7 @@
                         </div>
                       </td>
                       <td>
-                        <div class="action">
-                          <a href="https://twitter.com/{{ row.twUser.twUsername }}" onclick="event.preventDefault();" class="btn btn-info btn-hover js-btn-tw-profile" rel="noreferrer">Profile</a>
-                          {#<a href="#" onclick="event.preventDefault();" class="btn btn-secondary js-btn-follow">Follow</a>#}
-                        </div>
+                        <button type="button" value="" class="btn btn-secondary btn-hover js-btn-follow">Follow</button>
                       </td>
                       <td>
                         <div class="action">

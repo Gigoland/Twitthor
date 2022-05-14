@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\User;
+use App\Entity\TwApiCall;
+use App\Entity\TwApiOAuth2;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TwApiRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -17,7 +19,15 @@ class TwApi
 
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     #[Assert\Length(max: 55)]
-    private $name;
+    private ?string $name;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $clientId;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $clientSecret;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Length(min: 1, max: 255)]
@@ -48,14 +58,17 @@ class TwApi
 
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => 0])]
     #[Assert\NotNull()]
-    private $isActive;
+    private bool $isActive;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'twApis')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private ?User $user;
 
     #[ORM\OneToOne(mappedBy: 'twApi', targetEntity: TwApiCall::class, cascade: ['persist', 'remove'])]
-    private $twApiCall;
+    private ?TwApiCall $twApiCall;
+
+    #[ORM\OneToOne(mappedBy: 'twApi', targetEntity: TwApiOAuth2::class, cascade: ['persist', 'remove'])]
+    private ?TwApiOAuth2 $twApiOAuth2;
 
     public function getId(): ?int
     {
@@ -70,6 +83,30 @@ class TwApi
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getClientId(): ?string
+    {
+        return $this->clientId;
+    }
+
+    public function setClientId(?string $clientId): self
+    {
+        $this->clientId = $clientId;
+
+        return $this;
+    }
+
+    public function getClientSecret(): ?string
+    {
+        return $this->clientSecret;
+    }
+
+    public function setClientSecret(?string $clientSecret): self
+    {
+        $this->clientSecret = $clientSecret;
 
         return $this;
     }
@@ -195,6 +232,23 @@ class TwApi
         }
 
         $this->twApiCall = $twApiCall;
+
+        return $this;
+    }
+
+    public function getTwApiOAuth2(): ?TwApiOAuth2
+    {
+        return $this->twApiOAuth2;
+    }
+
+    public function setTwApiOAuth2(TwApiOAuth2 $twApiOAuth2): self
+    {
+        // set the owning side of the relation if necessary
+        if ($twApiOAuth2->getTwApi() !== $this) {
+            $twApiOAuth2->setTwApi($this);
+        }
+
+        $this->twApiOAuth2 = $twApiOAuth2;
 
         return $this;
     }

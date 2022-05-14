@@ -7,7 +7,7 @@
     'title': 'Twitter API Settings',
     'actions': [
       {'title': 'Add new settings', 'icon': 'fa-plus', 'path': path('app_twitter_api_settings_add')},
-      {'title': 'Authorize 2', 'icon': 'fa-plus', 'path': path('app_twitter_oauth2_code')},
+      {'title': 'Authorize App', 'icon': 'fa-plus', 'path': path('app_twitter_oauth2_code')},
     ],
     'navs': [
       {'title': 'Twitter API settings', 'path': path('app_twitter_api_settings')},
@@ -33,6 +33,8 @@
                   <tr class="text-nowrap">
                     <th><h6>#</h6></th>
                     <th><h6>Name</h6></th>
+                    <th><h6>CLIENT ID</h6></th>
+                    <th><h6>CLIENT SECRET</h6></th>
                     <th><h6>CONSUMER KEY</h6></th>
                     <th><h6>CONSUMER SECRET</h6></th>
                     <th><h6>ACCESS TOKEN</h6></th>
@@ -56,6 +58,8 @@
                         </div>
                       </td>
                       <td class="min-width"><p><strong>{{ row.name }}</strong></p></td>
+                      <td class="min-width"><p>{{ row.clientId|slice(0, 10) ~ '...' }}</p></td>
+                      <td class="min-width"><p>{{ row.clientSecret|slice(0, 10) ~ '...' }}</p></td>
                       <td class="min-width"><p>{{ row.consumerKey|slice(0, 10) ~ '...' }}</p></td>
                       <td class="min-width"><p>{{ row.consumerSecret|slice(0, 10) ~ '...' }}</p></td>
                       <td class="min-width"><p>{{ row.accessToken|slice(0, 10) ~ '...' }}</p></td>

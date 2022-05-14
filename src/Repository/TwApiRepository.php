@@ -88,15 +88,24 @@ class TwApiRepository extends ServiceEntityRepository
         ;
 
         switch ($for) {
+            // OAuth 2.0 Client ID and Client Secret
+            case 'access_token':
+                $qb
+                    ->andWhere('t.clientId IS NOT NULL')
+                    ->andWhere('t.clientSecret IS NOT NULL')
+                ;
+                break;
             case 'following':
             case 'followers':
                 $qb
                     ->andWhere('t.bearerToken IS NOT NULL')
                 ;
                 break;
+            // Need access_token from table tw_api_oauth2
             case 'unfollow':
                 $qb
-                    ->andWhere('t.bearerToken IS NOT NULL')
+                    ->andWhere('t.clientId IS NOT NULL')
+                    ->andWhere('t.clientSecret IS NOT NULL')
                 ;
                 break;
         }
@@ -148,11 +157,25 @@ class TwApiRepository extends ServiceEntityRepository
         ;
 
         switch ($for) {
+            // OAuth 2.0 Client ID and Client Secret
+            case 'access_token':
+                $qb
+                    ->andWhere('t.clientId IS NOT NULL')
+                    ->andWhere('t.clientSecret IS NOT NULL')
+                ;
+                break;
             case 'following':
             case 'followers':
                 $qb
                     ->andWhere('t.bearerToken IS NOT NULL')
                     ->andWhere('t.accountId IS NOT NULL')
+                ;
+                break;
+            // Need access_token from table tw_api_oauth2
+            case 'unfollow':
+                $qb
+                    ->andWhere('t.clientId IS NOT NULL')
+                    ->andWhere('t.clientSecret IS NOT NULL')
                 ;
                 break;
         }
