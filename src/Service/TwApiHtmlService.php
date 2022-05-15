@@ -29,55 +29,68 @@ class TwApiHtmlService
             return $this->error('Error'); // @todo message
         }
 
-        $html = 'No settings available. Check in menu "Configurations"';
-
         // Get activated settings
         $twApi = $this->twApiRepository->findActiveSettingsByUser($user, $for);
 
         // Not have settings
-        if (!$twApi) {
+       if (!$twApi) {
+            // Set warning message
+            $warning = [
+                'code' => 'notFoundSettings',
+                'message' => 'No settings available. Check in menu "Configurations"',
+            ];
+
             // Response
             return [
                 'success' => true,
-                'html' => $html,
+                'html' => $this->environment->render('theme/admin/common/custom/_tw_active_settings_info.html.twig', [
+                    'warning' => $warning,
+                ]),
+                'warning' => $warning,
             ];
         }
 
         // Load TwApiCall in manager
         $this->twApiCallManager->loadTwApiCall($twApi);
+        $warning = false;
+        $html = false;
         $settings = [];
 
         // Check & generate select options
         switch ($for) {
             case 'following':
-                list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWING;
-
                 // Check & Update
                 if ($this->twApiCallManager->isFollowingLimitExceeded()) {
                     // Set warning message
-                    $settings['warning'] = 'You have exceeded the limit. Please try later.';
-                } else {
-                    // Set settings
-                    $settings = [
-                        'name' => $twApi->getName(),
-                        'callCnt' => $this->twApiCallManager->getFollowingCnt(),
+                    $warning = [
+                        'code' => 'exceededLimit' ,
+                        'message' => 'You have exceeded the limit. Please try later.'
                     ];
                 }
+
+                // Set settings
+                $settings = [
+                    'name' => $twApi->getName(),
+                    'callCnt' => $this->twApiCallManager->getFollowingCnt(),
+                ];
+                list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWING;
                 break;
             case 'followers':
-                list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWERS;
-
                 // Check & Update
-                if ($this->twApiCallManager->isFollowingLimitExceeded()) {
+                if ($this->twApiCallManager->isFollowersLimitExceeded()) {
                     // Set warning message
-                    $settings['warning'] = 'You have exceeded the limit. Please try later.';
-                } else {
-                    // Set settings
-                    $settings = [
-                        'name' => $twApi->getName(),
-                        'callCnt' => $this->twApiCallManager->getFollowersCnt(),
+                    $warning = [
+                        'code' => 'exceededLimit' ,
+                        'message' => 'You have exceeded the limit. Please try later.'
                     ];
                 }
+
+                // Set settings
+                $settings = [
+                    'name' => $twApi->getName(),
+                    'callCnt' => $this->twApiCallManager->getFollowersCnt(),
+                ];
+                list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWERS;
                 break;
         }
 
@@ -87,6 +100,7 @@ class TwApiHtmlService
                 'settings' => $settings,
                 'twApiCallLimit' => $callLimit,
                 'twApiCallIntervale' => $callInterval,
+                'warning' => $warning,
             ]);
         }
 
@@ -94,6 +108,7 @@ class TwApiHtmlService
         return [
             'success' => true,
             'html' => $html,
+            'warning' => $warning,
         ];
     }
 
@@ -107,7 +122,10 @@ class TwApiHtmlService
     {
         return [
             'success' => false,
-            'message' => $message,
+            'error' => [
+                'code' => 0,
+                'message' => $message,
+            ],
         ];
     }
 }

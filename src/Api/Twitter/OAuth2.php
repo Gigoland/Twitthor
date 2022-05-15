@@ -115,7 +115,7 @@ class OAuth2
         // Call
         try {
             $response = $client->request('POST', '/2/oauth2/token', [
-                'form_params' => $formParams
+                'form_params' => $formParams,
             ]);
         } catch (\GuzzleHttp\Exception\BadResponseException $e) {
             return $json->decode(

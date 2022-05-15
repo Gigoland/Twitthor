@@ -77,13 +77,11 @@ class TwApiCallService
         // Get twitter user
         $twUser = $follow->getTwUser();
 
+        $twOAuth2 = $twApi->getTwApiOAuth2();
+
         // Initialisation
         $this->twitthorManager = new TwitthorManager([
-            'twitter_consumer_key' => $twApi->getConsumerKey(),
-            'twitter_consumer_secret' => $twApi->getConsumerSecret(),
-            'twitter_bearer_token' => $twApi->getBearerToken(),
-            'twitter_access_token' => $twApi->getAccessToken(),
-            'twitter_access_token_secret' => $twApi->getAccessTokenSecret(),
+            'twitter_bearer_token' => $twOAuth2->getAccessToken(),
         ]);
 
         // Set params

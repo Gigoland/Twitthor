@@ -1,16 +1,30 @@
-<p>
-  <i class="fa-solid fa-gear"></i> {{ settings.name }}
-</p>
+{% if settings is defined %}
+  <p>
+    <i class="fa-solid fa-gear"></i> {{ settings.name }}
+  </p>
 
-<p>
-  <div class="alert-box secondary-alert">
-    <div class="alert">
-      <p class="text-medium">
-        Rate limit : <span id="twapi-call-counts">{{ settings.callCnt|default(0) }}</span> / {{ twApiCallLimit|default(0) }} per {{ twApiCallIntervale|default(15) }} minutes
-      </p>
+  <p>
+    <div class="alert-box secondary-alert">
+      <div class="alert">
+        <p class="text-medium">
+          Rate limit : <span id="twapi-call-counts">{{ settings.callCnt|default(0) }}</span> / {{ twApiCallLimit|default(0) }} per {{ twApiCallIntervale|default(15) }} minutes
+        </p>
+      </div>
     </div>
-  </div>
-</p>
+  </p>
+{% endif %}
+
+{% if warning is defined and warning != false %}
+  <p>
+    <div class="alert-box danger-alert alert-box-result">
+      <div class="alert">
+        <p class="text-medium">
+          {{ warning.message|default('Warrning') }}
+        </p>
+      </div>
+    </div>
+  </p>
+{% endif %}
 
 <p>
   <div class="alert-box success-alert alert-box-result" style="display:none;">
@@ -22,8 +36,10 @@
   </div>
 </p>
 
-<p>
-  <strong class="text-sm">
-    <i class="fa-solid fa-triangle-exclamation"></i> After launch, please do not close. It may take time...
-  </strong>
-</p>
+{% if warning == false or (warning is defined and warning.code not in ['notFoundSettings','exceededLimit']) %}
+  <p>
+    <strong class="text-sm">
+      <i class="fa-solid fa-triangle-exclamation"></i> After launch, please do not close. It may take time...
+    </strong>
+  </p>
+{% endif %}

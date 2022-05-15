@@ -9,16 +9,17 @@ use App\Utils\VarString;
 abstract class Api
 {
     // Twitter API v2
-    const API_SERVER = 'https://api.twitter.com/2/';
+    const API_SERVER = 'https://api.twitter.com';
 
     // Users lookup
-    const API_USERS = 'users/%s';
+    const API_USERS = '/2/users/%s';
 
     // Follow or unfollow accounts, or retrieve an accounts followers or following.
-    const API_USERS_FOLLOWING = 'users/%s/following';
-    const API_USERS_FOLLOWERS = 'users/%s/followers';
+    const API_USERS_FOLLOWING = '/2/users/%s/following';
+    const API_USERS_FOLLOWERS = '/2/users/%s/followers';
+
     // https://api.twitter.com/2/users/:source_user_id/following/:target_user_id
-    const API_USERS_FOLLOWING_DELETE = 'users/%s/following/%s';
+    const API_USERS_FOLLOWING_DELETE = '/2/users/%s/following/%s';
 
     // Requst limits [num, interval]
     const LIMIT_USERS_FOLLOWING = [15, 15];
@@ -33,13 +34,16 @@ abstract class Api
     // Api settings
     protected ?string $twitterConsumerKey = null;
     protected ?string $twitterConsumerSecret = null;
-    protected ?string $twitterBearerToken = null;
+
     protected ?string $twitterAccessToken = null;
     protected ?string $twitterAccessTokenSecret = null;
 
     // Acount settings
     protected ?string $twitterAccountId = null;
     protected ?string $twitterAccountName = null;
+
+    // Bearer token
+    protected ?string $twitterBearerToken = null;
 
     // next_token
     protected ?string $nextToken = null;
@@ -82,11 +86,14 @@ abstract class Api
             $var = $varString->camelize($key);
 
             if (!in_array($var, [
+                'twitterBearerToken',
+
                 'twitterClientId',
                 'twitterClientSecret',
+
                 'twitterConsumerKey',
                 'twitterConsumerSecret',
-                'twitterBearerToken',
+
                 'twitterAccessToken',
                 'twitterAccessTokenSecret',
             ])) {
@@ -248,18 +255,17 @@ abstract class Api
      */
     public function getUserByAccountId(bool $isJson = true)
     {
-        if (empty($this->twitterAccountId)) {
+        if (empty($this->twitterBearerToken)
+         || empty($this->twitterAccountId)
+         ) {
             throw new \InvalidArgumentException(
                 'Incomplete settings passed to Twitthor'
             );
         }
 
-        $url = sprintf(
-            self::API_SERVER . self::API_USERS,
-            $this->twitterAccountId
-        );
+        $path = sprintf(self::API_USERS, $this->twitterAccountId);
 
-        $result = $this->getRequest($url, 'get', $isJson);
+        $result = $this->getRequest($path, 'GET', $isJson);
 
         if (empty($this->responseFields)) {
             return $result;
@@ -276,18 +282,17 @@ abstract class Api
      */
     public function getFollowingByAccountId(bool $isJson = true)
     {
-        if (empty($this->twitterAccountId)) {
+        if (empty($this->twitterBearerToken)
+         || empty($this->twitterAccountId)
+         ) {
             throw new \InvalidArgumentException(
                 'Incomplete settings passed to Twitthor'
             );
         }
 
-        $url = sprintf(
-            self::API_SERVER . self::API_USERS_FOLLOWING,
-            $this->twitterAccountId
-        );
+        $path = sprintf(self::API_USERS_FOLLOWING, $this->twitterAccountId);
 
-        return $this->getRequest($url, 'get', $isJson);
+        return $this->getRequest($path, 'GET', $isJson);
     }
 
     /**
@@ -298,18 +303,17 @@ abstract class Api
      */
     public function getFollowersByAccountId(bool $isJson = true)
     {
-        if (empty($this->twitterAccountId)) {
+        if (empty($this->twitterBearerToken)
+         || empty($this->twitterAccountId)
+         ) {
             throw new \InvalidArgumentException(
                 'Incomplete settings passed to Twitthor'
             );
         }
 
-        $url = sprintf(
-            self::API_SERVER . self::API_USERS_FOLLOWERS,
-            $this->twitterAccountId
-        );
+        $path = sprintf(self::API_USERS_FOLLOWERS, $this->twitterAccountId);
 
-        return $this->getRequest($url, 'get', $isJson);
+        return $this->getRequest($path, 'GET', $isJson);
     }
 
     /**
@@ -320,111 +324,112 @@ abstract class Api
      */
     public function unfollowByAccountId(bool $isJson = true)
     {
-        if (empty($this->twitterAccountId) || empty($this->targetUserId)) {
+        if (empty($this->twitterBearerToken)
+         || empty($this->twitterAccountId)
+         || empty($this->targetUserId)
+        ) {
             throw new \InvalidArgumentException(
                 'Incomplete settings passed to Twitthor - Unfollow'
             );
         }
 
-        $url = sprintf(
-            self::API_SERVER . self::API_USERS_FOLLOWING_DELETE,
+        $path = sprintf(
+            self::API_USERS_FOLLOWING_DELETE,
             $this->twitterAccountId,
             $this->targetUserId
         );
 
-        return $this->getRequest($url, 'delete', $isJson);
+        return $this->getRequest($path, 'DELETE', $isJson);
     }
 
     /**
-     * Call Twitter API with Curl request
+     * Call Twitter API with Guzzle request
      *
-     * @param string $url
+     * @param string $path
      * @param string $method
      * @param bool $isJson
      * @return array|object
      */
-    private function getRequest(string $url, string $method, bool $isJson = true)
+    private function getRequest(string $path, string $method, bool $isJson = true)
     {
-        // For header (Bearer)
-        $authorization = sprintf('Authorization: Bearer %s', $this->twitterBearerToken);
+        $json = new Json();
+        $options = [];
+
+        // Verify
+        $ssl = file_exists(__DIR__ . '/../../../cacert.pem')
+            ? __DIR__ . '/../../../cacert.pem'
+            : false;
+
+        // Headers
+        $headers = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => sprintf(
+                'Bearer %s',
+                $this->twitterBearerToken
+            ),
+        ];
 
         // Set pagination_token for get next
         if (!empty($this->getNextToken())) {
             $this->queryFields['pagination_token'] = $this->getNextToken();
         }
 
-        // Curl options
-        $options = [
-            CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => ['Content-Type: application/json', $authorization],
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HEADER => false,
-            CURLOPT_TIMEOUT => 10,
-            CURLOPT_SSL_VERIFYPEER => false, // Not recommended
-            CURLOPT_VERBOSE => true,
-        ];
-
-        /*
-        if (!empty($this->proxy)) {
-            $options[CURLOPT_PROXY] = $this->proxy['CURLOPT_PROXY'];
-            $options[CURLOPT_PROXYUSERPWD] = $this->proxy['CURLOPT_PROXYUSERPWD'];
-            $options[CURLOPT_PROXYPORT] = $this->proxy['CURLOPT_PROXYPORT'];
-            $options[CURLOPT_PROXYAUTH] = CURLAUTH_BASIC;
-            $options[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP;
-        }
-        */
-
         // By method
-        switch (strtolower($method)) {
-            // Fields for method GET only
-            case 'get':
+        switch (strtoupper($method)) {
+            case 'GET':
                 if (!empty($this->queryFields)) {
-                    $options[CURLOPT_URL] .= '?' . http_build_query($this->queryFields, '', '&');
+                    $options = [
+                        'query' => $this->queryFields,
+                    ];
                 }
                 break;
-            // Fields for POST method only
-            case 'post':
-                $options[CURLOPT_POST] = true;
+            case 'PUT':
+            case 'POST':
+            case 'DELETE':
+                $headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 
                 if (!empty($this->queryFields)) {
-                    $options[CURLOPT_POSTFIELDS] = http_build_query($this->queryFields, '', '&');
+                    $options = [
+                        'form_params' => $this->queryFields,
+                    ];
                 }
-                break;
-            // Set metodes PUT, DELETE
-            case 'put':
-            case 'delete':
-                $options[CURLOPT_CUSTOMREQUEST] = strtoupper($method);
                 break;
         }
 
-        // Curl init & set options
-        $ch = curl_init();
-        curl_setopt_array($ch, $options);
-
-        // Curl exec
+        // Init Guzzle
+        $client = new \GuzzleHttp\Client([
+            'base_uri' => self::API_SERVER,
+            'verify' => $ssl,
+            'headers' => $headers,
+        ]);
+/*
+dump(strtoupper($method));
+dump($path);
+dump($options);
+dd($client);
+*/
+        // Call Guzzle
         try {
-            $result = curl_exec($ch);
-        } catch (\Exception $e) {
-            throw $e;
+            $response = $client->request(
+                strtoupper($method),
+                $path,
+                $options
+            );
+        } catch (\GuzzleHttp\Exception\BadResponseException $e) {
+            if ($isJson) {
+                return $json->decode(
+                    $e->getResponse()->getBody()->getContents()
+                );
+            }
+
+            return $e->getResponse()->getBody()->getContents();
         }
 
-        // Set curl http code
-        $this->httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $result = (string) $response->getBody();
 
-        // Curl error
-        if (($error = curl_error($ch)) !== '') {
-            curl_close($ch);
-
-            throw new \Exception($error);
-        }
-
-        // Curl close
-        curl_close($ch);
-
-        // Get jsone format
+        // Get json format
         if ($isJson) {
-            $json = new Json();
             $result = $json->decode($result);
 
             if ($error = $json->getJsoneError(json_last_error())) {

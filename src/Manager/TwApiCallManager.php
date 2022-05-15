@@ -123,8 +123,10 @@ class TwApiCallManager
         $count = $this->twApiCall->getFollowingCnt() + 1;
         $at = new \DateTimeImmutable();
 
-        $this->twApiCall->setFollowingCnt($count);
-        $this->twApiCall->setFollowingAt($at);
+        $this->twApiCall
+            ->setFollowingCnt($count)
+            ->setFollowingAt($at)
+        ;
 
         return $this;
     }
@@ -150,8 +152,10 @@ class TwApiCallManager
         $count = $this->twApiCall->getFollowersCnt() + 1;
         $at = new \DateTimeImmutable();
 
-        $this->twApiCall->setFollowersCnt($count);
-        $this->twApiCall->setFollowersAt($at);
+        $this->twApiCall
+            ->setFollowersCnt($count)
+            ->setFollowersAt($at)
+        ;
 
         return $this;
     }
@@ -177,8 +181,10 @@ class TwApiCallManager
         $count = $this->twApiCall->getUnfollowCnt() + 1;
         $at = new \DateTimeImmutable();
 
-        $this->twApiCall->setUnfollowCnt($count);
-        $this->twApiCall->setUnfollowAt($at);
+        $this->twApiCall
+            ->setUnfollowCnt($count)
+            ->setUnfollowAt($at)
+        ;
 
         return $this;
     }
@@ -220,8 +226,10 @@ class TwApiCallManager
          && $this->twApiCall->getFollowingAt() < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
         ) {
             // Init
-            $this->twApiCall->setFollowingCnt(0);
-            $this->twApiCall->setFollowingAt(null);
+            $this->twApiCall
+                ->setFollowingCnt(0)
+                ->setFollowingAt(null)
+            ;
             $this->saveTwApiCall();
         }
 
@@ -247,8 +255,10 @@ class TwApiCallManager
          && $this->twApiCall->getFollowersAt() < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
         ) {
             // Init
-            $this->twApiCall->setFollowersCnt(0);
-            $this->twApiCall->setFollowersAt(null);
+            $this->twApiCall
+                ->setFollowersCnt(0)
+                ->setFollowersAt(null)
+            ;
             $this->saveTwApiCall();
         }
 
@@ -274,8 +284,10 @@ class TwApiCallManager
          && $this->twApiCall->getUnfollowAt() < (new \DateTimeImmutable())->modify('-' . $callInterval . ' minute')
         ) {
             // Init
-            $this->twApiCall->setUnfollowCnt(0);
-            $this->twApiCall->setUnfollowAt(null);
+            $this->twApiCall
+                ->setUnfollowCnt(0)
+                ->setUnfollowAt(null)
+            ;
             $this->saveTwApiCall();
         }
 

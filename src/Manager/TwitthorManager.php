@@ -177,6 +177,23 @@ class TwitthorManager extends TwitterApi
             ];
         }
 
+        /*
+        array:4 [
+            "errors" => array:1 [
+                0 => array:2 [
+                "parameters" => []
+                "message" => "Requests with bodies must have content-type of application/json."
+                ]
+            ]
+            "title" => "Invalid Request"
+            "detail" => "One or more parameters to your request was invalid."
+            "type" => "https://api.twitter.com/2/problems/invalid-request"
+        ]
+        */
+        if (!empty($data['errors'])) {
+            return $data;
+        }
+
         return false;
     }
 }

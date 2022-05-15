@@ -19,6 +19,9 @@ import {Modal} from 'bootstrap';
     if (data.success) {
       $twApiSettingsModal.querySelector('.modal-body').innerHTML = data.html;
       twApiSettingsModalPlugin.show();
+      if (data.warning) {
+        $twApiSettingsModal.querySelector('.btn-ok').style.display = 'none';
+      }
     } else {
       ajaxResponseError(data);
     }
@@ -97,11 +100,33 @@ import {Modal} from 'bootstrap';
     }
   };
 
+  //
+  const callUnfollow = function() {
+    if (!updateDone) {
+      setTimeout(() => {
+        axios.post(this.value)
+        .then(response => response.data)
+        .then(data => {
+          setTimeout(() => {
+            console.log(data);
+          }, 50);
+        })
+        .catch(error => {
+          ajaxError(error);
+        });
+      }, 50);
+    }
+  };
+
   // Tw profile
   const shwoTwProfile = function() {
     setTimeout(() => {
-      let unfollowWindowObj = window.open(this.href, "_blank", "location=no,menubar=no,status=no,titilebar=no,resizable=no,top=0,left=0,width=600,height=500");
-      unfollowWindowObj.focus();
+      let win = window.open(
+        this.href,
+        "_blank",
+        "location=no,menubar=no,status=no,titilebar=no,resizable=no,top=0,left=0,width=600,height=500"
+      );
+      win.focus();
     }, 50);
   };
 
@@ -136,8 +161,13 @@ import {Modal} from 'bootstrap';
     document.querySelector('#js-btn-update').addEventListener('click', getAwApiKeysModal);
   }
 
-  // Get modal content
+  // Get window
   if (document.querySelector('.js-btn-tw-profile')) {
     document.querySelectorAll('.js-btn-tw-profile').forEach(el => el.addEventListener('click', shwoTwProfile));
+  }
+
+  // Unfollow
+  if (document.querySelector('.js-btn-unfollow')) {
+    document.querySelectorAll('.js-btn-unfollow').forEach(el => el.addEventListener('click', callUnfollow));
   }
 })();
