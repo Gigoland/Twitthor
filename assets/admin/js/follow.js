@@ -100,7 +100,7 @@ import {Modal} from 'bootstrap';
     }
   };
 
-  //
+  // Unfollow
   const callUnfollow = function() {
     if (!updateDone) {
       setTimeout(() => {

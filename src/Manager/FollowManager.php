@@ -77,4 +77,19 @@ class FollowManager
     {
         return $this->followRepository->updateNoFollowByProcessToken($user, $token, 'Follower');
     }
+
+    /**
+     * Update is_following
+     *
+     * @param Follow $follow
+     * @param boolean $isFollowing
+     * @return void
+     */
+    public function updateIsFollowingById(Follow $follow, bool $isFollowing)
+    {
+        $follow ->setIsFollowing($isFollowing);
+
+        $this->entityManager->persist($follow,);
+        $this->entityManager->flush();
+    }
 }

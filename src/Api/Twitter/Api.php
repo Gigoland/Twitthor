@@ -2,7 +2,6 @@
 
 namespace App\Api\Twitter;
 
-use App\Api\Twitter\OAuth as TwitterOAuth;
 use App\Utils\Json;
 use App\Utils\VarString;
 

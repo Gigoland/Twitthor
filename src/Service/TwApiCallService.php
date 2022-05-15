@@ -114,11 +114,17 @@ class TwApiCallService
             ];
         }
 
+        // Update following
+        $this->followManager->updateIsFollowingById(
+            $follow,
+            $result['data']['following']
+        );
+
         // Success
         return [
             'success' => true,
             'message' => 'Unfollowed',
-            'result' => $result,//test
+            'callCount' => $this->twApiCallManager->getUnfollowCnt(),
         ];
     }
 

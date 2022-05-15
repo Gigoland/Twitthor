@@ -56,7 +56,7 @@ class OAuth2
             'response_type' => 'code',
             'client_id' => $this->clientId,
             'redirect_uri' => self::REDIRECT_URI,
-            'scope' => 'offline.access tweet.write like.write users.read follows.write',
+            'scope' => 'offline.access users.read follows.write tweet.read tweet.write like.write',
             'code_challenge' => $varString->getHash(self::CODE_VERIFIER_ID),
             'code_challenge_method' => 'plain',
             'state' => $state->getValue(), // For CSRF checking
@@ -70,7 +70,7 @@ class OAuth2
      * "token_type" => "bearer"
      * "expires_in" => 7200
      * "access_token" => "R2dWd3k3bk90SF9teHZNa18xeWZzb0ZtcnNYTlp4cllXRVJTZ2wybE54WWVQOjE2NTI0ODEzMTQzNjQ6MToxOmF0OjE"
-     * "scope" => "offline.access tweet.write like.write users.read follows.write"
+     * "scope" => "offline.access users.read follows.write tweet.read tweet.write like.write"
      * "refresh_token" => "QV9HUkVRNUpkdFdDNHhsTUN0LWtEVkNrZUZaY212MmdaV01Ebl9oUlNGNFZkOjE2NTI0ODEzMTQzNjQ6MToxOnJ0OjE"
      *
      * @param string $code
@@ -112,7 +112,7 @@ class OAuth2
             'headers' => $headers,
         ]);
 
-        // Call
+        // Guzzle request
         try {
             $response = $client->request('POST', '/2/oauth2/token', [
                 'form_params' => $formParams,
@@ -163,7 +163,7 @@ class OAuth2
             'headers' => $headers,
         ]);
 
-        // Call
+        // Guzzle request
         try {
             $response = $client->request('POST', '/2/oauth2/token', [
                 'form_params' => $formParams
