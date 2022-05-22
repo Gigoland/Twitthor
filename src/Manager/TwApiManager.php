@@ -84,17 +84,16 @@ class TwApiManager
         $expiresIn = $twApiOAuth2->getExpiresIn();
 
         // Check expires intervale
-        if ($twApiOAuth2->getUpdateAt() < (new \DateTimeImmutable())->modify('-' . $expiresIn . ' minute')) {
+        if ($twApiOAuth2->getUpdateAt() < (new \DateTimeImmutable())->modify('-' . $expiresIn . ' second')) {
             // Set params & Get access_token
             $result = $this->twitterOAuth2
                 ->setClientId($twApi->getClientId())
                 ->setClientSecret($twApi->getClientSecret())
-                ->getRefreshAccessToken(
+                ->getAccessTokenByRefreshToken(
                     $twApiOAuth2->getRefreshToken()
                 )
             ;
 
-dd($result);
             // Not have access_token
             /**
              * [
@@ -110,13 +109,14 @@ dd($result);
             $twApiOAuth2->setTokenType($result['token_type']);
             $twApiOAuth2->setAccessToken($result['access_token']);
             $twApiOAuth2->setRefreshToken($result['refresh_token']);
+            $twApiOAuth2->setScope($result['scope']);
             $twApiOAuth2->setExpiresIn($result['expires_in']);
 
             $this->entityManager->persist($twApiOAuth2);
             $this->entityManager->flush();
         }
 
-        return $$twApiOAuth2->getAccessToken();
+        return $twApiOAuth2->getAccessToken();
     }
 
 }

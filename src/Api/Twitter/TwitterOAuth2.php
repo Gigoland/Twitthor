@@ -56,7 +56,9 @@ class TwitterOAuth2
     }
 
     /**
-     * Twitter OAuth2 - Get access_token
+     * Twitter OAuth2 - Get access_token by code
+     *
+     * If offline.access scope need Authorization in header
      *
      * Response :
      * "token_type" => "bearer"
@@ -64,6 +66,8 @@ class TwitterOAuth2
      * "access_token" => "R2dWd3k3bk90SF9teHZNa18xeWZzb0ZtcnNYTlp4cllXRVJTZ2wybE54WWVQOjE2NTI0ODEzMTQzNjQ6MToxOmF0OjE"
      * "scope" => "offline.access users.read follows.write tweet.read tweet.write like.write"
      * "refresh_token" => "QV9HUkVRNUpkdFdDNHhsTUN0LWtEVkNrZUZaY212MmdaV01Ebl9oUlNGNFZkOjE2NTI0ODEzMTQzNjQ6MToxOnJ0OjE"
+     *
+     * 7200 seconds - ie 2 hours
      */
     public function getAccessTokenByCode(string $code): ?array
     {
@@ -78,30 +82,45 @@ class TwitterOAuth2
                 $this->clientSecret
             )),
         ], [
+            'grant_type' => 'authorization_code',
             'code' => $code,
             'code_verifier' => $stringUtil->getHash(self::CODE_VERIFIER_ID),
-            'grant_type' => 'authorization_code',
             'redirect_uri' => self::REDIRECT_URI,
         ]);
     }
 
     /**
-     * Twitter OAuth2 - Get refresh tokens
+     * Twitter OAuth2 - Get access_token by refresh_tokens
+     *
+     * If offline.access scope need Authorization in header
+     *
+     * Response :
+     * "token_type" => "bearer"
+     * "expires_in" => 7200
+     * "access_token" => "R2dWd3k3bk90SF9teHZNa18xeWZzb0ZtcnNYTlp4cllXRVJTZ2wybE54WWVQOjE2NTI0ODEzMTQzNjQ6MToxOmF0OjE"
+     * "scope" => "offline.access users.read follows.write tweet.read tweet.write like.write"
+     * "refresh_token" => "QV9HUkVRNUpkdFdDNHhsTUN0LWtEVkNrZUZaY212MmdaV01Ebl9oUlNGNFZkOjE2NTI0ODEzMTQzNjQ6MToxOnJ0OjE"
+     *
+     * 7200 seconds - ie 2 hours
      */
-    public function getRefreshAccessToken(string $refreshToken): ?array
+    public function getAccessTokenByRefreshToken(string $refreshToken): ?array
     {
         return $this->postRequest('/2/oauth2/token', [
             'Accept' => 'application/json',
             'Content-Type' => 'application/x-www-form-urlencoded;charset=UTF-8',
+            'Authorization' => 'Basic ' . base64_encode(sprintf(
+                '%s:%s',
+                $this->clientId,
+                $this->clientSecret
+            )),
         ], [
-            'refresh_token' => $refreshToken,
             'grant_type' => 'refresh_token',
-            'client_id' => $this->clientId,
+            'refresh_token' => $refreshToken,
         ]);
     }
 
     /**
-     * Post request
+     * Post request with Guzzle
      */
     private function postRequest(string $url, array $headers, array $formParams): ?array
     {
@@ -122,7 +141,7 @@ class TwitterOAuth2
         // Guzzle request
         try {
             $response = $client->request('POST', $url, [
-                'form_params' => $formParams
+                'form_params' => $formParams,
             ]);
         } catch (\GuzzleHttp\Exception\BadResponseException $e) {
             return $jsonUtil->decode(

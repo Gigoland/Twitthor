@@ -40,11 +40,11 @@ class Follow
     #[ORM\Column(type: 'string', length: 55, nullable: true)]
     private ?string $processToken;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     #[Assert\NotNull()]
     private \DateTimeImmutable $createAt;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 

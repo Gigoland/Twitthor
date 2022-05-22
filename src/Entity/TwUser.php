@@ -50,15 +50,15 @@ class TwUser
     #[Assert\NotNull()]
     private bool $twIsVerified = false;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     #[Assert\NotNull()]
     private \DateTimeImmutable $twCreatedAt;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     #[Assert\NotNull()]
     private \DateTimeImmutable $createAt;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     #[Assert\NotNull()]
     private \DateTimeImmutable $updateAt;
 
