@@ -100,6 +100,13 @@ class TwApiManager
              *  "error" => "unauthorized_client"
              *  "error_description" => "Missing valid authorization header"
              * ]
+             *
+             * or
+             *
+             * [
+             *  "error" => "invalid_request"
+             *  "error_description" => "Value passed for the token was invalid."
+             * ]
              */
             if (empty($result['access_token'])) {
                 return false;

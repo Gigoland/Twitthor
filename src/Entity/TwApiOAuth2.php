@@ -50,6 +50,13 @@ class TwApiOAuth2
         $this->updateAt = new \DateTimeImmutable();
     }
 
+    #[ORM\PrePersist()]
+    #[ORM\PreUpdate()]
+    public function setUpdateAtValue()
+    {
+        $this->updateAt = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
