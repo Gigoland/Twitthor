@@ -4,16 +4,11 @@ namespace App\Utils;
 
 use Symfony\Component\Filesystem\Filesystem;
 
-class File
+class FileUtil
 {
     /**
      * Save image from url
      * Need check with FileValidaror->isValidStreamFile() / $isValid
-     *
-     * @param string $url
-     * @param string $file
-     * @param bool $isValid
-     * @return void
      */
 	public function copyImageByUrl(string $url, string $file, $isValid = false)
     {

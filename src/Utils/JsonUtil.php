@@ -2,14 +2,11 @@
 
 namespace App\Utils;
 
-class Json
+class JsonUtil
 {
     /**
      * Json encode
      * @todo error manager
-     *
-     * @param array $data
-     * @return void
      */
     public function encode(array $data)
     {
@@ -19,10 +16,6 @@ class Json
     /**
      * Json decode
      * @todo error manager
-     *
-     * @param string $data
-     * @param bool $isAssoc
-     * @return void
      */
     public function decode(string $data, $isAssoc = true): ?array
     {
@@ -31,10 +24,6 @@ class Json
 
     /**
      * Json error manager
-     *
-     * @param int $jsonLastError
-     *
-     * @return bool|string
      */
     public function getJsoneError($jsonLastError): ?string
     {

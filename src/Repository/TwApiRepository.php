@@ -48,9 +48,6 @@ class TwApiRepository extends ServiceEntityRepository
 
     /**
      * Deactivate all activated settings
-     *
-     * @param User $user
-     * @return integer
      */
     public function deactivateAllByUser(User $user): int
     {
@@ -72,10 +69,6 @@ class TwApiRepository extends ServiceEntityRepository
 
     /**
      * Get activated TwApi
-     *
-     * @param User $user
-     * @param string $for
-     * @return TwApi
      */
     public function findActiveSettingsByUser(User $user, ?string $for): TwApi
     {
@@ -118,9 +111,6 @@ class TwApiRepository extends ServiceEntityRepository
 
     /**
      * Check valid settings for get following
-     *
-     * @param User $user
-     * @return integer
      */
     public function haveValidFollowingSettings(User $user): int
     {
@@ -129,9 +119,6 @@ class TwApiRepository extends ServiceEntityRepository
 
     /**
      * Check valid settings for get following
-     *
-     * @param User $user
-     * @return integer
      */
     public function haveValidFollowersSettings(User $user): int
     {
@@ -140,10 +127,6 @@ class TwApiRepository extends ServiceEntityRepository
 
     /**
      * Check valid settings
-     *
-     * @param User $user
-     * @param string $for
-     * @return integer
      */
     private function haveValidSettings(User $user, string $for): int
     {

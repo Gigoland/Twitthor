@@ -21,10 +21,6 @@ class RegistrationType extends AbstractType
 
     /**
      * Form for external user registration only
-     *
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     * @return void
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

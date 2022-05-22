@@ -2,14 +2,10 @@
 
 namespace App\Utils;
 
-class VarString
+class StringUtil
 {
     /**
      * Convert string camel_case to camelCase
-     *
-     * @param string $string
-     * @param string $symbol
-     * @return string
      */
     public function camelize(string $string, string $symbol = '_'): string
     {
@@ -27,9 +23,6 @@ class VarString
 
     /**
      * Get generated hashe by string
-     *
-     * @param string $string
-     * @return string
      */
     public function getHash(string $string): string
     {

@@ -2,13 +2,13 @@
 
 namespace App\Api\Twitter;
 
-use App\Utils\Json;
-use App\Utils\VarString;
+use App\Utils\JsonUtil;
+use App\Utils\StringUtil;
 
-abstract class Api
+abstract class TwitterApi
 {
     // Twitter API v2
-    const API_SERVER = 'https://api.twitter.com';
+    const BASE_URI = 'https://api.twitter.com';
 
     // Users lookup
     const API_USERS = '/2/users/%s';
@@ -78,11 +78,11 @@ abstract class Api
         }
 
         // Utils text
-        $varString = new VarString();
+        $stringUtil = new StringUtil();
 
         // Set api settings
         foreach ($twitterSettings as $key => $val) {
-            $var = $varString->camelize($key);
+            $var = $stringUtil->camelize($key);
 
             if (!in_array($var, [
                 'twitterBearerToken',
@@ -106,17 +106,15 @@ abstract class Api
     }
 
     /**
-     * @return int
+     * Http Status code
      */
-    public function getHttpStatusCode()
+    public function getHttpStatusCode(): int
     {
         return $this->httpStatusCode;
     }
 
     /**
      * Get queryFields
-     *
-     * @return array
      */
     public function getQueryFields(): array
     {
@@ -125,11 +123,8 @@ abstract class Api
 
     /**
      * Set Account id
-     *
-     * @param string $twitterAccountId
-     * @return Api
      */
-    public function setTwitterAccountId(?string $twitterAccountId): Api
+    public function setTwitterAccountId(?string $twitterAccountId): self
     {
         $this->twitterAccountId = $twitterAccountId;
 
@@ -138,11 +133,8 @@ abstract class Api
 
     /**
      * Set account name
-     *
-     * @param string $twitterAccountName
-     * @return Api
      */
-    public function setTwitterAccountName(?string $twitterAccountName): Api
+    public function setTwitterAccountName(?string $twitterAccountName): self
     {
         $this->twitterAccountName = $twitterAccountName;
 
@@ -151,8 +143,6 @@ abstract class Api
 
     /**
      * Get nextToken
-     *
-     * @return string|null
      */
     public function getNextToken(): ?string
     {
@@ -161,8 +151,6 @@ abstract class Api
 
     /**
      * Set nextToken
-     *
-     * @param string $nextToken
      */
     public function setNextToken(?string $nextToken)
     {
@@ -171,11 +159,8 @@ abstract class Api
 
     /**
      * Set settings
-     *
-     * @param array $settings
-     * @return API
      */
-    public function setSettings(array $settings): Api
+    public function setSettings(array $settings): self
     {
         foreach ($settings as $key => $val) {
             $this->settings[$key] = $val;
@@ -191,11 +176,8 @@ abstract class Api
      * created_at,description,entities,id,location,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,witheld
      * Default values:
      * id,name,username
-     *
-     * @param array $fields
-     * @return Api
      */
-    public function setQueryFields(array $fields): Api
+    public function setQueryFields(array $fields): self
     {
         foreach ($fields as $key => $val) {
             $this->queryFields[$key] = $val;
@@ -206,11 +188,8 @@ abstract class Api
 
     /**
      * Select fileds from response data
-     *
-     * @param array $fields
-     * @return Api
      */
-    public function setResponseFields(array $fields): Api
+    public function setResponseFields(array $fields): self
     {
         foreach ($fields as $field) {
             if (!in_array($field, $this->responseFields)) {
@@ -223,10 +202,8 @@ abstract class Api
 
     /**
      * Delete all query fields
-     *
-     * @return Api
      */
-    public function clearQueryFields(): Api
+    public function clearQueryFields(): self
     {
         $this->queryFields = [];
 
@@ -235,11 +212,8 @@ abstract class Api
 
     /**
      * Set target_user_id
-     *
-     * @param integer $targetUserId
-     * @return Api
      */
-    public function setTargetUserId(int $targetUserId): Api
+    public function setTargetUserId(int $targetUserId): self
     {
         $this->targetUserId = $targetUserId;
 
@@ -249,7 +223,6 @@ abstract class Api
     /**
      * Get user info by Twitter account id
      *
-     * @param bool $isJson
      * @return array|object
      */
     public function getUserByAccountId(bool $isJson = true)
@@ -276,7 +249,6 @@ abstract class Api
     /**
      * Get following by Twitter account id
      *
-     * @param bool $isJson
      * @return array|object
      */
     public function getFollowingByAccountId(bool $isJson = true)
@@ -297,7 +269,6 @@ abstract class Api
     /**
      * Get followers by Twitter account id
      *
-     * @param bool $isJson
      * @return array|object
      */
     public function getFollowersByAccountId(bool $isJson = true)
@@ -318,7 +289,6 @@ abstract class Api
     /**
      * Unfollow by Twitter source_user_id and target_user_id
      *
-     * @param bool $isJson
      * @return array|object
      */
     public function unfollowByAccountId(bool $isJson = true)
@@ -344,14 +314,11 @@ abstract class Api
     /**
      * Call Twitter API with Guzzle request
      *
-     * @param string $path
-     * @param string $method
-     * @param bool $isJson
      * @return array|object
      */
     private function getRequest(string $path, string $method, bool $isJson = true)
     {
-        $json = new Json();
+        $jsonUtil = new JsonUtil();
         $options = [];
 
         // Verify
@@ -398,7 +365,7 @@ abstract class Api
 
         // Init Guzzle
         $client = new \GuzzleHttp\Client([
-            'base_uri' => self::API_SERVER,
+            'base_uri' => self::BASE_URI,
             'verify' => $ssl,
             'headers' => $headers,
         ]);
@@ -417,7 +384,7 @@ dd($client);
             );
         } catch (\GuzzleHttp\Exception\BadResponseException $e) {
             if ($isJson) {
-                return $json->decode(
+                return $jsonUtil->decode(
                     $e->getResponse()->getBody()->getContents()
                 );
             }
@@ -429,9 +396,9 @@ dd($client);
 
         // Get json format
         if ($isJson) {
-            $result = $json->decode($result);
+            $result = $jsonUtil->decode($result);
 
-            if ($error = $json->getJsoneError(json_last_error())) {
+            if ($error = $jsonUtil->getJsoneError(json_last_error())) {
                 throw new \Exception($error);
             }
         }
@@ -444,9 +411,6 @@ dd($client);
 
     /**
      * Search and get selected fields
-     *
-     * @param array $data
-     * @return array
      */
     private function getSelectedResponseFileds(array $data): array
     {

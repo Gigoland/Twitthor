@@ -2,13 +2,10 @@
 
 namespace App\Utils;
 
-class Url
+class UrlUtil
 {
     /**
      * This removes either http:// or https:// or wwww.
-     *
-     * @param string $url
-     * @return string
      */
     public function trimProtocol(string $url): string
     {
@@ -23,9 +20,6 @@ class Url
 
     /**
      * This removes either wwww.
-     *
-     * @param string $url
-     * @return string
      */
     public function trimW3(string $url): string
     {
@@ -40,10 +34,6 @@ class Url
 
     /**
      * Get part from url
-     *
-     * @param string $url
-     * @param string $part
-     * @return string
      */
     public function getPart(string $url, string $part): string
     {
@@ -66,10 +56,6 @@ class Url
 
     /**
      * Undocumented function
-     *
-     * @param string $url
-     * @param boolean $withRaw
-     * @return string|null
      */
     public function getEncoded(string $url, $withRaw = false): ?string
     {
@@ -86,9 +72,6 @@ class Url
 
     /**
      * Undocumented function
-     *
-     * @param string $url
-     * @return string|null
      */
     public function getRawEncoded(string $url): ?string
     {

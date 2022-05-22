@@ -6,7 +6,7 @@ use App\Entity\User;
 use Twig\Environment;
 use App\Manager\TwApiCallManager;
 use App\Repository\TwApiRepository;
-use App\Api\Twitter\Api as TwitterApi;
+use App\Api\Twitter\TwitterApi;
 
 class TwApiHtmlService
 {
@@ -18,10 +18,6 @@ class TwApiHtmlService
 
     /**
      * Undocumented function
-     *
-     * @param User $user
-     * @param string $for
-     * @return array
      */
     public function getActiveSettingsByUser(User $user, ?string $for): array
     {
@@ -114,9 +110,6 @@ class TwApiHtmlService
 
     /**
      * Errors
-     *
-     * @param string $message
-     * @return array
      */
     private function error(string $message): array
     {

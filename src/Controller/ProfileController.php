@@ -22,10 +22,6 @@ class ProfileController extends AbstractController
     /**
      * Edit connected user only
      * Protected by CSRF
-     *
-     * @param Request $request
-     * @param UserPasswordHasherInterface $hasher
-     * @return Response
      */
     #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER')")]
@@ -77,10 +73,6 @@ class ProfileController extends AbstractController
     /**
      * Edit connected user password only
      * Protected by CSRF
-     *
-     * @param Request $request
-     * @param UserPasswordHasherInterface $hasher
-     * @return Response
      */
     #[Route('/profile/password', name: 'app_profile_password', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER')")]

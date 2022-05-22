@@ -41,7 +41,7 @@
                 </thead>
                 <tbody>
                   {% for row in rows %}
-                    <tr>
+                    <tr id="row-{{ row.id }}">
                       <td class="min-width">
                         <div class="lead">
                           <a href="https://twitter.com/{{ row.twUser.twUsername }}" onclick="event.preventDefault();" class="js-btn-tw-profile" rel="noreferrer">

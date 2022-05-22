@@ -2,11 +2,8 @@
 
 namespace App\Utils;
 
-class FileValidator
+class FileValidatorUtil
 {
-    /**
-     * @var array
-     */
     private array $mapMimeMerge = [];
 
     /**
@@ -1725,9 +1722,7 @@ class FileValidator
     }
 
     /**
-     * @param $file
-     * @param array $allowedExtensions
-     * @return bool
+     * Undocumented function
      */
     public function isValidUploadFile($file, array $allowedExtensions): bool
     {
@@ -1793,9 +1788,7 @@ class FileValidator
     }
 
     /**
-     * @param string $url
-     * @param array $allowedExtensions
-     * @return bool
+     * Undocumented function
      */
     public function isValidStreamFile(string $url, array $allowedExtensions): bool
     {
@@ -1878,10 +1871,6 @@ class FileValidator
 
     /**
      * By local file absolute location
-     *
-     * @param string $location
-     * @param array $allowedExtensions
-     * @return bool
      */
     public function isValidLocalFile(string $location, array $allowedExtensions): bool
     {
@@ -1949,7 +1938,7 @@ class FileValidator
     }
 
     /**
-     * @return array
+     * Undocumented function
      */
     private function getMapMime(): array
     {
@@ -1961,9 +1950,7 @@ class FileValidator
     }
 
     /**
-     * @param string $extension
-     * @param array $allowedExtensions
-     * @return bool
+     * Undocumented function
      */
     private function isAllowedExtension(string $extension, array $allowedExtensions): bool
     {
@@ -1977,10 +1964,7 @@ class FileValidator
     }
 
     /**
-     * @param string $extension
-     * @param string $mimeContentType
-     * @param string $fileName
-     * @return bool
+     * Undocumented function
      */
     private function isOnlyDeniedFile(string $extension, string $mimeContentType, $fileName): bool
     {
@@ -2011,9 +1995,7 @@ class FileValidator
     }
 
     /**
-     * @param string $filePath
-     * @param string $extension
-     * @return bool
+     * Undocumented function
      */
     private function isValidImageExif(string $filePath, string $extension): bool
     {

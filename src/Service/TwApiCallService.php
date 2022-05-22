@@ -2,15 +2,16 @@
 
 namespace App\Service;
 
-use App\Utils\Url;
-use App\Utils\File;
-use App\Utils\Json;
+use App\Utils\UrlUtil;
+use App\Utils\FileUtil;
+use App\Utils\JsonUtil;
 use App\Entity\User;
 use App\Entity\TwApi;
 use App\Entity\Follow;
 use App\Entity\TwUser;
 use App\Manager\FollowManager;
 use App\Manager\TwitthorManager;
+use App\Manager\TwApiManager;
 use App\Manager\TwApiCallManager;
 use App\Repository\TwUserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,16 +26,12 @@ class TwApiCallService
         private EntityManagerInterface $entityManager,
         private TwUserRepository $twUserRepository,
         private FollowManager $followManager,
+        private TwApiManager $twApiManager,
         private TwApiCallManager $twApiCallManager
     ) {}
 
     /**
      * Unfollow by Api
-     *
-     * @param User $user
-     * @param TwApi $twApi
-     * @param Follow $follow
-     * @return array
      */
     public function unfollow(
         User $user,
@@ -74,15 +71,28 @@ class TwApiCallService
             ];
         }
 
-        // Get twitter user
-        $twUser = $follow->getTwUser();
+        // Get access_token / Expires check & Update
+        $accessToken = $this->twApiManager->getAccessToken($twApi);
 
-        $twOAuth2 = $twApi->getTwApiOAuth2();
+        if (empty($accessToken)) {
+            // Warning
+            return [
+                'success' => false,
+                'warning' => [
+                    'title' => 'Expired token',
+                    'message' => 'Please try later.',
+                    'status' => 0,
+                ]
+            ];
+        }
 
         // Initialisation
         $this->twitthorManager = new TwitthorManager([
-            'twitter_bearer_token' => $twOAuth2->getAccessToken(),
+            'twitter_bearer_token' => $accessToken,
         ]);
+
+        // Get twitter user
+        $twUser = $follow->getTwUser();
 
         // Set params
         $this->twitthorManager
@@ -130,11 +140,6 @@ class TwApiCallService
 
     /**
      * Update by Api
-     *
-     * @param User $user
-     * @param TwApi $twApi
-     * @param string $uploadsPath
-     * @return array
      */
     public function updateFollowing(
         User $user,
@@ -232,11 +237,6 @@ class TwApiCallService
 
     /**
      * Update by Api
-     *
-     * @param User $user
-     * @param TwApi $twApi
-     * @param string $uploadsPath
-     * @return array
      */
     public function updateFollowers(
         User $user,
@@ -334,9 +334,6 @@ class TwApiCallService
 
     /**
      * Update all following with help Twitthor
-     *
-     * @param User $user
-     * @return array
      */
     private function updateFollowingByUser(User $user): array
     {
@@ -366,9 +363,6 @@ class TwApiCallService
 
     /**
      * Update all following with help Twitthor
-     *
-     * @param User $user
-     * @return array
      */
     private function updateFollowersByUser(User $user): array
     {
@@ -398,10 +392,6 @@ class TwApiCallService
 
     /**
      * Save all following
-     *
-     * @param User $user
-     * @param array $rows
-     * @return array
      */
     private function saveFollowing(User $user, array $rows): array
     {
@@ -416,8 +406,8 @@ class TwApiCallService
         }
 
         $fs = new Filesystem();
-        $file = new File();
-        $url = new Url();
+        $fileUtil = new FileUtil();
+        $urlUtil = new UrlUtil();
 
         // Set max execution time
         if (count($rows) > 999) {
@@ -439,11 +429,11 @@ class TwApiCallService
             ]);
 
             // Get file full name
-            $twProfileImage = $url->getPart($row['profile_image_url'], 'basename');
+            $twProfileImage = $urlUtil->getPart($row['profile_image_url'], 'basename');
 
             // Entities
             if (empty($row['entities'])) {
-                $twUrl = $url->trimW3($row['url']);
+                $twUrl = $urlUtil->trimW3($row['url']);
                 $twTags = null;
             } else {
                 // Get expended url
@@ -481,7 +471,7 @@ class TwApiCallService
                         $fs->remove($this->avatarsPath . $row['id'] . '/');
                     }
 
-                    $file->copyImageByUrl(
+                    $fileUtil->copyImageByUrl(
                         $row['profile_image_url'],
                         $this->avatarsPath . $row['id'] . '/' . $twProfileImage,
                         true
@@ -529,10 +519,6 @@ class TwApiCallService
 
     /**
      * Save all following
-     *
-     * @param User $user
-     * @param array $rows
-     * @return array
      */
     private function saveFollowers(User $user, array $rows): array
     {
@@ -547,8 +533,8 @@ class TwApiCallService
         }
 
         $fs = new Filesystem();
-        $file = new File();
-        $url = new Url();
+        $fileUtil = new FileUtil();
+        $urlUtil = new UrlUtil();
 
         // Set max execution time
         if (count($rows) > 999) {
@@ -570,11 +556,11 @@ class TwApiCallService
             ]);
 
             // Get file full name
-            $twProfileImage = $url->getPart($row['profile_image_url'], 'basename');
+            $twProfileImage = $urlUtil->getPart($row['profile_image_url'], 'basename');
 
             // Entities
             if (empty($row['entities'])) {
-                $twUrl = $url->trimW3($row['url']);
+                $twUrl = $urlUtil->trimW3($row['url']);
                 $twTags = null;
             } else {
                 // Get expended url
@@ -612,7 +598,7 @@ class TwApiCallService
                         $fs->remove($this->avatarsPath . $row['id'] . '/');
                     }
 
-                    $file->copyImageByUrl(
+                    $fileUtil->copyImageByUrl(
                         $row['profile_image_url'],
                         $this->avatarsPath . $row['id'] . '/' . $twProfileImage,
                         true
@@ -660,9 +646,6 @@ class TwApiCallService
 
     /**
      * Get url
-     *
-     * @param [type] $entities
-     * @return string
      */
     private function getExpendedUrl($entities): ?string
     {
@@ -670,7 +653,7 @@ class TwApiCallService
             return null;
         }
 
-        $url = new Url();
+        $urlUtil = new UrlUtil();
 
         // Get first item
         foreach ($entities['url']['urls'] as $item) {
@@ -679,15 +662,12 @@ class TwApiCallService
             }
 
             // Trim www.
-            return $url->trimW3($item['expanded_url']);
+            return $urlUtil->trimW3($item['expanded_url']);
         }
     }
 
     /**
      * Get tags
-     *
-     * @param [type] $entities
-     * @return string
      */
     private function getTags($entities): ?string
     {
@@ -709,16 +689,13 @@ class TwApiCallService
             return null;
         }
 
-        $json = new Json();
+        $jsonUtil = new JsonUtil();
 
-        return $json->encode($tags);
+        return $jsonUtil->encode($tags);
     }
 
     /**
      * Error
-     *
-     * @param string $message
-     * @return array
      */
     private function error(string $message): array
     {

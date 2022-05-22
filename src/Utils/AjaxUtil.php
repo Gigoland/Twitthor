@@ -2,10 +2,10 @@
 
 namespace App\Utils;
 
-use App\Utils\Json;
+use App\Utils\JsonUtil;
 use Symfony\Component\HttpFoundation\Request;
 
-class Ajax
+class AjaxUtil
 {
     private $parts = [];
 
@@ -18,16 +18,13 @@ class Ajax
             return false;
         }
 
-        $json = new Json();
+        $jsonUtil = new JsonUtil();
 
-        $this->parts = $json->decode($content, true);
+        $this->parts = $jsonUtil->decode($content, true);
     }
 
     /**
      * Get string
-     *
-     * @param string $param
-     * @return null|string
      */
     public function get(string $param, $default = null): ?string
     {
@@ -42,9 +39,6 @@ class Ajax
 
     /**
      * Get integer only
-     *
-     * @param string $param
-     * @return integer
      */
     public function getInt(string $param, int $default = 0): int
     {
@@ -57,9 +51,6 @@ class Ajax
 
     /**
      * Get bool only
-     *
-     * @param string $param
-     * @return bool
      */
     public function getBool(string $param, bool $default = false): bool
     {

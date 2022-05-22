@@ -23,10 +23,6 @@ class TwUserController extends AbstractController
     /**
      * Twitter users manager
      * Admin only
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return Response
      */
     #[Route('/tw/users', name: 'app_twitter_users', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -49,9 +45,6 @@ class TwUserController extends AbstractController
      * Create twitter new user by form post
      * Admin only
      * Protected by CSRF
-     *
-     * @param Request $request
-     * @return Response
      */
     #[Route('/tw/user/add', name: 'app_twitter_user_add', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -94,10 +87,6 @@ class TwUserController extends AbstractController
      * Edit twitter user by form post
      * Admin only
      * Protected by CSRF
-     *
-     * @param Request $request
-     * @param TwUser $twUser
-     * @return Response
      */
     #[Route('/tw/user/{id}/edit', name: 'app_twitter_user_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -140,9 +129,6 @@ class TwUserController extends AbstractController
     /**
      * Delete twitter user by form post
      * Admin only
-     *
-     * @param TwUser $twUser
-     * @return Response
      */
     #[Route('/tw/user/{id}/delete', name: 'app_twitter_user_delete', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]

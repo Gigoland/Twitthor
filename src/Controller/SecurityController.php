@@ -18,10 +18,6 @@ class SecurityController extends AbstractController
     /**
      * New user registration
      * Protected by CSRF
-     *
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @return Response
      */
     #[Route('/signup', name: 'app_security_signup', methods: ['GET', 'POST'])]
     public function signUp(
@@ -57,9 +53,6 @@ class SecurityController extends AbstractController
     /**
      * User login
      * Protected by CSRF
-     *
-     * @param AuthenticationUtils $authenticationUtils
-     * @return Response
      */
     #[Route('/signin', name: 'app_security_signin', methods: ['GET', 'POST'])]
     public function signIn(
@@ -73,8 +66,6 @@ class SecurityController extends AbstractController
 
     /**
      * User logout
-     *
-     * @return void
      */
     #[Route('/signout', name: 'app_security_signout', methods: ['GET', 'POST'])]
     public function SignOut()

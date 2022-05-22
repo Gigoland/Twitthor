@@ -17,10 +17,6 @@ class FollowManager
 
     /**
      * Get one follow by user & tw user
-     *
-     * @param User $user
-     * @param TwUser $twUser
-     * @return Follow|null
      */
     public function getFollowByUser(User $user, TwUser $twUser): ?Follow
     {
@@ -32,11 +28,6 @@ class FollowManager
 
     /**
      * Set process token to follow by twUser ids
-     *
-     * @param User $user
-     * @param array $ids
-     * @param string|null $token
-     * @return void
      */
     public function setProcessTokenByTwUserIds(User $user, array $ids, ?string $token)
     {
@@ -45,9 +36,6 @@ class FollowManager
 
     /**
      * Set null for all follow by user
-     *
-     * @param User $user
-     * @return integer
      */
     public function destroyProcessTokenByUser(User $user): int
     {
@@ -56,10 +44,6 @@ class FollowManager
 
     /**
      * Update no following by process token
-     *
-     * @param User $user
-     * @param string $token
-     * @return integer
      */
     public function updateNoFollowingByProcessToken(User $user, string $token): int
     {
@@ -68,10 +52,6 @@ class FollowManager
 
     /**
      * Update no followers by process token
-     *
-     * @param User $user
-     * @param string $token
-     * @return integer
      */
     public function updateNoFollowersByProcessToken(User $user, string $token): int
     {
@@ -80,10 +60,6 @@ class FollowManager
 
     /**
      * Update is_following
-     *
-     * @param Follow $follow
-     * @param boolean $isFollowing
-     * @return void
      */
     public function updateIsFollowingById(Follow $follow, bool $isFollowing)
     {

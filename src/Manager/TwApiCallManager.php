@@ -2,7 +2,7 @@
 
 namespace App\Manager;
 
-use App\Api\Twitter\Api as TwitterApi;
+use App\Api\Twitter\TwitterApi;
 use App\Entity\TwApi;
 use App\Entity\TwApiCall;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,9 +19,6 @@ class TwApiCallManager
 
     /**
      * Add new limits counter
-     *
-     * @param TwApi $twApi
-     * @return void
      */
     public function createTwApiCall(TwApi $twApi)
     {
@@ -35,11 +32,8 @@ class TwApiCallManager
 
     /**
      * Undocumented function
-     *
-     * @param TwApi $twApi
-     * @return TwApiCallManager
      */
-    public function loadTwApiCall(TwApi $twApi): TwApiCallManager
+    public function loadTwApiCall(TwApi $twApi): self
     {
         $this->twApiCall = $this->entityManager
             ->getRepository(TwApiCall::class)
@@ -51,11 +45,8 @@ class TwApiCallManager
 
     /**
      * Set next_token
-     *
-     * @param string|null $nextToken
-     * @return TwApiCallManager
      */
-    public function setNextToken(?string $nextToken): TwApiCallManager
+    public function setNextToken(?string $nextToken): self
     {
         // Set
         $this->twApiCall->setNextToken($nextToken);
@@ -65,8 +56,6 @@ class TwApiCallManager
 
     /**
      * Get api next call token
-     *
-     * @return string|null
      */
     public function getNextToken(): ?string
     {
@@ -77,10 +66,8 @@ class TwApiCallManager
      * Genrate api call process token
      * For check follow updating
      * For check api multi call
-     *
-     * @return TwApiCallManager
      */
-    public function setGeneratedProcessToken(): TwApiCallManager
+    public function setGeneratedProcessToken(): self
     {
         // Set
         $this->twApiCall->setProcessToken(
@@ -92,8 +79,6 @@ class TwApiCallManager
 
     /**
      * Get api call process token
-     *
-     * @return string|null
      */
     public function getProcessToken(): ?string
     {
@@ -102,10 +87,8 @@ class TwApiCallManager
 
     /**
      * Set null to api call process token
-     *
-     * @return TwApiCallManager
      */
-    public function setDestroyProcessToken(): TwApiCallManager
+    public function setDestroyProcessToken(): self
     {
         $this->twApiCall->setProcessToken(null);
 
@@ -114,10 +97,8 @@ class TwApiCallManager
 
     /**
      * Add new limits counter
-     *
-     * @return TwApiCallManager
      */
-    public function setPlusOneCallFollowing(): TwApiCallManager
+    public function setPlusOneCallFollowing(): self
     {
         // Add call limit counts
         $count = $this->twApiCall->getFollowingCnt() + 1;
@@ -133,8 +114,6 @@ class TwApiCallManager
 
     /**
      * Get api call count int
-     *
-     * @return integer
      */
     public function getFollowingCnt(): int
     {
@@ -143,10 +122,8 @@ class TwApiCallManager
 
     /**
      * Add new limits counter
-     *
-     * @return TwApiCallManager
      */
-    public function setPlusOneCallFollowers(): TwApiCallManager
+    public function setPlusOneCallFollowers(): self
     {
         // Add call limit counts
         $count = $this->twApiCall->getFollowersCnt() + 1;
@@ -162,8 +139,6 @@ class TwApiCallManager
 
     /**
      * Get api call count int
-     *
-     * @return integer
      */
     public function getFollowersCnt(): int
     {
@@ -172,10 +147,8 @@ class TwApiCallManager
 
     /**
      * Add new limits counter
-     *
-     * @return TwApiCallManager
      */
-    public function setPlusOneCallUnfollow(): TwApiCallManager
+    public function setPlusOneCallUnfollow(): self
     {
         // Add call limit counts
         $count = $this->twApiCall->getUnfollowCnt() + 1;
@@ -191,8 +164,6 @@ class TwApiCallManager
 
     /**
      * Get api call count int
-     *
-     * @return integer
      */
     public function getUnfollowCnt(): int
     {
@@ -201,8 +172,6 @@ class TwApiCallManager
 
     /**
      * Save TwApiCall
-     *
-     * @return TwApiCall
      */
     public function saveTwApiCall(): TwApiCall
     {
@@ -214,8 +183,6 @@ class TwApiCallManager
 
     /**
      * Check & Update - Following
-     *
-     * @return boolean
      */
     public function isFollowingLimitExceeded(): bool
     {
@@ -243,8 +210,6 @@ class TwApiCallManager
 
     /**
      * Check & Update - Followers
-     *
-     * @return boolean
      */
     public function isFollowersLimitExceeded(): bool
     {
@@ -272,8 +237,6 @@ class TwApiCallManager
 
     /**
      * Check & Update - Followers
-     *
-     * @return boolean
      */
     public function isUnfollowLimitExceeded(): bool
     {

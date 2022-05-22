@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Utils\Ajax;
+use App\Utils\AjaxUtil;
 use App\Entity\TwApi;
 use App\Entity\Follow;
 use App\Form\TwApiType;
@@ -193,11 +193,11 @@ class TwApiController extends AbstractController
             ->deactivateAllByUser($this->getUser())
         ;
 
-        $ajax = new Ajax($request);
+        $ajaxUtil = new AjaxUtil($request);
 
         // Activate
         $twApi->setIsActive(
-            $ajax->getBool('isActive')
+            $ajaxUtil->getBool('isActive')
         );
 
         $this->entityManager->persist($twApi);

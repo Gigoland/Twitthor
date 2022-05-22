@@ -48,11 +48,6 @@ class FollowRepository extends ServiceEntityRepository
 
     /**
      * Set process token to follow by twUser ids
-     *
-     * @param User $user
-     * @param array $ids
-     * @param string|null $token
-     * @return integer
      */
     public function setProcessTokenByTwUserIds(User $user, array $ids, string $token): int
     {
@@ -77,9 +72,6 @@ class FollowRepository extends ServiceEntityRepository
 
     /**
      * Set null for all follow by user
-     *
-     * @param User $user
-     * @return integer
      */
     public function setNullProcessTokenByUser(User $user): int
     {
@@ -101,11 +93,6 @@ class FollowRepository extends ServiceEntityRepository
 
     /**
      * Update no follow users by process token
-     *
-     * @param User $user
-     * @param string $token
-     * @param string $for
-     * @return integer
      */
     public function updateNoFollowByProcessToken(User $user, string $token, string $for): int
     {

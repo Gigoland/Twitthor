@@ -22,10 +22,6 @@ class FollowController extends AbstractController
 
     /**
      * Following manager
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return Response
      */
     #[Route('/following', name: 'app_following', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -54,10 +50,6 @@ class FollowController extends AbstractController
 
     /**
      * Followers manager
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return Response
      */
     #[Route('/followers', name: 'app_followers', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -86,10 +78,6 @@ class FollowController extends AbstractController
 
     /**
      * No follower "platonic" manager
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return Response
      */
     #[Route('/platonics', name: 'app_platonics', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -115,10 +103,6 @@ class FollowController extends AbstractController
 
     /**
      * No follows "outers" manager
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return Response
      */
     #[Route('/outers', name: 'app_outers', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -145,10 +129,6 @@ class FollowController extends AbstractController
     /**
      * Edit follow user
      * Protected by CSRF
-     *
-     * @param Request $request
-     * @param Follow $follow
-     * @return Response
      */
     #[Route('/follow/{id}/edit', name: 'app_follow_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === follow.getUser()")]
@@ -194,9 +174,6 @@ class FollowController extends AbstractController
 
     /**
      * Delete follow user
-     *
-     * @param Follow $follow
-     * @return Response
      */
     #[Route('/follow/{id}/delete', name: 'app_follow_delete', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === follow.getUser()")]

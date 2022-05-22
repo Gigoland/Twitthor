@@ -2,14 +2,12 @@
 
 namespace App\Manager;
 
-use App\Api\Twitter\Api as TwitterApi;
+use App\Api\Twitter\TwitterApi;
 
 class TwitthorManager extends TwitterApi
 {
     /**
      * Get Twitter account public metrics
-     *
-     * @return array
      */
     public function getPublicMetrics()
     {
@@ -28,8 +26,6 @@ class TwitthorManager extends TwitterApi
 
     /**
      * Unfollow target user
-     *
-     * @return void
      */
     public function unfollow(): ?array
     {
@@ -45,8 +41,6 @@ class TwitthorManager extends TwitterApi
 
     /**
      * Get all following
-     *
-     * @return array
      */
     public function getFollowing()
     {
@@ -58,8 +52,6 @@ class TwitthorManager extends TwitterApi
 
     /**
      * Get all followers
-     *
-     * @return array
      */
     public function getFollowers()
     {
@@ -71,9 +63,6 @@ class TwitthorManager extends TwitterApi
 
     /**
      * Get all following page by page
-     *
-     * @param array $queryFields
-     * @return array
      */
     private function getFollowingLoop(array $queryFields)
     {
@@ -117,9 +106,6 @@ class TwitthorManager extends TwitterApi
 
     /**
      * Get all followers page by page
-     *
-     * @param array $queryFields
-     * @return array
      */
     private function getFollowersLoop(array $queryFields)
     {
@@ -164,9 +150,6 @@ class TwitthorManager extends TwitterApi
     /**
      * Check result errors & warnings
      * @todo
-     *
-     * @param array $data
-     * @return false|array
      */
     private function checkError($data)
     {

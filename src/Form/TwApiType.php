@@ -179,9 +179,6 @@ class TwApiType extends AbstractType
 
     /**
      * Configuration with CSRF protection
-     *
-     * @param OptionsResolver $resolver
-     * @return void
      */
     public function configureOptions(OptionsResolver $resolver): void
     {

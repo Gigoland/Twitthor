@@ -13,9 +13,6 @@ class UserListener
 
     /**
      * Persist
-     *
-     * @param User $user
-     * @return void
      */
     public function prePersist(User $user)
     {
@@ -24,9 +21,6 @@ class UserListener
 
     /**
      * Update
-     *
-     * @param User $user
-     * @return void
      */
     public function preUpdate(User $user)
     {
@@ -35,9 +29,6 @@ class UserListener
 
     /**
      * Password hasher
-     *
-     * @param User $user
-     * @return void
      */
     private function encodePassword(User $user)
     {

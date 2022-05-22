@@ -23,10 +23,6 @@ class UserController extends AbstractController
     /**
      * Users manager
      * Admin only
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return Response
      */
     #[Route('/users', name: 'app_users', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -49,9 +45,6 @@ class UserController extends AbstractController
      * Create new user
      * Admin only
      * Protected by CSRF
-     *
-     * @param Request $request
-     * @return Response
      */
     #[Route('/user/add', name: 'app_user_add', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -97,10 +90,6 @@ class UserController extends AbstractController
      * Edit user
      * Admin only
      * Protected by CSRF
-     *
-     * @param Request $request
-     * @param User $user
-     * @return Response
      */
     #[Route('/user/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -146,9 +135,6 @@ class UserController extends AbstractController
     /**
      * Delete user
      * Admin only
-     *
-     * @param User $user
-     * @return Response
      */
     #[Route('/user/{id}/delete', name: 'app_user_delete', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
