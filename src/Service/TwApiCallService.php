@@ -32,6 +32,7 @@ class TwApiCallService
     ) {}
 
     /**
+     * API
      * Unfollow by Api
      */
     public function unfollow(
@@ -97,11 +98,8 @@ class TwApiCallService
 
         // Check error
         if (!empty($result['error'])) {
-            // Error
-            return [
-                'success' => false,
-                'error' => $result['error'],
-            ];
+            // Response
+            return JsonResponseUtil::getTwApiError($result['error']);
         }
 
         // Update following
@@ -127,7 +125,7 @@ class TwApiCallService
         string $uploadsPath
     ): array {
         if (!$user || !$twApi) {
-            return $this->error('Error'); // @todo message
+            return JsonResponseUtil::getError('Error', 'Error'); // @todo message
         }
 
         // Load TwApiCall in manager
@@ -163,12 +161,9 @@ class TwApiCallService
         $result = $this->updateFollowingByUser($user);
 
         // Error
-        if (!empty($result['error'])) {
-            // Response
-            return [
-                'success' => false,
-                'error' => $result['error'],
-            ];
+        if (!$result['success']) {
+            // Formed response
+            return $result;
         }
 
         // Set next token and save for api next call
@@ -224,7 +219,7 @@ class TwApiCallService
         string $uploadsPath
     ): array {
         if (!$user || !$twApi) {
-            return $this->error('Error'); // @todo message
+            return JsonResponseUtil::getError('Error', 'Error'); // @todo message
         }
 
         // Load TwApiCall in manager
@@ -260,12 +255,9 @@ class TwApiCallService
         $result = $this->updateFollowersByUser($user);
 
         // Error
-        if (!empty($result['error'])) {
-            // Response
-            return [
-                'success' => false,
-                'error' => $result['error'],
-            ];
+        if (!$result['success']) {
+            // Formed response
+            return $result;
         }
 
         // Set and save for api next call
@@ -313,10 +305,12 @@ class TwApiCallService
     }
 
     /**
+     * API
      * Update all following with help Twitthor
      */
     private function updateFollowingByUser(User $user): array
     {
+        // Call Api
         $result = $this->twitthorManager
             ->setSettings([
                 'max_pagination' => 1,
@@ -335,17 +329,19 @@ class TwApiCallService
 
         // Errors
         if (!empty($result['error'])) {
-            return $result;
+            return JsonResponseUtil::getTwApiError($result['error']);
         }
 
         return $this->saveFollowing($user, $result);
     }
 
     /**
+     * API
      * Update all following with help Twitthor
      */
     private function updateFollowersByUser(User $user): array
     {
+        // Call Api
         $result = $this->twitthorManager
             ->setSettings([
                 'max_pagination' => 1,
@@ -364,7 +360,7 @@ class TwApiCallService
 
         // Errors
         if (!empty($result['error'])) {
-            return $result;
+            return JsonResponseUtil::getTwApiError($result['error']);
         }
 
         return $this->saveFollowers($user, $result);
@@ -376,6 +372,7 @@ class TwApiCallService
     private function saveFollowing(User $user, array $rows): array
     {
         $result = [
+            'success' => true,
             'twUserIds' => [], // Total found
             'insert' => [], // Follow insert
             'update' => [], // Follow update
@@ -405,7 +402,7 @@ class TwApiCallService
 
             // Find in db
             $twUser = $this->twUserRepository->findOneBy([
-                'twAccountId' => $row['id']
+                'twAccountId' => $row['id'],
             ]);
 
             // Get file full name
@@ -503,6 +500,7 @@ class TwApiCallService
     private function saveFollowers(User $user, array $rows): array
     {
         $result = [
+            'success' => true,
             'twUserIds' => [], // Total found
             'insert' => [], // Follow insert
             'update' => [], // Follow update
@@ -532,7 +530,7 @@ class TwApiCallService
 
             // Find in db
             $twUser = $this->twUserRepository->findOneBy([
-                'twAccountId' => $row['id']
+                'twAccountId' => $row['id'],
             ]);
 
             // Get file full name

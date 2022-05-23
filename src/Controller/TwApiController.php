@@ -243,7 +243,7 @@ class TwApiController extends AbstractController
         if (!$twApi) {
             // Ajax response
             return $this->json(
-                JsonResponseUtil::getError('Error', 'Incomplete settings.')
+                JsonResponseUtil::getError('Error', 'Incomplete settings passed to Twitthor.')
             );
         }
 
@@ -291,7 +291,7 @@ class TwApiController extends AbstractController
         if (!$twApi) {
             // Ajax response
             return $this->json(
-                JsonResponseUtil::getError('Error', 'Incomplete settings.')
+                JsonResponseUtil::getError('Error', 'Incomplete settings passed to Twitthor.')
             );
         }
 
@@ -340,7 +340,7 @@ class TwApiController extends AbstractController
         if (!$twApi) {
             // Ajax response
             return $this->json(
-                JsonResponseUtil::getError('Error', 'Incomplete settings.')
+                JsonResponseUtil::getError('Error', 'Incomplete settings passed to Twitthor.')
             );
         }
 

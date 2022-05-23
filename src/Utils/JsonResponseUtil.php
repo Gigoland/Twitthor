@@ -106,6 +106,7 @@ class JsonResponseUtil
 
     /**
      * Get error response from Twitter api
+     * https://developer.twitter.com/ja/docs/basics/response-codes
      */
     public static function getTwApiError(
         array $result,
@@ -114,6 +115,22 @@ class JsonResponseUtil
     ): array {
         $title = 'Error';
         $message = 'Something went wrong !';
+
+        /**
+         * OAuth exmples
+         *
+         * [
+         *  "error" => "unauthorized_client"
+         *  "error_description" => "Missing valid authorization header"
+         * ]
+         *
+         * or
+         *
+         * [
+         *  "error" => "invalid_request"
+         *  "error_description" => "Value passed for the token was invalid."
+         * ]
+         */
 
         /**
          * Api request examples :
@@ -132,27 +149,25 @@ class JsonResponseUtil
          */
 
         /**
-         * OAuth exmples
+         * Api request status error example
          *
          * [
-         *  "error" => "unauthorized_client"
-         *  "error_description" => "Missing valid authorization header"
-         * ]
-         *
-         * or
-         *
-         * [
-         *  "error" => "invalid_request"
-         *  "error_description" => "Value passed for the token was invalid."
-         * ]
+         *  "title" => "Unauthorized"
+         *  "type" => "about:blank"
+         *  "status" => 401
+         *  "detail" => "Unauthorized"
+         *  ]
          */
-
-        if (!empty($result['errors'])) {
-            $title = $result['title'];
-            $message = $result['detail'];
-        } elseif (!empty($result['error'])) {
+        if (!empty($result['error'])) {
             $message = $result['error_description'];
             $code = $result['error'];
+        } elseif (!empty($result['errors'])) {
+            $title = $result['title'];
+            $message = $result['detail'];
+        } elseif (!empty($result['status'])) {
+            $title = $result['title'];
+            $message = $result['detail'];
+            $status = $result['status'];
         }
 
         return [

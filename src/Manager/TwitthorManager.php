@@ -154,12 +154,12 @@ class TwitthorManager extends TwitterApi
     {
         // Error
         if (!empty($data['errors'])) {
-            return $data;
+            return ['error' => $data];
         }
 
         // Errors & wrnings by status
         if (isset($data['status']) && $data['status'] != 200) {
-            return $data;
+            return ['error' => $data];
         }
 
         return false;

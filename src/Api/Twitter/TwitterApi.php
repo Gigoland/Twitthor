@@ -231,7 +231,7 @@ abstract class TwitterApi
          || empty($this->twitterAccountId)
          ) {
             throw new \InvalidArgumentException(
-                'Incomplete settings passed to Twitthor'
+                'Incomplete settings passed to Twitthor.'
             );
         }
 
@@ -257,7 +257,7 @@ abstract class TwitterApi
          || empty($this->twitterAccountId)
          ) {
             throw new \InvalidArgumentException(
-                'Incomplete settings passed to Twitthor'
+                'Incomplete settings passed to Twitthor.'
             );
         }
 
@@ -277,7 +277,7 @@ abstract class TwitterApi
          || empty($this->twitterAccountId)
          ) {
             throw new \InvalidArgumentException(
-                'Incomplete settings passed to Twitthor'
+                'Incomplete settings passed to Twitthor.'
             );
         }
 
@@ -298,7 +298,7 @@ abstract class TwitterApi
          || empty($this->targetUserId)
         ) {
             throw new \InvalidArgumentException(
-                'Incomplete settings passed to Twitthor - Unfollow'
+                'Incomplete settings passed to Twitthor.'
             );
         }
 
