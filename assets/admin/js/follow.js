@@ -73,6 +73,7 @@ import {Modal} from 'bootstrap';
   const ajaxUnfollowCallback = function(data) {
     if (data.success) {
       ajaxResponseSuccess(data);
+      document.querySelector('#row-' + data.data.target).remove();
     } else {
       ajaxResponseAlert(data);
     }

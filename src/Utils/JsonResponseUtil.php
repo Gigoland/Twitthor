@@ -14,7 +14,7 @@ class JsonResponseUtil
     ): array {
         return [
             'success' => true,
-            'success' => [
+            'detail' => [
                 'title' => $title,
                 'message' => $message,
                 'code' => 'success',

@@ -4,8 +4,8 @@ const swal = require('sweetalert2');
 window.ajaxResponseSuccess = function(response) {
   swal.fire({
     icon: 'success',
-    title: response.success.title,
-    text: response.success.message,
+    title: response.detail.title,
+    text: response.detail.message,
     showConfirmButton: false,
     timer: 1500
   });

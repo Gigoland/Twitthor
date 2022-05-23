@@ -110,6 +110,7 @@ class TwApiCallService
 
         // Success
         return JsonResponseUtil::getSuccess('Unfollow', 'Unfollowed with success!', [
+            'target' => $twUser->getTwAccountId(),
             'callCount' => $this->twApiCallManager->getUnfollowCnt(),
         ]);
     }
