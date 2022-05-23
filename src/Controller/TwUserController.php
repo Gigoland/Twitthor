@@ -31,7 +31,7 @@ class TwUserController extends AbstractController
         PaginatorInterface $paginator
     ): Response {
         $rows = $paginator->paginate(
-            $$this->entityManager->getRepository(TwUser::class)->findAll(),
+            $this->entityManager->getRepository(TwUser::class)->findAll(),
             $request->query->getInt('page', 1),
             10
         );

@@ -109,11 +109,9 @@ class TwApiCallService
         );
 
         // Success
-        return [
-            'success' => true,
-            'message' => 'Unfollowed',
+        return JsonResponseUtil::getSuccess('Unfollow', 'Unfollowed with success!', [
             'callCount' => $this->twApiCallManager->getUnfollowCnt(),
-        ];
+        ]);
     }
 
     /**

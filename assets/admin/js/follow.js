@@ -117,18 +117,6 @@ import {Modal} from 'bootstrap';
     }
   };
 
-  // Tw profile
-  const shwoTwProfile = function() {
-    setTimeout(() => {
-      let win = window.open(
-        this.href,
-        "_blank",
-        "location=no,menubar=no,status=no,titilebar=no,resizable=no,top=0,left=0,width=600,height=500"
-      );
-      win.focus();
-    }, 50);
-  };
-
   // Modal
   if ($twApiSettingsModal) {
     twApiSettingsModalPlugin = new Modal($twApiSettingsModal);
@@ -158,11 +146,6 @@ import {Modal} from 'bootstrap';
   // Get modal content
   if (document.querySelector('#js-btn-update')) {
     document.querySelector('#js-btn-update').addEventListener('click', getAwApiKeysModal);
-  }
-
-  // Get window
-  if (document.querySelector('.js-btn-tw-profile')) {
-    document.querySelectorAll('.js-btn-tw-profile').forEach(el => el.addEventListener('click', shwoTwProfile));
   }
 
   // Unfollow

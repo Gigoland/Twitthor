@@ -10,16 +10,17 @@ class JsonResponseUtil
     public static function getSuccess(
         string $title,
         string $message,
-        string $code = 'success'
+        array $data = []
     ): array {
         return [
             'success' => true,
             'success' => [
                 'title' => $title,
                 'message' => $message,
-                'code' => $code,
+                'code' => 'success',
                 'status' => 200,
             ],
+            'data' => $data,
         ];
     }
 

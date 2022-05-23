@@ -36,7 +36,7 @@
                     <th><h6><i class="fa-brands fa-twitter-square"></i> Verified</h6></th>
                     <th><h6>Favorite</h6></th>
                     <th><h6>Edit</h6></th>
-                    <th><h6>Show</h6></th>
+                    <th><h6>Action</h6></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -44,9 +44,9 @@
                     <tr id="row-{{ row.id }}">
                       <td class="min-width">
                         <div class="lead">
-                          <a href="https://twitter.com/{{ row.twUser.twUsername }}" onclick="event.preventDefault();" class="js-btn-tw-profile" rel="noreferrer">
+                          <a href="https://twitter.com/{{ row.twUser.twUsername }}" rel="noreferrer" target="_blank">
                             <div class="lead-image">
-                              <img src="{{ app.request.schemeAndHttpHost ~ row.twUser.avatar }}" title="{{ row.twUser.twName }}" alt="Avatar">
+                              <img src="{{ app.request.schemeAndHttpHost ~ row.twUser.avatar }}" title="Go to : {{ row.twUser.twName }}" alt="Twitter Avatar">
                             </div>
                           </a>
                           <div class="lead-text">
@@ -55,7 +55,15 @@
                         </div>
                       </td>
                       <td class="min-width"><p title="{{ row.twUser.twUsername }}">@{{ row.twUser.twUsername|slice(0, 20) ~ '...' }}</p></td>
-                      <td class="min-width"><p title="{{ row.twUser.twUrl }}">{{ row.twUser.twUrl|slice(0, 20) ~ '...' }}</p></td>
+                      <td class="min-width">
+                        <p title="{{ row.twUser.twUrl }}">
+                          {% if row.twUser.twUrl is not empty %}
+                            <a href="{{ row.twUser.twUrl }}" rel="noreferrer" target="_blank">{{ row.twUser.twUrl|slice(0, 20) ~ '...' }}</a>
+                          {% else %}
+                            ...
+                          {% endif %}
+                        </p>
+                      </td>
                       <td class="min-width"><p>{{ row.twUser.twAccountId }}</p></td>
                       <td class="min-width"><p>{{ row.twUser.twCreatedAt|date('d/m/Y H:i') }}</p></td>
                       <td class="min-width"><p>{{ row.twUser.twIsVerified ? '<span class="badge bg-info">Yes' : '<span class="badge bg-secondary">No' }}</span></p></td>

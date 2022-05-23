@@ -48,9 +48,11 @@
                     <tr>
                       <td class="min-width">
                         <div class="lead">
-                          <div class="lead-image">
-                            <img src="{{ app.request.schemeAndHttpHost ~ row.avatar }}" alt="Avatar" title="{{ row.twName }}">
-                          </div>
+                          <a href="https://twitter.com/{{ row.twUsername }}" rel="noreferrer" target="_blank">
+                            <div class="lead-image">
+                              <img src="{{ app.request.schemeAndHttpHost ~ row.avatar }}" alt="Avatar" title="{{ row.twName }}">
+                            </div>
+                          </a>
                           <div class="lead-text">
                             <p>{{ row.twName|slice(0, 20) ~ '...' }}</p>
                           </div>
