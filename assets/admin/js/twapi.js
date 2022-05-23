@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-const swal = require('sweetalert2');
-
-//
+// Active
 const setTwApiSettingActive = function() {
   let $loader = this.parentElement.querySelector('.switch-loader'),
       target = this.getAttribute('data-target');
@@ -15,18 +13,13 @@ const setTwApiSettingActive = function() {
     })
     .then(response => response.data)
     .then(data => {
-      swal.fire({
-        icon: 'success',
-        title: data.message,
-        showConfirmButton: false,
-        timer: 1500
-      });
+      ajaxResponseSuccess(data);
       $loader.style.display = 'none';
       document.querySelectorAll('.js-switch-is-active').forEach(el => el.style.display = 'block');
       document.querySelector('.js-tw-auth-btn-' + target).style.display = 'block';
     })
     .catch(error => {
-      ajaxError(error);
+      ajaxCatchAlert(error);
     });
   }, 50);
 };

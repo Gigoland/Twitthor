@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Utils\AjaxUtil;
+use App\Utils\JsonResponseUtil;
 use App\Entity\TwApi;
 use App\Entity\Follow;
 use App\Form\TwApiType;
@@ -27,10 +28,6 @@ class TwApiController extends AbstractController
 
     /**
      * Twitter API settings manager
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return Response
      */
     #[Route('/tw/settings', name: 'app_twitter_api_settings', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -55,10 +52,6 @@ class TwApiController extends AbstractController
     /**
      * Create Twitter API settings
      * Protected by CSRF
-     *
-     * @param Request $request
-     * @param TwApiCallManager $twApiCallManager
-     * @return Response
      */
     #[Route('/tw/settings/add', name: 'app_twitter_api_settings_add', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
@@ -99,10 +92,6 @@ class TwApiController extends AbstractController
     /**
      * Edit Twitter API settings
      * Protected by CSRF
-     *
-     * @param Request $request
-     * @param TwApi $twApi
-     * @return Response
      */
     #[Route('/tw/settings/{id}/edit', name: 'app_twitter_api_settings_edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
@@ -144,9 +133,6 @@ class TwApiController extends AbstractController
 
     /**
      * Delete Twitter API settings
-     *
-     * @param TwApi $twApi
-     * @return Response
      */
     #[Route('/tw/settings/{id}/delete', name: 'app_twitter_api_settings_delete', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
@@ -166,10 +152,6 @@ class TwApiController extends AbstractController
 
     /**
      * Switch isActive
-     *
-     * @param Request $request
-     * @param TwApi $twApi
-     * @return JsonResponse
      */
     #[Route('/tw/settings/{id}/active/ajax', name: 'app_twitter_api_settings_active_ajax', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
@@ -181,10 +163,7 @@ class TwApiController extends AbstractController
         if (!$request->isXmlHttpRequest()
          || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
         ) {
-            return $this->json([
-                'code' => 403,
-                'message' => 'Unauthorized',
-            ], 403);
+            return $this->json(JsonResponseUtil::getError403(), 403);
         }
 
         // Deactivate all activated settings
@@ -204,20 +183,15 @@ class TwApiController extends AbstractController
         $this->entityManager->flush();
 
         // Ajax response
-        return $this->json([
-            'success' => true,
-            'message' => 'Updated with success !',
-        ]);
+        return $this->json(
+            JsonResponseUtil::getSuccess('Success', 'Updated with success !')
+        );
     }
 
     /**
      * Get twitter api keys select html
      * Protected by CSRF
      * Ajax only
-     *
-     * @param Request $request
-     * @param TwApiHtmlService $service
-     * @return JsonResponse
      */
     #[Route('/tw/settings/html/ajax', name: 'app_twitter_api_settings_html_ajax', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER')")]
@@ -229,10 +203,7 @@ class TwApiController extends AbstractController
         if (!$request->isXmlHttpRequest()
          || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
         ) {
-            return $this->json([
-                'code' => 403,
-                'message' => 'Unauthorized',
-            ], 403);
+            return $this->json(JsonResponseUtil::getError403(), 403);
         }
 
         $result = $service->getActiveSettingsByUser(
@@ -248,10 +219,6 @@ class TwApiController extends AbstractController
      * Upload following by Twitter Api with Twitthor
      * Protected by CSRF
      * Ajax only
-     *
-     * @param Request $request
-     * @param TwApiCallService $service
-     * @return JsonResponse
      */
     #[Route('/tw/following/update/ajax', name: 'app_twitter_api_update_following_ajax', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER')")]
@@ -263,10 +230,7 @@ class TwApiController extends AbstractController
         if (!$request->isXmlHttpRequest()
          || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
         ) {
-            return $this->json([
-                'code' => 403,
-                'message' => 'Unauthorized',
-            ], 403);
+            return $this->json(JsonResponseUtil::getError403(), 403);
         }
 
         // Get api params from activate setting
@@ -278,10 +242,9 @@ class TwApiController extends AbstractController
         // Not have api settings
         if (!$twApi) {
             // Ajax response
-            return $this->json([
-                'success' => false,
-                'message' => 'Something went wrong !',
-            ]);
+            return $this->json(
+                JsonResponseUtil::getError('Error', 'Incomplete settings.')
+            );
         }
 
         // Do undate following
@@ -304,10 +267,6 @@ class TwApiController extends AbstractController
      * Upload folowers by Twitter Api with Twitthor
      * Protected by CSRF
      * Ajax only
-     *
-     * @param Request $request
-     * @param TwApiCallService $service
-     * @return JsonResponse
      */
     #[Route('/tw/followers/update/ajax', name: 'app_twitter_api_update_followers_ajax', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER')")]
@@ -319,10 +278,7 @@ class TwApiController extends AbstractController
         if (!$request->isXmlHttpRequest()
          || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
         ) {
-            return $this->json([
-                'code' => 403,
-                'message' => 'Unauthorized',
-            ], 403);
+            return $this->json(JsonResponseUtil::getError403(), 403);
         }
 
         // Get api settings
@@ -334,10 +290,9 @@ class TwApiController extends AbstractController
         // Not have api settings
         if (!$twApi) {
             // Ajax response
-            return $this->json([
-                'success' => false,
-                'message' => 'Something went wrong !',
-            ]);
+            return $this->json(
+                JsonResponseUtil::getError('Error', 'Incomplete settings.')
+            );
         }
 
         // Do uplade followers
@@ -360,11 +315,6 @@ class TwApiController extends AbstractController
      * Unfollow by Twitter Api with Twitthor
      * Protected by CSRF
      * Ajax only
-     *
-     * @param Request $request
-     * @param TwApiCallService $service
-     * @param Follow $follow
-     * @return JsonResponse
      */
     #[Route('/tw/unfollow/{id}/ajax', name: 'app_twitter_api_unfollow_ajax', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER') and user === follow.getUser()")]
@@ -377,10 +327,7 @@ class TwApiController extends AbstractController
         if (!$request->isXmlHttpRequest()
          || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
         ) {
-            return $this->json([
-                'code' => 403,
-                'message' => 'Unauthorized',
-            ], 403);
+            return $this->json(JsonResponseUtil::getError403(), 403);
         }
 
         // Get api settings
@@ -392,10 +339,9 @@ class TwApiController extends AbstractController
         // Not have api setting
         if (!$twApi) {
             // Ajax response
-            return $this->json([
-                'success' => false,
-                'message' => 'Something went wrong !',
-            ]);
+            return $this->json(
+                JsonResponseUtil::getError('Error', 'Incomplete settings.')
+            );
         }
 
         // Do unfollow

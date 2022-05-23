@@ -1,31 +1,42 @@
 const swal = require('sweetalert2');
 
-// @todo error manager
-window.ajaxError = function(errors) {
-  console.error('Errors:', errors);
+// Ajax success response manager
+window.ajaxResponseSuccess = function(response) {
+  swal.fire({
+    icon: 'success',
+    title: response.success.title,
+    text: response.success.message,
+    showConfirmButton: false,
+    timer: 1500
+  });
 };
 
-// @todo error manager
-window.ajaxResponseError = function(response) {
+// Ajax catch errors manager
+window.ajaxCatchAlert = function(response) {
+  console.error('Erros:', response);
+}
+
+// Ajax response manager
+window.ajaxResponseAlert = function(response) {
   if (response.error) {
     swal.fire({
       icon: 'error',
       title: response.error.title,
-      text: response.error.detail,
+      text: response.error.message,
       footer: '<strong>' + response.error.status + '</strong>'
     });
   } else if (response.warning) {
     swal.fire({
       icon: 'warning',
       title: response.warning.title,
-      text: response.warning.detail,
+      text: response.warning.message,
       footer: '<strong>' + response.warning.status + '</strong>'
     });
-  } else {
+  } else if (response.info) {
     swal.fire({
       icon: 'info',
       title: response.info.title,
-      text: response.info.detail,
+      text: response.info.message,
       footer: '<strong>' + response.info.status + '</strong>'
     });
   }

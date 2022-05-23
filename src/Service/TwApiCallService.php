@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Utils\UrlUtil;
 use App\Utils\FileUtil;
 use App\Utils\JsonUtil;
+use App\Utils\JsonResponseUtil;
 use App\Entity\User;
 use App\Entity\TwApi;
 use App\Entity\Follow;
@@ -39,20 +40,13 @@ class TwApiCallService
         Follow $follow
     ): array {
         if (!$user || !$twApi || !$follow) {
-            return $this->error('Error'); // @todo message
+            return JsonResponseUtil::getError('Error', 'Error'); // @todo message
         }
 
         // Check if is not following
         if (!$follow->getIsFollowing()) {
             // Info
-            return [
-                'success' => false,
-                'info' => [
-                    'title' => 'Todo title',
-                    'message' => 'Unfollow',
-                    'status' => 0,
-                ],
-            ];
+            return JsonResponseUtil::getInfo('Todo title', 'Unfollow'); // @todo message
         }
 
         // Load TwApiCall in manager
@@ -61,14 +55,7 @@ class TwApiCallService
         // Limit Check & Update
         if ($this->twApiCallManager->isUnfollowLimitExceeded()) {
             // Warning
-            return [
-                'success' => false,
-                'warning' => [
-                    'title' => 'Exceeded Limit',
-                    'message' => 'You have exceeded the limit. Please try later.',
-                    'status' => 0,
-                ]
-            ];
+            return JsonResponseUtil::getWarning('Exceeded Limit', 'You have exceeded the limit. Please try later.');
         }
 
         // Get access_token / Expires check & Update
@@ -76,14 +63,7 @@ class TwApiCallService
 
         if (empty($accessToken)) {
             // Warning
-            return [
-                'success' => false,
-                'warning' => [
-                    'title' => 'Expired token',
-                    'message' => 'Please try later.',
-                    'status' => 0,
-                ]
-            ];
+            return JsonResponseUtil::getWarning('Expired token', 'Please try later.');
         }
 
         // Initialisation
@@ -692,20 +672,5 @@ class TwApiCallService
         $jsonUtil = new JsonUtil();
 
         return $jsonUtil->encode($tags);
-    }
-
-    /**
-     * Error
-     */
-    private function error(string $message): array
-    {
-        return [
-            'success' => false,
-            'error' => [
-                'title' => 'Error',
-                'message' => $message,
-                'status' => 0,
-            ],
-        ];
     }
 }

@@ -85,8 +85,6 @@ abstract class TwitterApi
             $var = $stringUtil->camelize($key);
 
             if (!in_array($var, [
-                'twitterBearerToken',
-
                 'twitterClientId',
                 'twitterClientSecret',
 
@@ -95,6 +93,8 @@ abstract class TwitterApi
 
                 'twitterAccessToken',
                 'twitterAccessTokenSecret',
+
+                'twitterBearerToken',
             ])) {
                 throw new \InvalidArgumentException(
                     'Incomplete settings passed to Twitthor'
@@ -369,12 +369,7 @@ abstract class TwitterApi
             'verify' => $ssl,
             'headers' => $headers,
         ]);
-/*
-dump(strtoupper($method));
-dump($path);
-dump($options);
-dd($client);
-*/
+
         // Call Guzzle
         try {
             $response = $client->request(

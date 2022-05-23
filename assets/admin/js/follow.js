@@ -23,7 +23,7 @@ import {Modal} from 'bootstrap';
         $twApiSettingsModal.querySelector('.btn-ok').style.display = 'none';
       }
     } else {
-      ajaxResponseError(data);
+      ajaxResponseAlert(data);
     }
   };
 
@@ -38,7 +38,7 @@ import {Modal} from 'bootstrap';
         }, 50);
       })
       .catch(error => {
-        ajaxError(error);
+        ajaxCatchAlert(error);
       });
     }, 50);
   };
@@ -65,17 +65,16 @@ import {Modal} from 'bootstrap';
       redirect = data.path;
     } else {
       twApiSettingsModalPlugin.hide();
-      ajaxResponseError(data);
+      ajaxResponseAlert(data);
     }
   };
 
   // After unfollow
   const ajaxUnfollowCallback = function(data) {
-    console.log(data);
     if (data.success) {
-
+      ajaxResponseSuccess(data);
     } else {
-      ajaxResponseError(data);
+      ajaxResponseAlert(data);
     }
   };
 
@@ -94,7 +93,7 @@ import {Modal} from 'bootstrap';
           }, 50);
         })
         .catch(error => {
-          ajaxError(error);
+          ajaxCatchAlert(error);
         });
       }, 50);
     }
@@ -108,11 +107,11 @@ import {Modal} from 'bootstrap';
         .then(response => response.data)
         .then(data => {
           setTimeout(() => {
-            console.log(data);
+            ajaxUnfollowCallback(data);
           }, 50);
         })
         .catch(error => {
-          ajaxError(error);
+          ajaxCatchAlert(error);
         });
       }, 50);
     }

@@ -149,31 +149,16 @@ class TwitthorManager extends TwitterApi
 
     /**
      * Check result errors & warnings
-     * @todo
      */
     private function checkError($data)
     {
-        // Errors & wrnings
-        if (isset($data['status']) && $data['status'] != 200) {
-            return [
-                'error' => $data,
-            ];
+        // Error
+        if (!empty($data['errors'])) {
+            return $data;
         }
 
-        /*
-        array:4 [
-            "errors" => array:1 [
-                0 => array:2 [
-                "parameters" => []
-                "message" => "Requests with bodies must have content-type of application/json."
-                ]
-            ]
-            "title" => "Invalid Request"
-            "detail" => "One or more parameters to your request was invalid."
-            "type" => "https://api.twitter.com/2/problems/invalid-request"
-        ]
-        */
-        if (!empty($data['errors'])) {
+        // Errors & wrnings by status
+        if (isset($data['status']) && $data['status'] != 200) {
             return $data;
         }
 
