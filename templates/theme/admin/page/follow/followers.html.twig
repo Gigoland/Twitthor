@@ -98,6 +98,6 @@
 
   {% if haveTwApiKeys|default(false) %}
     {% import "theme/admin/common/macro/_modal.html.twig" as macroModal %}
-    {{ macroModal.withBtnOkClose('modal-twapi-settings', 'Followers update', {'path': path('app_twitter_api_update_followers_ajax'), 'id': 'js-btn-update-follow', 'title': 'Go'}) }}
+    {{ macroModal.withBtnOkClose('modal-twapi-settings', 'Followers update', null, {'path': path('app_twitter_api_update_followers_ajax'), 'id': 'js-btn-update-follow', 'title': 'Go'}) }}
   {% endif %}
 {% endblock %}

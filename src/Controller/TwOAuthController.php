@@ -4,13 +4,13 @@ namespace App\Controller;
 
 use App\Api\Twitter\TwitterOAuth2;
 use App\Entity\TwApi;
+use App\Manager\TwApiManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Manager\TwApiManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class TwOAuthController extends AbstractController
 {
@@ -31,6 +31,16 @@ class TwOAuthController extends AbstractController
             ->getRepository(TwApi::class)
             ->findActiveSettingsByUser($this->getUser(), 'access_token')
         ;
+
+        // Wrong settings params
+        if (!$twApi) {
+            $this->addFlash(
+                'errors',
+                'Something went wrong !'
+            );
+
+            return $this->redirectToRoute('app_twitter_api_settings');
+        }
 
         return $this->redirect(
             $twApiManager->getCodeUrl(

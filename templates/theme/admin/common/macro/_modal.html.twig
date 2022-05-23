@@ -1,4 +1,4 @@
-{% macro withBtnOkClose(id, title, btnOkParams, btnCloseParams, body, footerMessage) %}
+{% macro withBtnOkClose(id, title, body, btnOkParams, btnCloseParams) %}
   <div class="modal fade" id="{{ id|default('modal') }}" data-bs-backdrop="{{ backdrop|default('static') }}" data-bs-keyboard="{{ keyboard|default('false') }}" tabindex="-1" aria-labelledby="{{ id|default('modal') }}-label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">

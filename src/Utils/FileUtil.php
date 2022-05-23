@@ -10,7 +10,7 @@ class FileUtil
      * Save image from url
      * Need check with FileValidaror->isValidStreamFile() / $isValid
      */
-	public function copyImageByUrl(string $url, string $file, $isValid = false)
+    public function copyImageByUrl(string $url, string $file, $isValid = false)
     {
         if (!$isValid) {
             return false;

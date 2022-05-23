@@ -4,8 +4,10 @@ const swal = require('sweetalert2');
 
 //
 const setTwApiSettingActive = function() {
-  let $loader = this.parentElement.querySelector('.switch-loader');
+  let $loader = this.parentElement.querySelector('.switch-loader'),
+      target = this.getAttribute('data-target');
   document.querySelectorAll('.js-switch-is-active').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.js-tw-auth-btn').forEach(el => el.style.display = 'none');
   $loader.style.display = 'block';
   setTimeout(() => {
     axios.post(this.value, {
@@ -21,6 +23,7 @@ const setTwApiSettingActive = function() {
       });
       $loader.style.display = 'none';
       document.querySelectorAll('.js-switch-is-active').forEach(el => el.style.display = 'block');
+      document.querySelector('.js-tw-auth-btn-' + target).style.display = 'block';
     })
     .catch(error => {
       ajaxError(error);

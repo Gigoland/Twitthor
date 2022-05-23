@@ -74,7 +74,5 @@
   "src/images/cards/card-style-1/admin-3.png": "/src/images/cards/card-style-1/admin-3.9fff6b9b.png",
   "src/images/favicon.svg": "/src/images/favicon.96e4818a.svg",
   "src/images/logo/logo-2.svg": "/src/images/logo/logo-2.b15d37af.svg",
-  "src/images/auth/shape.svg": "/src/images/auth/shape.9a553e9e.svg",
-  "src/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_core-js_modules_es_ob-7db861.js": "/src/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_core-js_modules_es_ob-7db861.js",
-  "src/vendors-node_modules_bootstrap_dist_js_bootstrap_esm_js.js": "/src/vendors-node_modules_bootstrap_dist_js_bootstrap_esm_js.js"
+  "src/images/auth/shape.svg": "/src/images/auth/shape.9a553e9e.svg"
 }

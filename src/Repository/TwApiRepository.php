@@ -70,7 +70,7 @@ class TwApiRepository extends ServiceEntityRepository
     /**
      * Get activated TwApi
      */
-    public function findActiveSettingsByUser(User $user, ?string $for): TwApi
+    public function findActiveSettingsByUser(User $user, ?string $for): ?TwApi
     {
         $qb = $this
             ->createQueryBuilder('t')
