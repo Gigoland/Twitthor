@@ -1,7 +1,15 @@
 {% if settings is defined %}
-  <p class="mb-10">
-    <strong>Selected Setting :</strong><br>
-    <i class="fa-solid fa-gear"></i> {{ settings.name }}
+  <p>
+    <strong>Selected setting :</strong>
+    <p>
+      <div class="alert-box info-alert">
+        <div class="alert p-2">
+          <p class="text-medium">
+            <i class="fa-solid fa-gear"></i> {{ settings.name }}
+          </p>
+        </div>
+      </div>
+    </p>
   </p>
 
   <p>
@@ -27,11 +35,11 @@
   </p>
 {% endif %}
 
-<p>
+<p class="result">
   <div class="alert-box success-alert alert-box-result" style="display:none;">
     <div class="alert">
       <p id="alert-box-result-message" class="text-medium">
-        Created : 0 / Updated : 0
+        Updating... Please do not close.
       </p>
     </div>
   </div>

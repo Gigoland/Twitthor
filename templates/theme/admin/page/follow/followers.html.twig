@@ -51,7 +51,7 @@
                 </thead>
                 <tbody>
                   {% for row in rows %}
-                    <tr>
+                    <tr id="row-{{ row.twUser.twAccountId }}">
                       <td class="min-width">
                         <div class="lead">
                           <a href="https://twitter.com/{{ row.twUser.twUsername }}" rel="noreferrer" target="_blank">
@@ -85,7 +85,9 @@
                         </div>
                       </td>
                       <td>
-                        <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }} btn-hover js-btn-unfollow">Unfollow</button>
+                        {% if row.isFollowing %}
+                          <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }} btn-hover js-btn-unfollow">Unfollow</button>
+                        {% endif %}
                       </td>
                     </tr>
                   {% endfor %}
@@ -106,6 +108,21 @@
 
   {% if haveTwApiKeys|default(false) %}
     {% import "theme/admin/common/macro/_modal.html.twig" as macroModal %}
-    {{ macroModal.withBtnOkClose('modal-twapi-settings', 'Followers update', null, {'path': path('app_twitter_api_update_followers_ajax'), 'id': 'js-btn-update-follow', 'title': 'Go'}) }}
+    {{ macroModal.withBtnOkClose(
+      'modal-twapi-settings',
+      'Followers update',
+      '',
+      [
+        {
+          'id': 'js-btn-update-follow',
+          'path': path('app_twitter_api_update_followers_ajax'),
+          'title': 'Go'
+        }, {
+          'id': 'js-btn-update-all-follow',
+          'path': path('app_twitter_api_update_followers_ajax'),
+          'title': 'Go All'
+        }
+      ]
+    ) }}
   {% endif %}
 {% endblock %}

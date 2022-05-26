@@ -51,7 +51,7 @@
                 </thead>
                 <tbody>
                   {% for row in rows %}
-                    <tr>
+                    <tr id="row-{{ row.twUser.twAccountId }}">
                       <td class="min-width">
                         <div class="lead">
                           <a href="https://twitter.com/{{ row.twUser.twUsername }}" rel="noreferrer" target="_blank">
@@ -106,6 +106,21 @@
 
   {% if haveTwApiKeys|default(false) %}
     {% import "theme/admin/common/macro/_modal.html.twig" as macroModal %}
-    {{ macroModal.withBtnOkClose('modal-twapi-settings', 'Following update', null, {'path': path('app_twitter_api_update_following_ajax'), 'id': 'js-btn-update-follow', 'title': 'Go'}) }}
+    {{ macroModal.withBtnOkClose(
+      'modal-twapi-settings',
+      'Following update',
+      '',
+      [
+        {
+          'id': 'js-btn-update-follow',
+          'path': path('app_twitter_api_update_following_ajax'),
+          'title': 'Go'
+        }, {
+          'id': 'js-btn-update-all-follow',
+          'path': path('app_twitter_api_update_following_ajax'),
+          'title': 'Go All'
+        }
+      ]
+    ) }}
   {% endif %}
 {% endblock %}

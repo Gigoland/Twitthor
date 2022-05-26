@@ -1,4 +1,4 @@
-{% macro withBtnOkClose(id, title, body, btnOkParams, btnCloseParams) %}
+{% macro withBtnOkClose(id, title, body, buttons, buttonClose) %}
   <div class="modal fade" id="{{ id|default('modal') }}" data-bs-backdrop="{{ backdrop|default('static') }}" data-bs-keyboard="{{ keyboard|default('false') }}" tabindex="-1" aria-labelledby="{{ id|default('modal') }}-label" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -9,19 +9,23 @@
         </div>
 
         <div class="modal-body">
-          {{ body|default(null) }}
+          {{ body|default('') }}
         </div>
 
         <div class="modal-footer justify-content-between">
           <div class="pull-left">
-            <div class="spinner-grow text-primary modal-loader" style="width:2rem;height:2rem;display:none;" role="status">
+            <div class="spinner-grow text-primary ajax-loader modal-loader" style="width:2rem;height:2rem;display:none;" role="status">
               <span class="sr-only">Loading...</span>
             </div>
           </div>
           <div class="pull-right">
             <div class="btn-content d-flex justify-content-end">
-              <button type="button" onclick="event.preventDefault();" class="btn btn-secondary text-nowrap ev btn-ko" data-bs-dismiss="modal"{% if btnCloseParams.path is defined %} value="{{ btnCloseParams.path }}"{% endif %}{% if btnCloseParams.Id is defined %} id="{{ btnCloseParams.id }}"{% endif %}>{{ btnCloseParams.title|default('Close') }}</button>
-              <button type="button" onclick="event.preventDefault();" class="btn btn-primary text-nowrap ev btn-ok"{% if btnOkParams.path is defined %} value="{{ btnOkParams.path }}"{% endif %}{% if btnOkParams.id is defined %} id="{{ btnOkParams.id }}"{% endif %}>{{ btnOkParams.title|default('OK') }}</button>
+              {% if buttonClose != 'hide' %}
+                <button type="button" onclick="event.preventDefault();" class="btn btn-secondary text-nowrap ev btn-ko" data-bs-dismiss="modal"{% if buttonClose.path is defined %} value="{{ buttonClose.path }}"{% endif %}{% if buttonClose.Id is defined %} id="{{ buttonClose.id }}"{% endif %}>{{ buttonClose.title|default('Close') }}</button>
+              {% endif %}
+              {% for btn in buttons %}
+                <button type="button" onclick="event.preventDefault();" class="btn btn-{{ btn.type|default('primary') }} text-nowrap ev{% if btn.class is defined %} {{ btn.class }}{% endif %}"{% if btn.path is defined %} value="{{ btn.path }}"{% endif %}{% if btn.id is defined %} id="{{ btn.id }}"{% endif %}>{{ btn.title|default('Button') }}</button>
+              {% endfor %}
             </div>
           </div>
         </div>

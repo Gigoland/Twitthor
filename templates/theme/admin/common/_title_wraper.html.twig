@@ -15,7 +15,10 @@
 
             {% elseif action.type|default(null) == 'ajax' %}
 
-              <a href="{{ action.path|default('#') }}" class="main-btn primary-btn btn-hover btn-sm"{% if action.id|default(null) %} id="{{ action.id }}"{% endif %} onclick="event.preventDefault();">
+              <div class="spinner-grow text-primary ajax-loader" style="width:2rem;height:2rem;display:none;" role="status"{% if action.id|default(null) %} id="{{ action.id }}-loader"{% endif %}>
+                <span class="sr-only">Loading...</span>
+              </div>
+              <a href="{{ action.path|default('#') }}" class="main-btn primary-btn btn-hover btn-sm ajax-btn"{% if action.id|default(null) %} id="{{ action.id }}"{% endif %} onclick="event.preventDefault();">
                 <i class="fa-solid {{ action.icon|default('fa-triangle-exclamation') }}"></i> {{ action.title|default('') }}
               </a>
 

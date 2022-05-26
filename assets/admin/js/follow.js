@@ -8,10 +8,15 @@ import {Modal} from 'bootstrap';
   // Variables
   var twApiSettingsModalPlugin = null,
       $twApiSettingsModalLoader = null,
+      $twApiSettingsModalBtnGo = null,
+      $twApiSettingsModalBtnGoOne = null,
+      $twApiSettingsModalBtnGoAll = null,
       $twApiSettingsModalAlertCount = null,
       $twApiSettingsModalAlertResult = null,
       $twApiSettingsModalAlertMessage = null,
+      updateAllFollow = false,
       updateDone = false,
+      updateUrl = null,
       redirect = null;
 
   // Show follow update modal
@@ -20,7 +25,8 @@ import {Modal} from 'bootstrap';
       $twApiSettingsModal.querySelector('.modal-body').innerHTML = data.html;
       twApiSettingsModalPlugin.show();
       if (data.warning) {
-        $twApiSettingsModal.querySelector('.btn-ok').style.display = 'none';
+        $twApiSettingsModalBtnGoOne.style.display = 'none';
+        $twApiSettingsModalBtnGoAll.style.display = 'none';
       }
     } else {
       ajaxResponseAlert(data);
@@ -28,7 +34,9 @@ import {Modal} from 'bootstrap';
   };
 
   // Get modal html content
-  const getAwApiKeysModal = function() {
+  const getTwApiSettingModal = function() {
+    this.style.display = 'none';
+    document.querySelector('#js-btn-update-loader').style.display = 'block';
     setTimeout(() => {
       axios.post(this.href)
       .then(response => response.data)
@@ -43,25 +51,45 @@ import {Modal} from 'bootstrap';
     }, 50);
   };
 
-  // After update
-  const ajaxFollowCallback = function(data) {
+  // Enable bouttons events
+  const enableModalEvents = function() {
     $twApiSettingsModal.querySelectorAll('.ev').forEach(el => el.disabled = false);
     $twApiSettingsModal.querySelector('.btn-ko').innerHTML = 'Finish';
     $twApiSettingsModalLoader.style.display = 'none';
+  };
+
+  // Enable bouttons events
+  const disableModalEvents = function() {
+    $twApiSettingsModalLoader.style.display = 'block';
+    $twApiSettingsModal.querySelectorAll('.ev').forEach(el => el.disabled = true);
+  };
+
+  // After update
+  const ajaxFollowCallback = function(data) {
     if (data.success) {
       if (data.next) {
         updateDone = false;
-        $twApiSettingsModal.querySelector('.btn-ok').innerHTML = 'Go to next';
+        $twApiSettingsModalBtnGo.innerHTML = 'Go to next';
+        // Get next
+        if (updateAllFollow) {
+          setTimeout(() => {
+            callUpdateFollow();
+          }, 1000);
+        } else {
+          enableModalEvents();
+        }
       } else {
         updateDone = true;
-        $twApiSettingsModal.querySelector('.btn-ok').innerHTML = 'Done';
-        $twApiSettingsModal.querySelector('.btn-ok').setAttribute('data-bs-dismiss', 'modal');
-        $twApiSettingsModal.querySelector('.btn-ok').disabled = false;
+        $twApiSettingsModalBtnGo.innerHTML = 'Done';
+        $twApiSettingsModalBtnGo.setAttribute('data-bs-dismiss', 'modal');
+        $twApiSettingsModalBtnGo.disabled = false;
         $twApiSettingsModal.querySelector('.btn-ko').style.display = 'none';
+        enableModalEvents();
       }
       $twApiSettingsModalAlertCount.innerHTML = data.callCount;
       $twApiSettingsModalAlertMessage.innerHTML = 'Checked : ' + data.checked + ' / Created : ' + data.created + ' / Updated : ' + data.updated;
-      $twApiSettingsModalAlertResult.style.display = 'block';
+      $twApiSettingsModalAlertResult.after($twApiSettingsModalAlertResult.cloneNode(true));
+      $twApiSettingsModalAlertResult.style.display = 'none';
       redirect = data.path;
     } else {
       twApiSettingsModalPlugin.hide();
@@ -77,16 +105,17 @@ import {Modal} from 'bootstrap';
     } else {
       ajaxResponseAlert(data);
     }
+    updateDone = true;
   };
 
   // Get update following/folowers
   const callUpdateFollow = function() {
     if (!updateDone) {
-      $twApiSettingsModalAlertResult.style.display = 'none';
-      $twApiSettingsModalLoader.style.display = 'block';
-      $twApiSettingsModal.querySelectorAll('.ev').forEach(el => el.disabled = true);
+      $twApiSettingsModalAlertMessage.innerHTML = 'Updating... Please do not close.';
+      $twApiSettingsModalAlertResult.style.display = 'block';
+      disableModalEvents();
       setTimeout(() => {
-        axios.post(this.value)
+        axios.post(updateUrl)
         .then(response => response.data)
         .then(data => {
           setTimeout(() => {
@@ -103,6 +132,7 @@ import {Modal} from 'bootstrap';
   // Unfollow
   const callUnfollow = function() {
     if (!updateDone) {
+      updateDone = false;
       setTimeout(() => {
         axios.post(this.value)
         .then(response => response.data)
@@ -122,6 +152,8 @@ import {Modal} from 'bootstrap';
   if ($twApiSettingsModal) {
     twApiSettingsModalPlugin = new Modal($twApiSettingsModal);
     $twApiSettingsModalLoader = $twApiSettingsModal.querySelector('.modal-loader');
+    $twApiSettingsModalBtnGoOne = $twApiSettingsModal.querySelector('#js-btn-update-follow');
+    $twApiSettingsModalBtnGoAll = $twApiSettingsModal.querySelector('#js-btn-update-all-follow');
 
     // On show modal
     $twApiSettingsModal.addEventListener('shown.bs.modal', function() {
@@ -129,6 +161,7 @@ import {Modal} from 'bootstrap';
       $twApiSettingsModalAlertCount = $twApiSettingsModal.querySelector('#twapi-call-counts');
       $twApiSettingsModalAlertResult = $twApiSettingsModal.querySelector('.alert-box-result');
       $twApiSettingsModalAlertMessage = $twApiSettingsModalAlertResult.querySelector('#alert-box-result-message');
+      document.querySelector('.ajax-loader').style.display = 'none';
     });
 
     // On close modal
@@ -138,15 +171,42 @@ import {Modal} from 'bootstrap';
       }
     });
 
+    // On closed modal
+    $twApiSettingsModal.addEventListener('hidden.bs.modal', function() {
+      if (!redirect) {
+        document.querySelector('.ajax-loader').style.display = 'none';
+        document.querySelector('.ajax-btn').style.display = 'block';
+        $twApiSettingsModalBtnGoOne.style.display = 'block';
+        $twApiSettingsModalBtnGoAll.style.display = 'block';
+        enableModalEvents();
+      }
+    });
+
     // Update following/followers
-    if ($twApiSettingsModal.querySelector('#js-btn-update-follow')) {
-      $twApiSettingsModal.querySelector('#js-btn-update-follow').addEventListener('click', callUpdateFollow);
+    if ($twApiSettingsModalBtnGoOne) {
+      $twApiSettingsModalBtnGoOne.addEventListener('click', (e) => {
+        $twApiSettingsModalBtnGo = $twApiSettingsModalBtnGoOne;
+        $twApiSettingsModalBtnGoAll.style.display = 'none';
+        updateUrl = e.currentTarget.value;
+        callUpdateFollow();
+      });
+    }
+
+    // Update all following/followers
+    if ($twApiSettingsModalBtnGoAll) {
+      $twApiSettingsModalBtnGoAll.addEventListener('click', (e) => {
+        $twApiSettingsModalBtnGo = $twApiSettingsModalBtnGoAll;
+        $twApiSettingsModalBtnGoOne.style.display = 'none';
+        updateUrl = e.currentTarget.value;
+        updateAllFollow = true;
+        callUpdateFollow();
+      });
     }
   }
 
   // Get modal content
   if (document.querySelector('#js-btn-update')) {
-    document.querySelector('#js-btn-update').addEventListener('click', getAwApiKeysModal);
+    document.querySelector('#js-btn-update').addEventListener('click', getTwApiSettingModal);
   }
 
   // Unfollow
