@@ -172,6 +172,7 @@ class TwApiController extends AbstractController
             ->deactivateAllByUser($this->getUser())
         ;
 
+        // Set
         $ajaxUtil = new AjaxUtil($request);
 
         // Activate
@@ -255,7 +256,7 @@ class TwApiController extends AbstractController
         );
 
         // Set js redirect path
-        if (empty($result['errors'])) {
+        if ($result['success']) {
             $result['path'] = $this->generateUrl('app_following');
         }
 
@@ -303,8 +304,60 @@ class TwApiController extends AbstractController
         );
 
         // Set js redirect path
-        if (empty($result['errors'])) {
+        if ($result['success']) {
             $result['path'] = $this->generateUrl('app_followers');
+        }
+
+        // Ajax response
+        return $this->json($result);
+    }
+
+    /**
+     * Upload Platonics by Twitter Api with Twitthor
+     * Protected by CSRF
+     * Ajax only
+     */
+    #[Route('/tw/platonics/update/ajax', name: 'app_twitter_api_update_platonics_ajax', methods: ['POST'])]
+    #[Security("is_granted('ROLE_USER')")]
+    public function ajaxUpdatePlatonics(
+        Request $request,
+        TwApiCallService $service
+    ): JsonResponse {
+        // Check is ajax type
+        if (!$request->isXmlHttpRequest()
+         || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
+        ) {
+            return $this->json(JsonResponseUtil::getError403(), 403);
+        }
+
+        // Get api settings
+        $twApi = $this->entityManager
+            ->getRepository(TwApi::class)
+            ->findActiveSettingsByUser($this->getUser(), 'platonics')
+        ;
+
+        // Not have api settings
+        if (!$twApi) {
+            // Ajax response
+            return $this->json(
+                JsonResponseUtil::getError('Error', 'Incomplete settings passed to Twitthor.')
+            );
+        }
+
+        // Set
+        $ajaxUtil = new AjaxUtil($request);
+
+        // Do uplade platonics
+        $result = $service->updatePlatonics(
+            $this->getUser(),
+            $twApi,
+            $ajaxUtil->get('update'),
+            $this->getParameter('app.path.uploads')
+        );
+
+        // Set js redirect path
+        if ($result['success']) {
+            $result['path'] = $this->generateUrl('app_platonics');
         }
 
         // Ajax response

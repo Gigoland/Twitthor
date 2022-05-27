@@ -16,7 +16,11 @@
     <div class="alert-box secondary-alert">
       <div class="alert">
         <p class="text-medium">
-          Follow rate limit : <span id="js-call-counts">{{ settings.callCnt|default(0) }}</span> / {{ twApiCallLimit|default(0) }} per {{ twApiCallIntervale|default(15) }} minutes
+          <i class="fa-solid fa-forward"></i> Following rate limit : <span id="js-call-counts-following">{{ settings.following.callCnt|default(0) }}</span> / {{ settings.following.callLimit|default(0) }} per {{ settings.following.callIntervale|default(15) }} minutes
+        </p>
+        <hr>
+        <p class="text-medium">
+          <i class="fa-solid fa-backward"></i> Followers rate limit : <span id="js-call-counts-followers">{{ settings.followers.callCnt|default(0) }}</span> / {{ settings.followers.callLimit|default(0) }} per {{ settings.followers.callIntervale|default(15) }} minutes
         </p>
       </div>
     </div>

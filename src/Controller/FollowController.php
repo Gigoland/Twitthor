@@ -77,7 +77,7 @@ class FollowController extends AbstractController
     }
 
     /**
-     * No follower "platonic" manager
+     * No followers "platonics" manager
      */
     #[Route('/platonics', name: 'app_platonics', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -96,8 +96,12 @@ class FollowController extends AbstractController
             10
         );
 
+        /** @var TwApiRepository $twApiRepository */
+        $twApiRepository = $this->entityManager->getRepository(TwApi::class);
+
         return $this->render('theme/admin/page/follow/platonics.html.twig', [
             'rows' => $rows,
+            'haveTwApiKeys' => $twApiRepository->haveValidPlatonicsSettings($this->getUser()),
         ]);
     }
 

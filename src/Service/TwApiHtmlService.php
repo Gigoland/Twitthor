@@ -3,10 +3,12 @@
 namespace App\Service;
 
 use App\Entity\User;
-use Twig\Environment;
+use App\Entity\TwApi;
+use App\Utils\JsonResponseUtil;
 use App\Manager\TwApiCallManager;
 use App\Repository\TwApiRepository;
 use App\Api\Twitter\TwitterApi;
+use Twig\Environment;
 
 class TwApiHtmlService
 {
@@ -22,7 +24,7 @@ class TwApiHtmlService
     public function getActiveSettingsByUser(User $user, ?string $for): array
     {
         if (!$user) {
-            return $this->error('Error'); // @todo message
+            return JsonResponseUtil::getError('Error', 'Error'); // @todo message
         }
 
         // Get activated settings
@@ -59,8 +61,8 @@ class TwApiHtmlService
                 if ($this->twApiCallManager->isFollowingLimitExceeded()) {
                     // Set warning message
                     $warning = [
-                        'code' => 'exceededLimit' ,
-                        'message' => 'You have exceeded the limit. Please try later.'
+                        'code' => 'exceededLimit',
+                        'message' => 'You have exceeded the rate limit. Please try later.',
                     ];
                 }
 
@@ -76,8 +78,8 @@ class TwApiHtmlService
                 if ($this->twApiCallManager->isFollowersLimitExceeded()) {
                     // Set warning message
                     $warning = [
-                        'code' => 'exceededLimit' ,
-                        'message' => 'You have exceeded the limit. Please try later.'
+                        'code' => 'exceededLimit',
+                        'message' => 'You have exceeded the rate limit. Please try later.',
                     ];
                 }
 
@@ -88,6 +90,9 @@ class TwApiHtmlService
                 ];
                 list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWERS;
                 break;
+            case 'platonics':
+                // Return from methode
+                return $this->getActiveSettingsByUserForPlatonics($twApi);
         }
 
         // Generate settings info html
@@ -109,16 +114,57 @@ class TwApiHtmlService
     }
 
     /**
-     * Errors
+     * Undocumented function
      */
-    private function error(string $message): array
+    private function getActiveSettingsByUserForPlatonics(TwApi $twApi): array
     {
-        return [
-            'success' => false,
-            'error' => [
-                'code' => 0,
-                'message' => $message,
+        $warning = false;
+        $html = false;
+
+        // Check & Update
+        if ($this->twApiCallManager->isFollowingLimitExceeded()
+         || $this->twApiCallManager->isFollowersLimitExceeded()
+        ) {
+            // Set warning message
+            $warning = [
+                'code' => 'exceededLimit',
+                'message' => 'You have exceeded the rate limit. Please try later.',
+            ];
+        }
+
+        // Set settings for following
+        list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWING;
+
+        $following = [
+            'callCnt' => $this->twApiCallManager->getFollowingCnt(),
+            'callLimit' => $callLimit,
+            'callIntervale' => $callInterval,
+        ];
+
+        // Set settings followers
+        list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWERS;
+
+        $followers = [
+            'callCnt' => $this->twApiCallManager->getFollowersCnt(),
+            'callLimit' => $callLimit,
+            'callIntervale' => $callInterval,
+        ];
+
+        // Generate settings info html
+        $html = $this->environment->render('theme/admin/common/custom/_tw_active_settings_info_platonic.html.twig', [
+            'settings' => [
+                'name' => $twApi->getName(),
+                'following' => $following,
+                'followers' => $followers,
             ],
+            'warning' => $warning,
+        ]);
+
+        // Response
+        return [
+            'success' => true,
+            'html' => $html,
+            'warning' => $warning,
         ];
     }
 }

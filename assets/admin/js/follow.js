@@ -11,7 +11,10 @@ import {Modal} from 'bootstrap';
       $twApiSettingsModalBtnGo = null,
       $twApiSettingsModalBtnGoOne = null,
       $twApiSettingsModalBtnGoAll = null,
+      $twApiSettingsModalBtnGoPlatonic = null,
       $twApiSettingsModalAlertCount = null,
+      $twApiSettingsModalAlertCountFollowing = null,
+      $twApiSettingsModalAlertCountFollowers = null,
       $twApiSettingsModalAlertResult = null,
       $twApiSettingsModalAlertMessage = null,
       updateAllFollow = false,
@@ -25,8 +28,12 @@ import {Modal} from 'bootstrap';
       $twApiSettingsModal.querySelector('.modal-body').innerHTML = data.html;
       twApiSettingsModalPlugin.show();
       if (data.warning) {
-        $twApiSettingsModalBtnGoOne.style.display = 'none';
-        $twApiSettingsModalBtnGoAll.style.display = 'none';
+        if ($twApiSettingsModalBtnGoPlatonic) {
+          $twApiSettingsModalBtnGoPlatonic.style.display = 'none';
+        } else {
+          $twApiSettingsModalBtnGoOne.style.display = 'none';
+          $twApiSettingsModalBtnGoAll.style.display = 'none';
+        }
       }
     } else {
       ajaxResponseAlert(data);
@@ -36,7 +43,7 @@ import {Modal} from 'bootstrap';
   // Get modal html content
   const getTwApiSettingModal = function() {
     this.style.display = 'none';
-    document.querySelector('#js-btn-update-loader').style.display = 'block';
+    document.querySelector('#js-btn-update-modal-loader').style.display = 'block';
     setTimeout(() => {
       axios.post(this.href)
       .then(response => response.data)
@@ -54,7 +61,9 @@ import {Modal} from 'bootstrap';
   // Enable bouttons events
   const enableModalEvents = function() {
     $twApiSettingsModal.querySelectorAll('.ev').forEach(el => el.disabled = false);
-    $twApiSettingsModal.querySelector('.btn-ko').innerHTML = 'Finish';
+    if (updateDone) {
+      $twApiSettingsModal.querySelector('.btn-ko').innerHTML = 'Finish';
+    }
     $twApiSettingsModalLoader.style.display = 'none';
   };
 
@@ -64,7 +73,7 @@ import {Modal} from 'bootstrap';
     $twApiSettingsModal.querySelectorAll('.ev').forEach(el => el.disabled = true);
   };
 
-  // After update
+  // After update follow
   const ajaxFollowCallback = function(data) {
     if (data.success) {
       if (data.next) {
@@ -87,7 +96,42 @@ import {Modal} from 'bootstrap';
         enableModalEvents();
       }
       $twApiSettingsModalAlertCount.innerHTML = data.callCount;
-      $twApiSettingsModalAlertMessage.innerHTML = 'Checked : ' + data.checked + ' / Created : ' + data.created + ' / Updated : ' + data.updated;
+      $twApiSettingsModalAlertMessage.innerHTML = `Checked : ${data.checked} / Created : ${data.created} / Updated : ${data.updated}`;
+      $twApiSettingsModalAlertResult.after($twApiSettingsModalAlertResult.cloneNode(true));
+      $twApiSettingsModalAlertResult.style.display = 'none';
+      redirect = data.path;
+    } else {
+      twApiSettingsModalPlugin.hide();
+      ajaxResponseAlert(data);
+    }
+  };
+
+  // After update
+  const ajaxPlatonicCallback = function(update, data) {
+    if (data.success) {
+      if (data.nextUpdate) {
+        updateDone = false;
+        $twApiSettingsModalBtnGo.innerHTML = 'Go to next';
+        // Get next
+          setTimeout(() => {
+            callUpdatePlatonic(data.nextUpdate);
+          }, 1000);
+      } else {
+        updateDone = true;
+        $twApiSettingsModalBtnGo.innerHTML = 'Done';
+        $twApiSettingsModalBtnGo.setAttribute('data-bs-dismiss', 'modal');
+        $twApiSettingsModalBtnGo.disabled = false;
+        $twApiSettingsModal.querySelector('.btn-ko').style.display = 'none';
+        enableModalEvents();
+      }
+      let icon = 'forward';
+      if (update === 'following') {
+        $twApiSettingsModalAlertCountFollowing.innerHTML = data.callCount;
+      } else {
+        icon = 'backward';
+        $twApiSettingsModalAlertCountFollowers.innerHTML = data.callCount;
+      }
+      $twApiSettingsModalAlertMessage.innerHTML = `<i class="fa-solid fa-${icon}"></i> Checked : ${data.checked} / Created : ${data.created} / Updated : ${data.updated}`;
       $twApiSettingsModalAlertResult.after($twApiSettingsModalAlertResult.cloneNode(true));
       $twApiSettingsModalAlertResult.style.display = 'none';
       redirect = data.path;
@@ -129,6 +173,29 @@ import {Modal} from 'bootstrap';
     }
   };
 
+  // Get update platonics
+  const callUpdatePlatonic = function(update) {
+    if (!updateDone) {
+      $twApiSettingsModalAlertMessage.innerHTML = 'Updating... Please do not close.';
+      $twApiSettingsModalAlertResult.style.display = 'block';
+      disableModalEvents();
+      setTimeout(() => {
+        axios.post(updateUrl, {
+          'update': update
+        })
+        .then(response => response.data)
+        .then(data => {
+          setTimeout(() => {
+            ajaxPlatonicCallback(update, data);
+          }, 50);
+        })
+        .catch(error => {
+          ajaxCatchAlert(error);
+        });
+      }, 50);
+    }
+  };
+
   // Unfollow
   const callUnfollow = function() {
     if (!updateDone) {
@@ -153,12 +220,15 @@ import {Modal} from 'bootstrap';
     twApiSettingsModalPlugin = new Modal($twApiSettingsModal);
     $twApiSettingsModalLoader = $twApiSettingsModal.querySelector('.modal-loader');
     $twApiSettingsModalBtnGoOne = $twApiSettingsModal.querySelector('#js-btn-update-follow');
-    $twApiSettingsModalBtnGoAll = $twApiSettingsModal.querySelector('#js-btn-update-all-follow');
+    $twApiSettingsModalBtnGoAll = $twApiSettingsModal.querySelector('#js-btn-update-follow-all');
+    $twApiSettingsModalBtnGoPlatonic = $twApiSettingsModal.querySelector('#js-btn-update-platonic');
 
     // On show modal
     $twApiSettingsModal.addEventListener('shown.bs.modal', function() {
       updateDone = false;
-      $twApiSettingsModalAlertCount = $twApiSettingsModal.querySelector('#twapi-call-counts');
+      $twApiSettingsModalAlertCount = $twApiSettingsModal.querySelector('#js-call-counts');
+      $twApiSettingsModalAlertCountFollowing = $twApiSettingsModal.querySelector('#js-call-counts-following');
+      $twApiSettingsModalAlertCountFollowers = $twApiSettingsModal.querySelector('#js-call-counts-followers');
       $twApiSettingsModalAlertResult = $twApiSettingsModal.querySelector('.alert-box-result');
       $twApiSettingsModalAlertMessage = $twApiSettingsModalAlertResult.querySelector('#alert-box-result-message');
       document.querySelector('.ajax-loader').style.display = 'none';
@@ -176,8 +246,12 @@ import {Modal} from 'bootstrap';
       if (!redirect) {
         document.querySelector('.ajax-loader').style.display = 'none';
         document.querySelector('.ajax-btn').style.display = 'block';
-        $twApiSettingsModalBtnGoOne.style.display = 'block';
-        $twApiSettingsModalBtnGoAll.style.display = 'block';
+        if ($twApiSettingsModalBtnGoPlatonic) {
+          $twApiSettingsModalBtnGoPlatonic.style.display = 'block';
+        } else {
+          $twApiSettingsModalBtnGoOne.style.display = 'block';
+          $twApiSettingsModalBtnGoAll.style.display = 'block';
+        }
         enableModalEvents();
       }
     });
@@ -202,11 +276,20 @@ import {Modal} from 'bootstrap';
         callUpdateFollow();
       });
     }
+
+    // Update all platonics
+    if ($twApiSettingsModalBtnGoPlatonic) {
+      $twApiSettingsModalBtnGoPlatonic.addEventListener('click', (e) => {
+        $twApiSettingsModalBtnGo = $twApiSettingsModalBtnGoPlatonic;
+        updateUrl = e.currentTarget.value;
+        callUpdatePlatonic('following');
+      });
+    }
   }
 
   // Get modal content
-  if (document.querySelector('#js-btn-update')) {
-    document.querySelector('#js-btn-update').addEventListener('click', getTwApiSettingModal);
+  if (document.querySelector('#js-btn-update-modal')) {
+    document.querySelector('#js-btn-update-modal').addEventListener('click', getTwApiSettingModal);
   }
 
   // Unfollow

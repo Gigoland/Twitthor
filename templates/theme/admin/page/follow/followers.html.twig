@@ -7,7 +7,7 @@
   {% set actions = [] %}
   {% if haveTwApiKeys|default(false) %}
     {% set actions = [
-      {'type': 'ajax', 'title': 'Update', 'icon': 'fa-retweet', 'id': 'js-btn-update', 'path': path('app_twitter_api_settings_html_ajax', {'query': 'followers'})}
+      {'type': 'ajax', 'title': 'Update', 'icon': 'fa-retweet', 'id': 'js-btn-update-modal', 'path': path('app_twitter_api_settings_html_ajax', {'query': 'followers'})}
     ] %}
   {% endif %}
 
@@ -112,17 +112,15 @@
       'modal-twapi-settings',
       'Followers update',
       '',
-      [
-        {
-          'id': 'js-btn-update-follow',
-          'path': path('app_twitter_api_update_followers_ajax'),
-          'title': 'Go'
-        }, {
-          'id': 'js-btn-update-all-follow',
-          'path': path('app_twitter_api_update_followers_ajax'),
-          'title': 'Go All'
-        }
-      ]
+      [{
+        'id': 'js-btn-update-follow',
+        'path': path('app_twitter_api_update_followers_ajax'),
+        'title': 'Go'
+      }, {
+        'id': 'js-btn-update-follow-all',
+        'path': path('app_twitter_api_update_followers_ajax'),
+        'title': 'Go All'
+      }]
     ) }}
   {% endif %}
 {% endblock %}

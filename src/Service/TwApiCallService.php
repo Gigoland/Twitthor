@@ -116,7 +116,7 @@ class TwApiCallService
     }
 
     /**
-     * Update by Api
+     * Update following by Api
      */
     public function updateFollowing(
         User $user,
@@ -210,7 +210,7 @@ class TwApiCallService
     }
 
     /**
-     * Update by Api
+     * Update followers by Api
      */
     public function updateFollowers(
         User $user,
@@ -301,6 +301,41 @@ class TwApiCallService
             'callCount' => $this->twApiCallManager->getFollowersCnt(),
             'next' => !empty($this->twApiCallManager->getNextToken()),
         ];
+    }
+
+    /**
+     * Update following/followers by Api
+     */
+    public function updatePlatonics(
+        User $user,
+        TwApi $twApi,
+        string $updateFor,
+        string $uploadsPath
+    ): array {
+        switch ($updateFor) {
+            case 'following':
+                $updatedFollow = $this->updateFollowing($user, $twApi, $uploadsPath);
+                $updatedFollow['nextUpdate'] = $updateFor;
+
+                // Continued to followers if following is finished
+                if (!$updatedFollow['next']) {
+                    $updatedFollow['nextUpdate'] = 'followers';
+                }
+                break;
+            case 'followers':
+                $updatedFollow = $this->updateFollowers($user, $twApi, $uploadsPath);
+                $updatedFollow['nextUpdate'] = false;
+
+                // Continue updating if have next
+                if ($updatedFollow['next']) {
+                    $updatedFollow['nextUpdate'] = $updateFor;
+                }
+                break;
+            default:
+                return JsonResponseUtil::getError('Error', 'Incomplete params passed to Twitthor.');
+        }
+
+        return $updatedFollow;
     }
 
     /**

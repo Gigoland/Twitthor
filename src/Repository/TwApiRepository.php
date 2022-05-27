@@ -90,6 +90,7 @@ class TwApiRepository extends ServiceEntityRepository
                 break;
             case 'following':
             case 'followers':
+            case 'platonics':
                 $qb
                     ->andWhere('t.bearerToken IS NOT NULL')
                 ;
@@ -118,11 +119,19 @@ class TwApiRepository extends ServiceEntityRepository
     }
 
     /**
-     * Check valid settings for get following
+     * Check valid settings for get followers
      */
     public function haveValidFollowersSettings(User $user): int
     {
         return $this->haveValidSettings($user, 'followers');
+    }
+
+    /**
+     * Check valid settings for get following/followers
+     */
+    public function haveValidPlatonicsSettings(User $user): int
+    {
+        return $this->haveValidSettings($user, 'platonics');
     }
 
     /**
@@ -149,6 +158,7 @@ class TwApiRepository extends ServiceEntityRepository
                 break;
             case 'following':
             case 'followers':
+            case 'platonics':
                 $qb
                     ->andWhere('t.bearerToken IS NOT NULL')
                     ->andWhere('t.accountId IS NOT NULL')
