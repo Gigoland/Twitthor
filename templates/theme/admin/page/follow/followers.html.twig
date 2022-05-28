@@ -51,7 +51,7 @@
                 </thead>
                 <tbody>
                   {% for row in rows %}
-                    <tr id="row-{{ row.twUser.twAccountId }}">
+                    <tr id="row-{{ loop.index }}">
                       <td class="min-width">
                         <div class="lead">
                           <a href="https://twitter.com/{{ row.twUser.twUsername }}" rel="noreferrer" target="_blank">
@@ -94,7 +94,7 @@
                       </td>
                       <td>
                         {% if row.isFollowing %}
-                          <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }} btn-hover js-btn-unfollow js-btn-unfollow-{{ loop.index }}">Unfollow</button>
+                          <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info is-favorite' : 'warning' }} btn-hover js-btn-unfollow js-btn-unfollow-{{ loop.index }}{% if row.twUser.twIsVerified %} is-verified{% endif %}">Unfollow</button>
                         {% endif %}
                       </td>
                     </tr>

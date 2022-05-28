@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {Modal} from 'bootstrap';
+const swal = require('sweetalert2');
 
 // Onload
 (function() {
@@ -26,15 +27,17 @@ import {Modal} from 'bootstrap';
   const showTwApiSettingsModal = function(data) {
     if (data.success) {
       $twApiSettingsModal.querySelector('.modal-body').innerHTML = data.html;
-      twApiSettingsModalPlugin.show();
-      if (data.warning) {
-        if ($twApiSettingsModalBtnGoPlatonic) {
-          $twApiSettingsModalBtnGoPlatonic.style.display = 'none';
-        } else {
-          $twApiSettingsModalBtnGoOne.style.display = 'none';
-          $twApiSettingsModalBtnGoAll.style.display = 'none';
+      setTimeout(() => {
+        twApiSettingsModalPlugin.show();
+        if (data.warning) {
+          if ($twApiSettingsModalBtnGoPlatonic) {
+            $twApiSettingsModalBtnGoPlatonic.style.display = 'none';
+          } else {
+            $twApiSettingsModalBtnGoOne.style.display = 'none';
+            $twApiSettingsModalBtnGoAll.style.display = 'none';
+          }
         }
-      }
+      }, 50);
     } else {
       ajaxResponseAlert(data);
     }
@@ -97,8 +100,10 @@ import {Modal} from 'bootstrap';
       }
       $twApiSettingsModalAlertCount.innerHTML = data.callCount;
       $twApiSettingsModalAlertMessage.innerHTML = `Checked : ${data.checked} / Created : ${data.created} / Updated : ${data.updated}`;
-      $twApiSettingsModalAlertResult.after($twApiSettingsModalAlertResult.cloneNode(true));
-      $twApiSettingsModalAlertResult.style.display = 'none';
+      setTimeout(() => {
+        $twApiSettingsModalAlertResult.after($twApiSettingsModalAlertResult.cloneNode(true));
+        $twApiSettingsModalAlertResult.style.display = 'none';
+      }, 50);
       redirect = data.path;
     } else {
       twApiSettingsModalPlugin.hide();
@@ -113,9 +118,9 @@ import {Modal} from 'bootstrap';
         updateDone = false;
         $twApiSettingsModalBtnGo.innerHTML = 'Go to next';
         // Get next
-          setTimeout(() => {
-            callUpdatePlatonic(data.nextUpdate);
-          }, 1000);
+        setTimeout(() => {
+          callUpdatePlatonic(data.nextUpdate);
+        }, 1000);
       } else {
         updateDone = true;
         $twApiSettingsModalBtnGo.innerHTML = 'Done';
@@ -132,8 +137,10 @@ import {Modal} from 'bootstrap';
         $twApiSettingsModalAlertCountFollowers.innerHTML = data.callCount;
       }
       $twApiSettingsModalAlertMessage.innerHTML = `<i class="fa-solid fa-${icon}"></i> Checked : ${data.checked} / Created : ${data.created} / Updated : ${data.updated}`;
-      $twApiSettingsModalAlertResult.after($twApiSettingsModalAlertResult.cloneNode(true));
-      $twApiSettingsModalAlertResult.style.display = 'none';
+      setTimeout(() => {
+        $twApiSettingsModalAlertResult.after($twApiSettingsModalAlertResult.cloneNode(true));
+        $twApiSettingsModalAlertResult.style.display = 'none';
+      }, 50);
       redirect = data.path;
     } else {
       twApiSettingsModalPlugin.hide();
@@ -145,7 +152,6 @@ import {Modal} from 'bootstrap';
   const ajaxUnfollowCallback = function(data) {
     if (data.success) {
       ajaxResponseSuccess(data);
-      document.querySelector('#row-' + data.data.target).remove();
     } else {
       ajaxResponseAlert(data);
     }
@@ -196,26 +202,59 @@ import {Modal} from 'bootstrap';
   };
 
   // Unfollow
-  const callUnfollow = function() {
-    let $loader = this.parentElement.querySelector('.unfollow-loader');
-    this.style.display = 'none';
-    $loader.style.display = 'block';
+  const callUnfollow = function($el) {
     setTimeout(() => {
-      axios.post(this.value)
+      axios.post($el.value)
       .then(response => response.data)
       .then(data => {
-        if (!data.success) {
-          this.style.display = 'block';
-          $loader.style.display = 'none';
-        }
         setTimeout(() => {
           ajaxUnfollowCallback(data);
+          if (data.success) {
+            document.querySelector(`#row-${$el.getAttribute('data-target')}`).remove();
+          } else {
+            $el.style.display = 'block';
+            $loader.style.display = 'none';
+          }
         }, 50);
       })
       .catch(error => {
         ajaxCatchAlert(error);
       });
     }, 50);
+  };
+
+  // Safe unfollow
+  const safeUnfollow = function() {
+    let $this = this,
+        $loader = $this.parentElement.querySelector('.unfollow-loader');
+        $this.style.display = 'none';
+    $loader.style.display = 'block';
+    if ($this.classList.contains('is-verified')
+     || $this.classList.contains('is-favorite')
+    ) {
+      let text = 'This is verified account.';
+      if ($this.classList.contains('is-favorite')) {
+        text = 'This is you favorited account.';
+      }
+      swal.fire({
+        title: 'Are you sure ?',
+        text: text,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, unfollow it !'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          callUnfollow($this);
+        } else {
+          $this.style.display = 'block';
+          $loader.style.display = 'none';
+        }
+      })
+    } else {
+      callUnfollow($this);
+    }
   };
 
   // Modal
@@ -302,16 +341,18 @@ import {Modal} from 'bootstrap';
       })
       .then(response => response.data)
       .then(data => {
-        ajaxResponseSuccess(data);
-        $loader.style.display = 'none';
-        this.style.display = 'block';
-        if (this.checked) {
-          $target.classList.remove('btn-warning');
-          $target.classList.add('btn-info');
-        } else {
-          $target.classList.remove('btn-info');
-          $target.classList.add('btn-warning');
-        }
+        setTimeout(() => {
+          ajaxResponseSuccess(data);
+          $loader.style.display = 'none';
+          this.style.display = 'block';
+          if (this.checked) {
+            $target.classList.replace('btn-warning', 'btn-info');
+            $target.classList.add('is-favorite');
+          } else {
+            $target.classList.replace('btn-info', 'btn-warning');
+            $target.classList.remove('is-favorite');
+          }
+        }, 50);
       })
       .catch(error => {
         ajaxCatchAlert(error);
@@ -326,7 +367,7 @@ import {Modal} from 'bootstrap';
 
   // Unfollow
   if (document.querySelector('.js-btn-unfollow')) {
-    document.querySelectorAll('.js-btn-unfollow').forEach(el => el.addEventListener('click', callUnfollow));
+    document.querySelectorAll('.js-btn-unfollow').forEach(el => el.addEventListener('click', safeUnfollow));
   }
 
   // Swith is favorite

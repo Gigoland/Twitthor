@@ -14,11 +14,11 @@
       "js": [
         "/src/runtime.js",
         "/src/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-6a5154.js",
-        "/src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_concat_js-node_modu-455833.js",
+        "/src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_concat_js-node_modu-bc0965.js",
         "/src/admin.js"
       ],
       "css": [
-        "/src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_concat_js-node_modu-455833.css",
+        "/src/vendors-node_modules_axios_index_js-node_modules_core-js_modules_es_array_concat_js-node_modu-bc0965.css",
         "/src/admin.css"
       ]
     }
