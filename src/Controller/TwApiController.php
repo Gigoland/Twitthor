@@ -160,7 +160,7 @@ class TwApiController extends AbstractController
     /**
      * Switch isActive
      */
-    #[Route('/tw/settings/{id}/active/ajax', name: 'app_twitter_api_settings_active_ajax', methods: ['POST'])]
+    #[Route('/tw/settings/{id}/active/ajax', name: 'app_twitter_api_settings_isactive_ajax', methods: ['POST'])]
     #[Security("is_granted('ROLE_USER') and user === twApi.getUser()")]
     public function ajaxSwitchIsActive(
         Request $request,

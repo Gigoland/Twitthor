@@ -54,7 +54,7 @@
                           <div class="spinner-grow text-primary ajax-loader switch-loader pull-left" style="width:2rem;height:2rem;margin-left:-60px;display:none;" role="status">
                             <span class="sr-only">Loading...</span>
                           </div>
-                          <input class="form-check-input js-switch-isactive" type="radio" name="is_active" value="{{ path('app_twitter_api_settings_active_ajax', {'id': row.id}) }}" autocomplete="off"{% if row.isActive %} checked="checked"{% endif %} data-target="{{ loop.index }}">
+                          <input class="form-check-input js-switch-isactive" type="radio" name="is_active" value="{{ path('app_twitter_api_settings_isactive_ajax', {'id': row.id}) }}" autocomplete="off"{% if row.isActive %} checked="checked"{% endif %} data-target="{{ loop.index }}">
                         </div>
                       </td>
                       <td class="min-width"><p><strong>{{ row.name }}</strong></p></td>

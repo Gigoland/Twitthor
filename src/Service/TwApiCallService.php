@@ -680,6 +680,8 @@ class TwApiCallService
             // Trim www.
             return $urlUtil->trimW3($item['expanded_url']);
         }
+
+        return null;
     }
 
     /**
