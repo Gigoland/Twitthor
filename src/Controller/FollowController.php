@@ -5,10 +5,13 @@ namespace App\Controller;
 use App\Entity\Follow;
 use App\Entity\TwApi;
 use App\Form\FollowType;
+use App\Utils\AjaxUtil;
+use App\Utils\JsonResponseUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -193,5 +196,38 @@ class FollowController extends AbstractController
         );
 
         return $this->redirectToRoute('app_followers');
+    }
+
+    /**
+     * Switch isFavorite
+     */
+    #[Route('/follow/{id}/favorite/ajax', name: 'app_follow_isfavorite_ajax', methods: ['POST'])]
+    #[Security("is_granted('ROLE_USER') and user === follow.getUser()")]
+    public function ajaxSwitchIsFavorite(
+        Request $request,
+        Follow $follow
+    ): JsonResponse {
+        // Check is ajax type
+        if (!$request->isXmlHttpRequest()
+         || !$this->isCsrfTokenValid('admin-x-csrf-token', $request->headers->get('X-XSRF-TOKEN'))
+        ) {
+            return $this->json(JsonResponseUtil::getError403(), 403);
+        }
+
+        // Set
+        $ajaxUtil = new AjaxUtil($request);
+
+        // isFavorite
+        $follow->setIsFavorite(
+            $ajaxUtil->getBool('isFavorite')
+        );
+
+        $this->entityManager->persist($follow);
+        $this->entityManager->flush();
+
+        // Ajax response
+        return $this->json(
+            JsonResponseUtil::getSuccess('Success', 'Updated with success !')
+        );
     }
 }

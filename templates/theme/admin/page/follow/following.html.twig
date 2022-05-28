@@ -78,14 +78,22 @@
                       <td class="min-width"><p>{{ row.twUser.twCreatedAt|date('d/m/Y H:i') }}</p></td>
                       <td class="min-width"><p>{{ row.twUser.twIsVerified ? '<span class="badge bg-info">Yes' : '<span class="badge bg-secondary">No' }}</span></p></td>
                       <td class="min-width"><p>{{ row.isFollower ? '<span class="badge bg-info">Yes' : '<span class="badge bg-secondary">Platonic' }}</span></p></td>
-                      <td class="min-width"><p>{{ row.isFavorite ? '<span class="badge bg-info">Yes' : '<span class="badge bg-secondary">No' }}</span></p></td>
+
+                      <td class="min-width">
+                        <div class="form-check form-switch toggle-switch">
+                          <div class="spinner-grow text-primary ajax-loader switch-loader pull-left" style="width:2rem;height:2rem;margin-left:-60px;display:none;" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                          <input class="form-check-input js-switch-isfavorite" type="checkbox" value="{{ path('app_follow_isfavorite_ajax', {'id': row.id}) }}" autocomplete="off"{% if row.isFavorite %} checked="checked"{% endif %} data-target="{{ loop.index }}">
+                        </div>
+                      </td>
                       <td>
                         <div class="action">
                           <a href="{{ path('app_follow_edit', {'id': row.id}) }}" class="btn btn-secondary">Edit</a>
                         </div>
                       </td>
                       <td>
-                        <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }} btn-hover js-btn-unfollow">Unfollow</button>
+                        <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }} btn-hover js-btn-unfollow js-btn-unfollow-{{ loop.index }}">Unfollow</button>
                       </td>
                     </tr>
                   {% endfor %}

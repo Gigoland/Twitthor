@@ -2,20 +2,20 @@
 
 namespace App\Controller;
 
-use App\Utils\AjaxUtil;
-use App\Utils\JsonResponseUtil;
 use App\Entity\TwApi;
 use App\Entity\Follow;
 use App\Form\TwApiType;
 use App\Manager\TwApiCallManager;
 use App\Service\TwApiCallService;
 use App\Service\TwApiHtmlService;
+use App\Utils\AjaxUtil;
+use App\Utils\JsonResponseUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -66,22 +66,29 @@ class TwApiController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $twApi = $form->getData();
-            $twApi->setUser($this->getUser()); // Connected user
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $twApi = $form->getData();
+                $twApi->setUser($this->getUser()); // Connected user
 
-            $this->entityManager->persist($twApi);
-            $this->entityManager->flush();
+                $this->entityManager->persist($twApi);
+                $this->entityManager->flush();
 
-            // Add new call limit counts
-            $twApiCallManager->createTwApiCall($twApi);
+                // Add new call limit counts
+                $twApiCallManager->createTwApiCall($twApi);
+
+                $this->addFlash(
+                    'success',
+                    'Settings created with success !'
+                );
+
+                return $this->redirectToRoute('app_twitter_api_settings');
+            }
 
             $this->addFlash(
-                'success',
-                'Settings created with success !'
+                'errors',
+                'Something went wrong !'
             );
-
-            return $this->redirectToRoute('app_twitter_api_settings');
         }
 
         return $this->render('theme/admin/page/twitter/api/settings_new.html.twig', [

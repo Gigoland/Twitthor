@@ -62,6 +62,10 @@ class TwApiCallService
         // Get access_token / Expires check & Update
         $accessToken = $this->twApiManager->getAccessToken($twApi);
 
+        if (!empty($accessToken['error'])) {
+            return $accessToken;
+        }
+
         if (empty($accessToken)) {
             // Warning
             return JsonResponseUtil::getWarning('Expired token', 'Please try later.');

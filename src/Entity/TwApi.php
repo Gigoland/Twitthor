@@ -58,7 +58,7 @@ class TwApi
 
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => 0])]
     #[Assert\NotNull()]
-    private bool $isActive;
+    private bool $isActive = false;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'twApis')]
     #[ORM\JoinColumn(nullable: false)]

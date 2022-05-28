@@ -19,7 +19,7 @@ class TwApiHtmlService
     ) {}
 
     /**
-     * Undocumented function
+     * Html for updating following/followers/platonics
      */
     public function getActiveSettingsByUser(User $user, ?string $for): array
     {
@@ -114,7 +114,7 @@ class TwApiHtmlService
     }
 
     /**
-     * Undocumented function
+     * Html for updationg platonics only
      */
     private function getActiveSettingsByUserForPlatonics(TwApi $twApi): array
     {
@@ -141,7 +141,7 @@ class TwApiHtmlService
             'callIntervale' => $callInterval,
         ];
 
-        // Set settings followers
+        // Set settings for followers
         list($callLimit, $callInterval) = TwitterApi::LIMIT_USERS_FOLLOWERS;
 
         $followers = [

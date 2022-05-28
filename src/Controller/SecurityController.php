@@ -35,7 +35,7 @@ class SecurityController extends AbstractController
             $user = $form->getData();
 
             // Set token for email verification
-            $user->setVerifiedToken(
+            $user->setVerifyToken(
                 $tokenGenerator->generateToken()
             );
 

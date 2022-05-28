@@ -13,7 +13,7 @@ window.ajaxResponseSuccess = function(response) {
 
 // Ajax catch errors manager
 window.ajaxCatchAlert = function(response) {
-  console.error('Erros:', response);
+  console.log('Erros:', response);
 }
 
 // Ajax response manager
@@ -39,8 +39,9 @@ window.ajaxResponseAlert = function(response) {
       text: response.info.message,
       footer: '<strong>' + response.info.status + '</strong>'
     });
+  } else {
+    console.log('Erros:', response);
   }
-  console.error('Erros:', response);
 };
 
 (function() {

@@ -83,6 +83,9 @@
                         </div>
                       </td>
                       <td>
+                        <div class="spinner-grow text-primary ajax-loader unfollow-loader pull-left" style="width:2rem;height:2rem;display:none;" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
                         <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info' : 'warning' }} btn-hover js-btn-unfollow">Unfollow</button>
                       </td>
                     </tr>

@@ -5,6 +5,7 @@ namespace App\Manager;
 use App\Api\Twitter\TwitterOAuth2;
 use App\Entity\TwApi;
 use App\Entity\TwApiOAuth2;
+use App\Utils\JsonResponseUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
@@ -78,9 +79,14 @@ class TwApiManager
     /**
      * Twitter OAuth2 - Get access_token
      */
-    public function getAccessToken(TwApi $twApi): ?string
+    public function getAccessToken(TwApi $twApi)
     {
         $twApiOAuth2 = $twApi->getTwApiOAuth2();
+
+        if (!$twApiOAuth2) {
+            return JsonResponseUtil::getError('Unauthorized', 'This action requires authorization. Go to settings.', 'unauthorized', 403);
+        }
+
         $expiresIn = $twApiOAuth2->getExpiresIn();
 
         // Check expires intervale
@@ -109,7 +115,7 @@ class TwApiManager
              * ]
              */
             if (empty($result['access_token'])) {
-                return false;
+                return JsonResponseUtil::getError('Unauthorized', $result['error_description'], 'unauthorized', 403);
             }
 
             // Update

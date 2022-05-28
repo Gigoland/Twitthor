@@ -149,7 +149,6 @@ import {Modal} from 'bootstrap';
     } else {
       ajaxResponseAlert(data);
     }
-    updateDone = true;
   };
 
   // Get update following/folowers
@@ -198,21 +197,25 @@ import {Modal} from 'bootstrap';
 
   // Unfollow
   const callUnfollow = function() {
-    if (!updateDone) {
-      updateDone = false;
-      setTimeout(() => {
-        axios.post(this.value)
-        .then(response => response.data)
-        .then(data => {
-          setTimeout(() => {
-            ajaxUnfollowCallback(data);
-          }, 50);
-        })
-        .catch(error => {
-          ajaxCatchAlert(error);
-        });
-      }, 50);
-    }
+    let $loader = this.parentElement.querySelector('.unfollow-loader');
+    this.style.display = 'none';
+    $loader.style.display = 'block';
+    setTimeout(() => {
+      axios.post(this.value)
+      .then(response => response.data)
+      .then(data => {
+        if (!data.success) {
+          this.style.display = 'block';
+          $loader.style.display = 'none';
+        }
+        setTimeout(() => {
+          ajaxUnfollowCallback(data);
+        }, 50);
+      })
+      .catch(error => {
+        ajaxCatchAlert(error);
+      });
+    }, 50);
   };
 
   // Modal
@@ -287,6 +290,35 @@ import {Modal} from 'bootstrap';
     }
   }
 
+  // Favorite
+  const setIsFavorite = function() {
+    let $loader = this.parentElement.querySelector('.switch-loader'),
+        $target = document.querySelector(`.js-btn-unfollow-${this.getAttribute('data-target')}`);
+    this.style.display = 'none';
+    $loader.style.display = 'block';
+    setTimeout(() => {
+      axios.post(this.value, {
+        'isFavorite': this.checked
+      })
+      .then(response => response.data)
+      .then(data => {
+        ajaxResponseSuccess(data);
+        $loader.style.display = 'none';
+        this.style.display = 'block';
+        if (this.checked) {
+          $target.classList.remove('btn-warning');
+          $target.classList.add('btn-info');
+        } else {
+          $target.classList.remove('btn-info');
+          $target.classList.add('btn-warning');
+        }
+      })
+      .catch(error => {
+        ajaxCatchAlert(error);
+      });
+    }, 50);
+  };
+
   // Get modal content
   if (document.querySelector('#js-btn-update-modal')) {
     document.querySelector('#js-btn-update-modal').addEventListener('click', getTwApiSettingModal);
@@ -295,5 +327,10 @@ import {Modal} from 'bootstrap';
   // Unfollow
   if (document.querySelector('.js-btn-unfollow')) {
     document.querySelectorAll('.js-btn-unfollow').forEach(el => el.addEventListener('click', callUnfollow));
+  }
+
+  // Swith is favorite
+  if (document.querySelector('.js-switch-isfavorite')) {
+    document.querySelectorAll('.js-switch-isfavorite').forEach(el => el.addEventListener('change', setIsFavorite));
   }
 })();
