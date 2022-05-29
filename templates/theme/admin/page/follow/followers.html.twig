@@ -94,7 +94,10 @@
                       </td>
                       <td>
                         {% if row.isFollowing %}
-                          <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info is-favorite' : 'warning' }} btn-hover js-btn-unfollow js-btn-unfollow-{{ loop.index }}{% if row.twUser.twIsVerified %} is-verified{% endif %}">Unfollow</button>
+                          <div class="spinner-grow text-primary ajax-loader unfollow-loader pull-left" style="width:2rem;height:2rem;display:none;" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                          <button type="button" value="{{ path('app_twitter_api_unfollow_ajax', {'id': row.id}) }}" class="btn btn-{{ row.isFavorite ? 'info is-favorite' : 'warning' }} btn-hover js-btn-unfollow js-btn-unfollow-{{ loop.index }}{% if row.twUser.twIsVerified %} is-verified{% endif %}" data-target="{{ loop.index }}">Unfollow</button>
                         {% endif %}
                       </td>
                     </tr>

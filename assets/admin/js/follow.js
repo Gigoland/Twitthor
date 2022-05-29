@@ -202,7 +202,7 @@ const swal = require('sweetalert2');
   };
 
   // Unfollow
-  const callUnfollow = function($el) {
+  const callUnfollow = function($el, $loader) {
     setTimeout(() => {
       axios.post($el.value)
       .then(response => response.data)
@@ -227,33 +227,33 @@ const swal = require('sweetalert2');
   const safeUnfollow = function() {
     let $this = this,
         $loader = $this.parentElement.querySelector('.unfollow-loader');
-        $this.style.display = 'none';
+    $this.style.display = 'none';
     $loader.style.display = 'block';
     if ($this.classList.contains('is-verified')
      || $this.classList.contains('is-favorite')
     ) {
       let text = 'This is verified account.';
       if ($this.classList.contains('is-favorite')) {
-        text = 'This is you favorited account.';
+        text = 'This is your favorite account.';
       }
       swal.fire({
         title: 'Are you sure ?',
         text: text,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, unfollow it !'
+        confirmButtonColor: '#ffc107',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, Unfollow it !'
       }).then((result) => {
         if (result.isConfirmed) {
-          callUnfollow($this);
+          callUnfollow($this, $loader);
         } else {
           $this.style.display = 'block';
           $loader.style.display = 'none';
         }
       })
     } else {
-      callUnfollow($this);
+      callUnfollow($this, $loader);
     }
   };
 
