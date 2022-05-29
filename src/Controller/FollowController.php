@@ -37,6 +37,8 @@ class FollowController extends AbstractController
             $this->entityManager->getRepository(Follow::class)->findBy([
                 'user' => $this->getUser(),
                 'isFollowing' => true,
+            ], [
+                'id' => 'DESC',
             ]),
             $request->query->getInt('page', 1),
             10
@@ -65,6 +67,8 @@ class FollowController extends AbstractController
             $this->entityManager->getRepository(Follow::class)->findBy([
                 'user' => $this->getUser(),
                 'isFollower' => true,
+            ], [
+                'id' => 'DESC',
             ]),
             $request->query->getInt('page', 1),
             10
@@ -94,6 +98,9 @@ class FollowController extends AbstractController
                 'user' => $this->getUser(),
                 'isFollowing' => true,
                 'isFollower' => false,
+            ], [
+                'isFavorite' => 'ASC',
+                'id' => 'DESC',
             ]),
             $request->query->getInt('page', 1),
             10
@@ -123,6 +130,8 @@ class FollowController extends AbstractController
                 'user' => $this->getUser(),
                 'isFollowing' => false,
                 'isFollower' => false,
+            ], [
+                'id' => 'DESC',
             ]),
             $request->query->getInt('page', 1),
             10

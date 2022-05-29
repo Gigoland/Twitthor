@@ -205,8 +205,8 @@ class TwApiCallService
         return [
             'success' => true,
             'checked' => count($result['twUserIds']), // Total found
-            'created' => count($result['insert']), // Follow created
-            'updated' => count($result['update']), // Follow updated
+            'created' => count($result['insert']), // Following created
+            'updated' => count($result['update']), // Following updated
             'callCount' => $this->twApiCallManager->getFollowingCnt(),
             'next' => !empty($this->twitthorManager->getNextToken()),
         ];
@@ -299,15 +299,15 @@ class TwApiCallService
         return [
             'success' => true,
             'checked' => count($result['twUserIds']), // Total found
-            'created' => count($result['insert']), // Follow created
-            'updated' => count($result['update']), // Follow updated
+            'created' => count($result['insert']), // Followers created
+            'updated' => count($result['update']), // Followers updated
             'callCount' => $this->twApiCallManager->getFollowersCnt(),
             'next' => !empty($this->twApiCallManager->getNextToken()),
         ];
     }
 
     /**
-     * Update following/followers by Api
+     * Update platonics with following/followers by Api
      */
     public function updatePlatonics(
         User $user,
@@ -512,7 +512,10 @@ class TwApiCallService
                 $follow->setTwUser($twUser); // Twitter user
                 $saveFollow = 'insert';
             } elseif ($follow->getIsFollowing() !== true) {
-                // Update
+                // Update following but set key 'insert'
+                $saveFollow = 'insert';
+            } elseif ($saveTwUser === 'update') {
+                // Updated juste twitter account info
                 $saveFollow = 'update';
             }
 
@@ -640,7 +643,10 @@ class TwApiCallService
                 $follow->setTwUser($twUser); // Twitter user
                 $saveFollow = 'insert';
             } elseif ($follow->getIsFollower() !== true) {
-                // Update
+                // Update follower but set key 'insert'
+                $saveFollow = 'insert';
+            } elseif ($saveTwUser === 'update') {
+                // Updated juste twitter account info
                 $saveFollow = 'update';
             }
 

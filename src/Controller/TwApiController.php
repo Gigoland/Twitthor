@@ -39,6 +39,9 @@ class TwApiController extends AbstractController
         $rows = $paginator->paginate(
             $this->entityManager->getRepository(TwApi::class)->findBy([
                 'user' => $this->getUser(),
+            ], [
+                'isActive' => 'DESC',
+                'id' => 'DESC',
             ]),
             $request->query->getInt('page', 1),
             10
