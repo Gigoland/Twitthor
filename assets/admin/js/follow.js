@@ -212,8 +212,8 @@ const swal = require('sweetalert2');
           if (data.success) {
             document.querySelector(`#row-${$el.getAttribute('data-target')}`).remove();
           } else {
-            $el.style.display = 'block';
             $loader.style.display = 'none';
+            $el.style.display = 'block';
           }
         }, 50);
       })
@@ -232,13 +232,9 @@ const swal = require('sweetalert2');
     if ($this.classList.contains('is-verified')
      || $this.classList.contains('is-favorite')
     ) {
-      let text = 'This is verified account.';
-      if ($this.classList.contains('is-favorite')) {
-        text = 'This is your favorite account.';
-      }
       swal.fire({
         title: 'Are you sure ?',
-        text: text,
+        text: $this.classList.contains('is-favorite') ? 'This is your favorite account.' : 'This is verified account.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ffc107',
@@ -248,8 +244,8 @@ const swal = require('sweetalert2');
         if (result.isConfirmed) {
           callUnfollow($this, $loader);
         } else {
-          $this.style.display = 'block';
           $loader.style.display = 'none';
+          $this.style.display = 'block';
         }
       })
     } else {
