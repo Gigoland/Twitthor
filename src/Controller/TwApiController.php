@@ -6,6 +6,7 @@ use App\Entity\TwApi;
 use App\Entity\Follow;
 use App\Form\TwApiType;
 use App\Manager\TwApiCallManager;
+use App\Manager\TwUserMetaDataManager;
 use App\Service\TwApiCallService;
 use App\Service\TwApiHtmlService;
 use App\Utils\AjaxUtil;
@@ -23,7 +24,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class TwApiController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {}
 
     /**
@@ -384,6 +385,7 @@ class TwApiController extends AbstractController
     public function ajaxUnfollow(
         Request $request,
         TwApiCallService $service,
+        TwUserMetaDataManager $twUserMetaDataManager,
         Follow $follow
     ): JsonResponse {
         // Check is ajax type
@@ -413,6 +415,16 @@ class TwApiController extends AbstractController
             $twApi,
             $follow
         );
+
+        // Save platonic meta data
+        if ($request->query->get('flag') === 'platonic'
+         && $result['success']
+        ) {
+            $twUserMetaDataManager->saveIncrementMetaData(
+                $follow->getTwUser(),
+                'platonic'
+            );
+        }
 
         // Ajax response
         return $this->json($result);

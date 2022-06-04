@@ -492,12 +492,14 @@ class TwApiCallService
                     );
                 }
 
-                $twUser->setTwUsername($row['username']);
-                $twUser->setTwName($row['name']);
-                $twUser->setTwProfileImage($twProfileImage);
-                $twUser->setTwUrl($twUrl);
-                $twUser->setTwTags($twTags);
-                $twUser->setTwIsVerified($row['verified']);
+                $twUser
+                    ->setTwUsername($row['username'])
+                    ->setTwName($row['name'])
+                    ->setTwProfileImage($twProfileImage)
+                    ->setTwUrl($twUrl)
+                    ->setTwTags($twTags)
+                    ->setTwIsVerified($row['verified'])
+                ;
 
                 $this->entityManager->persist($twUser);
                 $this->entityManager->flush();
@@ -623,12 +625,14 @@ class TwApiCallService
                     );
                 }
 
-                $twUser->setTwUsername($row['username']);
-                $twUser->setTwName($row['name']);
-                $twUser->setTwProfileImage($twProfileImage);
-                $twUser->setTwUrl($twUrl);
-                $twUser->setTwTags($twTags);
-                $twUser->setTwIsVerified($row['verified']);
+                $twUser
+                    ->setTwUsername($row['username'])
+                    ->setTwName($row['name'])
+                    ->setTwProfileImage($twProfileImage)
+                    ->setTwUrl($twUrl)
+                    ->setTwTags($twTags)
+                    ->setTwIsVerified($row['verified'])
+                ;
 
                 $this->entityManager->persist($twUser);
                 $this->entityManager->flush();

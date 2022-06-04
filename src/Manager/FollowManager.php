@@ -65,7 +65,7 @@ class FollowManager
     {
         $follow ->setIsFollowing($isFollowing);
 
-        $this->entityManager->persist($follow,);
+        $this->entityManager->persist($follow);
         $this->entityManager->flush();
     }
 }

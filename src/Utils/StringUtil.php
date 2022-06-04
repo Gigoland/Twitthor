@@ -35,4 +35,22 @@ class StringUtil
             '='
         );
     }
+
+    /**
+     * Get normalized string for array key
+     * @todo
+     */
+    public function normalizeKey(string $string)
+    {
+        if (empty($string)) {
+            return $string;
+        }
+
+        $string = strip_tags($string);
+        $string = trim($string);
+        $string = strtolower($string);
+        $string = str_replace(' ', '_', $string);
+
+        return $string;
+    }
 }

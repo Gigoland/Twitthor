@@ -65,6 +65,9 @@ class TwUser
     #[ORM\OneToMany(mappedBy: 'twUser', targetEntity: Follow::class, orphanRemoval: true)]
     private ?Collection $follows;
 
+    #[ORM\OneToMany(mappedBy: 'twUser', targetEntity: TwUserMetaData::class, orphanRemoval: true)]
+    private ?Collection $twUserMetaData;
+
     /**
      * Constructor
      */
@@ -74,6 +77,7 @@ class TwUser
         $this->updateAt = new \DateTimeImmutable();
 
         $this->follows = new ArrayCollection();
+        $this->twUserMetaData = new ArrayCollection();
     }
 
     #[ORM\PrePersist()]
@@ -249,5 +253,35 @@ class TwUser
             . $this->getTwAccountId()
             . '/'
             . $this->getTwProfileImage();
+    }
+
+    /**
+     * @return Collection<int, TwUserMetaData>
+     */
+    public function getTwUserMetaData(): Collection
+    {
+        return $this->twUserMetaData;
+    }
+
+    public function addTwUserMetaData(TwUserMetaData $twUserMetaData): self
+    {
+        if (!$this->twUserMetaData->contains($twUserMetaData)) {
+            $this->twUserMetaData[] = $twUserMetaData;
+            $twUserMetaData->setTwUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTwUserMetaData(TwUserMetaData $twUserMetaData): self
+    {
+        if ($this->twUserMetaData->removeElement($twUserMetaData)) {
+            // set the owning side to null (unless already changed)
+            if ($twUserMetaData->getTwUser() === $this) {
+                $twUserMetaData->setTwUser(null);
+            }
+        }
+
+        return $this;
     }
 }
