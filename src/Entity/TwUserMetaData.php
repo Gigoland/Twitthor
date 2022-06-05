@@ -40,6 +40,9 @@ class TwUserMetaData
         return $this;
     }
 
+    /**
+     * Get int only
+     */
     public function getContentInt(): int
     {
         return is_numeric($this->content)

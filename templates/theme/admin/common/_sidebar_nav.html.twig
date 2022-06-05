@@ -16,10 +16,16 @@
 
       {% if is_granted('ROLE_ADMIN') %}
         {% set menus = {
-          'app_users': {'icon': 'fa-list', 'title': 'List'},
-          'app_user_add': {'icon': 'fa-plus', 'title': 'Add'},
+          'app_users': {'icon': 'fa-solid fa-list', 'title': 'List'},
+          'app_user_add': {'icon': 'fa-solid fa-plus', 'title': 'Add'},
         } %}
         {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
+        {% if expanded == false %}
+          {% set expanded = app.request.attributes.get('_route') in [
+            'app_user_edit',
+          ] ? true : false %}
+        {% endif %}
+
         <li class="nav-item nav-item-has-children">
           <a href="#0" data-bs-target="#ddmenu-users" aria-controls="ddmenu-users" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
             <span class="icon">
@@ -30,7 +36,7 @@
           <ul id="ddmenu-users" data-parent="#sidebar-nav" class="collapse{{ expanded ? ' show' : null }} dropdown-nav">
             {% for path,menu in menus %}
               <li>
-                <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
+                <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="{{ menu.icon }}"></i> {{ menu.title }}</a>
               </li>
             {% endfor %}
           </ul>
@@ -39,9 +45,14 @@
 
       {% if is_granted('ROLE_ADMIN') %}
         {% set menus = {
-          'app_twitter_users': {'icon': 'fa-list', 'title': 'List'},
+          'app_twitter_users': {'icon': 'fa-solid fa-list', 'title': 'List'},
         } %}
         {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
+        {% if expanded == false %}
+          {% set expanded = app.request.attributes.get('_route') in [
+            'app_twitter_user_edit',
+          ] ? true : false %}
+        {% endif %}
 
         <li class="nav-item nav-item-has-children">
           <a href="#0" data-bs-target="#ddmenu-twusers" aria-controls="ddmenu-twusers" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
@@ -53,7 +64,7 @@
           <ul id="ddmenu-twusers" data-parent="#sidebar-nav" class="collapse{{ expanded ? ' show' : null }} dropdown-nav">
             {% for path,menu in menus %}
               <li>
-                <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
+                <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="{{ menu.icon }}"></i> {{ menu.title }}</a>
               </li>
             {% endfor %}
           </ul>
@@ -63,12 +74,17 @@
       <span class="divider"><hr /></span>
 
       {% set menus = {
-        'app_following': {'icon': 'fa-forward', 'title': 'Following'},
-        'app_followers': {'icon': 'fa-backward', 'title': 'Followers'},
-        'app_platonics': {'icon': 'fa-book-skull', 'title': 'Platonics'},
-        'app_outers': {'icon': 'fa-skull-crossbones', 'title': 'Outers'},
+        'app_following': {'icon': 'fa-solid fa-forward', 'title': 'Following'},
+        'app_followers': {'icon': 'fa-solid fa-backward', 'title': 'Followers'},
+        'app_platonics': {'icon': 'fa-solid fa-book-skull', 'title': 'Platonics'},
+        'app_outers': {'icon': 'fa-solid fa-skull-crossbones', 'title': 'Outers'},
       } %}
       {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
+      {% if expanded == false %}
+        {% set expanded = app.request.attributes.get('_route') in [
+          'app_follow_edit',
+        ] ? true : false %}
+      {% endif %}
 
       <li class="nav-item nav-item-has-children">
         <a href="#0" data-bs-target="#ddmenu-follow" aria-controls="ddmenu-follow" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
@@ -80,7 +96,7 @@
         <ul id="ddmenu-follow" data-parent="#sidebar-nav" class="collapse{{ expanded ? ' show' : null }} dropdown-nav">
           {% for path,menu in menus %}
             <li>
-              <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
+              <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="{{ menu.icon }}"></i> {{ menu.title }}</a>
             </li>
           {% endfor %}
         </ul>
@@ -89,9 +105,15 @@
       <span class="divider"><hr /></span>
 
       {% set menus = {
-        'app_twitter_api_settings': {'icon': 'fa-twitter-square', 'title': 'Twitter Api Keys'},
+        'app_twitter_api_settings': {'icon': 'fa-brands fa-twitter-square', 'title': 'Twitter Api Keys'},
       } %}
       {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
+      {% if expanded == false %}
+        {% set expanded = app.request.attributes.get('_route') in [
+          'app_twitter_api_settings_add',
+          'app_twitter_api_settings_edit',
+        ] ? true : false %}
+      {% endif %}
 
       <li class="nav-item nav-item-has-children">
         <a href="#0" data-bs-target="#ddmenu-config" aria-controls="ddmenu-config" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
@@ -103,7 +125,7 @@
         <ul id="ddmenu-config" data-parent="#sidebar-nav" class="collapse{{ expanded ? ' show' : null }} dropdown-nav">
           {% for path,menu in menus %}
             <li>
-              <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
+              <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="{{ menu.icon }}"></i> {{ menu.title }}</a>
             </li>
           {% endfor %}
         </ul>

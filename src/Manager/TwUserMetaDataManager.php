@@ -39,7 +39,6 @@ class TwUserMetaDataManager
             $content = $metaData->getContentInt() + $content;
         }
 
-
         $metaData->setContent($content);
 
         $this->entityManager->persist($metaData);
@@ -69,7 +68,6 @@ class TwUserMetaDataManager
         } else {
             $content = $metaData->getContentInt() - $content;
         }
-
 
         $metaData->setContent($content);
 
