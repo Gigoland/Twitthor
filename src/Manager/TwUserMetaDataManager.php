@@ -16,7 +16,7 @@ class TwUserMetaDataManager
     ) {}
 
     /**
-     * Save
+     * Save increment meta
      */
     public function saveIncrementMetaData(TwUser $twUser, string $name, int $content = 1)
     {
@@ -37,6 +37,37 @@ class TwUserMetaDataManager
             ;
         } else {
             $content = $metaData->getContentInt() + $content;
+        }
+
+
+        $metaData->setContent($content);
+
+        $this->entityManager->persist($metaData);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * Save decrement meta
+     */
+    public function saveDecrementMetaData(TwUser $twUser, string $name, int $content = 1)
+    {
+        $stringUtil = new StringUtil();
+        $name = $stringUtil->normalizeKey($name);
+
+        $metaData = $this->metaDataRepository->findOneBy([
+            'twUser' => $twUser,
+            'name' => $name,
+        ]);
+
+        // Insert / Update
+        if (!$metaData) {
+            $metaData = new TwUserMetaData();
+            $metaData
+                ->setTwUser($twUser)
+                ->setName($name)
+            ;
+        } else {
+            $content = $metaData->getContentInt() - $content;
         }
 
 

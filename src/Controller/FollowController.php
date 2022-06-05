@@ -7,6 +7,7 @@ use App\Entity\TwApi;
 use App\Form\FollowType;
 use App\Utils\AjaxUtil;
 use App\Utils\JsonResponseUtil;
+use App\Manager\TwUserMetaDataManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -214,6 +215,7 @@ class FollowController extends AbstractController
     #[Security("is_granted('ROLE_USER') and user === follow.getUser()")]
     public function ajaxSwitchIsFavorite(
         Request $request,
+        TwUserMetaDataManager $twUserMetaDataManager,
         Follow $follow
     ): JsonResponse {
         // Check is ajax type
@@ -233,6 +235,19 @@ class FollowController extends AbstractController
 
         $this->entityManager->persist($follow);
         $this->entityManager->flush();
+
+        // Save favorite meta data
+        if ($follow->getIsFavorite()) {
+            $twUserMetaDataManager->saveIncrementMetaData(
+                $follow->getTwUser(),
+                'favorite'
+            );
+        } else {
+            $twUserMetaDataManager->saveDecrementMetaData(
+                $follow->getTwUser(),
+                'favorite'
+            );
+        }
 
         // Ajax response
         return $this->json(

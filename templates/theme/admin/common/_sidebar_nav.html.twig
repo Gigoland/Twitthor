@@ -4,8 +4,9 @@
   </div>
   <nav class="sidebar-nav">
     <ul>
+
       <li class="nav-item">
-        <a href="{{ path('app_admin_dashboard') }}">
+        <a href="{{ path('app_admin_dashboard') }}"{{ app.request.attributes.get('_route') == 'app_admin_dashboard' ? ' class="active"' : null }}>
           <span class="icon">
             <i class="fa-solid fa-gauge"></i>
           </span>
@@ -14,80 +15,100 @@
       </li>
 
       {% if is_granted('ROLE_ADMIN') %}
+        {% set menus = {
+          'app_users': {'icon': 'fa-list', 'title': 'List'},
+          'app_user_add': {'icon': 'fa-plus', 'title': 'Add'},
+        } %}
+        {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
         <li class="nav-item nav-item-has-children">
-          <a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_users" aria-controls="ddmenu_users" aria-expanded="false" aria-label="Toggle navigation">
+          <a href="#0" data-bs-target="#ddmenu_users" aria-controls="ddmenu_users" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
             <span class="icon">
               <i class="fa-solid fa-user-group"></i>
             </span>
             <span class="text">Twitthor Users</span>
           </a>
-          <ul id="ddmenu_users" class="collapse dropdown-nav">
-            <li>
-              <a href="{{ path('app_users') }}"><i class="fa-solid fa-list"></i> List</a>
-            </li>
-            <li>
-              <a href="{{ path('app_user_add') }}"><i class="fa-solid fa-plus"></i> Add</a>
-            </li>
+          <ul id="ddmenu_users" class="collapse{{ expanded ? 'show' : null }} dropdown-nav">
+            {% for path,menu in menus %}
+              <li>
+                <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
+              </li>
+            {% endfor %}
           </ul>
         </li>
       {% endif %}
 
       {% if is_granted('ROLE_ADMIN') %}
+        {% set menus = {
+          'app_twitter_users': {'icon': 'fa-list', 'title': 'List'},
+        } %}
+        {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
+
         <li class="nav-item nav-item-has-children">
-          <a href="#0" class="collapsed" data-bs-toggle="collapse" data-bs-target="#ddmenu_twusers" aria-controls="ddmenu_twusers" aria-expanded="false" aria-label="Toggle navigation">
+          <a href="#0" data-bs-target="#ddmenu_twusers" aria-controls="ddmenu_twusers" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
             <span class="icon">
               <i class="fa-solid fa-user-group"></i>
             </span>
             <span class="text">Twitter Users</span>
           </a>
-          <ul id="ddmenu_twusers" class="collapse dropdown-nav">
-            <li>
-              <a href="{{ path('app_twitter_users') }}"><i class="fa-solid fa-list"></i> List</a>
-            </li>
+          <ul id="ddmenu_twusers" class="collapse{{ expanded ? 'show' : null }} dropdown-nav">
+            {% for path,menu in menus %}
+              <li>
+                <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
+              </li>
+            {% endfor %}
           </ul>
         </li>
       {% endif %}
 
       <span class="divider"><hr /></span>
 
+      {% set menus = {
+        'app_following': {'icon': 'fa-forward', 'title': 'Following'},
+        'app_followers': {'icon': 'fa-backward', 'title': 'Followers'},
+        'app_platonics': {'icon': 'fa-book-skull', 'title': 'Platonics'},
+        'app_outers': {'icon': 'fa-skull-crossbones', 'title': 'Outers'},
+      } %}
+      {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
+
       <li class="nav-item nav-item-has-children">
-        <a href="#0" class="" data-bs-toggle="collapse" data-bs-target="#ddmenu_follow" aria-controls="ddmenu_follow" aria-expanded="true" aria-label="Toggle navigation">
+        <a href="#0" data-bs-target="#ddmenu_follow" aria-controls="ddmenu_follow" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
           <span class="icon">
             <i class="fa-brands fa-twitter"></i>
           </span>
           <span class="text">Follow </span>
         </a>
-        <ul id="ddmenu_follow" class="collapse show dropdown-nav">
-          <li>
-            <a href="{{ path('app_following') }}"><i class="fa-solid fa-forward"></i> Following</a>
-          </li>
-          <li>
-            <a href="{{ path('app_followers') }}"><i class="fa-solid fa-backward"></i> Followers</a>
-          </li>
-          <li>
-            <a href="{{ path('app_platonics') }}"><i class="fa-solid fa-book-skull"></i> Platonics</a>
-          </li>
-          <li>
-            <a href="{{ path('app_outers') }}"><i class="fa-solid fa-skull-crossbones"></i> Outers</a>
-          </li>
+        <ul id="ddmenu_follow" class="collapse{{ expanded ? 'show' : null }} dropdown-nav">
+          {% for path,menu in menus %}
+            <li>
+              <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
+            </li>
+          {% endfor %}
         </ul>
       </li>
 
       <span class="divider"><hr /></span>
 
+      {% set menus = {
+        'app_twitter_api_settings': {'icon': 'fa-twitter-square', 'title': 'Twitter Api Keys'},
+      } %}
+      {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
+
       <li class="nav-item nav-item-has-children">
-        <a href="#0" class="" data-bs-toggle="collapse" data-bs-target="#ddmenu_config" aria-controls="ddmenu_config" aria-expanded="true" aria-label="Toggle navigation">
+        <a href="#0" data-bs-target="#ddmenu_config" aria-controls="ddmenu_config" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
           <span class="icon">
             <i class="fa-solid fa-toolbox"></i>
           </span>
           <span class="text">Configurations </span>
         </a>
-        <ul id="ddmenu_config" class="collapse show dropdown-nav">
-          <li>
-            <a href="{{ path('app_twitter_api_settings') }}"><i class="fa-brands fa-twitter-square"></i> Twitter Api Keys</a>
-          </li>
+        <ul id="ddmenu_config" class="collapse{{ expanded ? 'show' : null }} dropdown-nav">
+          {% for path,menu in menus %}
+            <li>
+              <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
+            </li>
+          {% endfor %}
         </ul>
       </li>
+
     </ul>
   </nav>
 </aside>
