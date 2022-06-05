@@ -2,7 +2,7 @@
   <div class="navbar-logo">
     <a class="navbar-brand" href="{{ path('app_index') }}">Twit<strong>thor</strong>.com</a>
   </div>
-  <nav class="sidebar-nav">
+  <nav id="sidebar-nav" class="sidebar-nav">
     <ul>
 
       <li class="nav-item">
@@ -21,13 +21,13 @@
         } %}
         {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
         <li class="nav-item nav-item-has-children">
-          <a href="#0" data-bs-target="#ddmenu_users" aria-controls="ddmenu_users" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
+          <a href="#0" data-bs-target="#ddmenu-users" aria-controls="ddmenu-users" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
             <span class="icon">
               <i class="fa-solid fa-user-group"></i>
             </span>
             <span class="text">Twitthor Users</span>
           </a>
-          <ul id="ddmenu_users" class="collapse{{ expanded ? 'show' : null }} dropdown-nav">
+          <ul id="ddmenu-users" data-parent="#sidebar-nav" class="collapse{{ expanded ? ' show' : null }} dropdown-nav">
             {% for path,menu in menus %}
               <li>
                 <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
@@ -44,13 +44,13 @@
         {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
 
         <li class="nav-item nav-item-has-children">
-          <a href="#0" data-bs-target="#ddmenu_twusers" aria-controls="ddmenu_twusers" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
+          <a href="#0" data-bs-target="#ddmenu-twusers" aria-controls="ddmenu-twusers" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
             <span class="icon">
               <i class="fa-solid fa-user-group"></i>
             </span>
             <span class="text">Twitter Users</span>
           </a>
-          <ul id="ddmenu_twusers" class="collapse{{ expanded ? 'show' : null }} dropdown-nav">
+          <ul id="ddmenu-twusers" data-parent="#sidebar-nav" class="collapse{{ expanded ? ' show' : null }} dropdown-nav">
             {% for path,menu in menus %}
               <li>
                 <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
@@ -71,13 +71,13 @@
       {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
 
       <li class="nav-item nav-item-has-children">
-        <a href="#0" data-bs-target="#ddmenu_follow" aria-controls="ddmenu_follow" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
+        <a href="#0" data-bs-target="#ddmenu-follow" aria-controls="ddmenu-follow" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
           <span class="icon">
             <i class="fa-brands fa-twitter"></i>
           </span>
           <span class="text">Follow </span>
         </a>
-        <ul id="ddmenu_follow" class="collapse{{ expanded ? 'show' : null }} dropdown-nav">
+        <ul id="ddmenu-follow" data-parent="#sidebar-nav" class="collapse{{ expanded ? ' show' : null }} dropdown-nav">
           {% for path,menu in menus %}
             <li>
               <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
@@ -94,13 +94,13 @@
       {% set expanded = app.request.attributes.get('_route') in menus|keys ? true : false %}
 
       <li class="nav-item nav-item-has-children">
-        <a href="#0" data-bs-target="#ddmenu_config" aria-controls="ddmenu_config" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
+        <a href="#0" data-bs-target="#ddmenu-config" aria-controls="ddmenu-config" data-bs-toggle="collapse" aria-label="Toggle navigation" aria-expanded="{{ expanded ? 'true' : 'false' }}"{{ expanded ? null : ' class="collapsed"' }}>
           <span class="icon">
             <i class="fa-solid fa-toolbox"></i>
           </span>
           <span class="text">Configurations </span>
         </a>
-        <ul id="ddmenu_config" class="collapse{{ expanded ? 'show' : null }} dropdown-nav">
+        <ul id="ddmenu-config" data-parent="#sidebar-nav" class="collapse{{ expanded ? ' show' : null }} dropdown-nav">
           {% for path,menu in menus %}
             <li>
               <a href="{{ path(path) }}"{{ app.request.attributes.get('_route') == path ? ' class="active"' : null }}><i class="fa-solid {{ menu.icon }}"></i> {{ menu.title }}</a>
