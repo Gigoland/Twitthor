@@ -31,14 +31,14 @@ class RegistrationType extends AbstractType
                 'attr' => [
                     'class' => 'form-control rounded-pill border-0 shadow-sm px-4',
                     'minlength' => 5,
-                    'maxlength' => 55,
+                    'maxlength' => 180,
                 ],
                 'label' => 'Email',
                 'label_attr' => [
                     'class' => 'form-label mt-4',
                 ],
                 'constraints' => [
-                    new Assert\Length(['min' => 5, 'max' => 55]),
+                    new Assert\Length(['min' => 5, 'max' => 180]),
                     new Assert\NotBlank(),
                 ],
             ])
@@ -92,7 +92,7 @@ class RegistrationType extends AbstractType
                         'class' => 'form-control rounded-pill border-0 shadow-sm px-4 text-primary',
                         'autocomplete' => 'off',
                     ],
-                    'label' => 'Repeat paswword',
+                    'label' => 'Repeat password',
                     'label_attr' => [
                         'class' => 'form-label mt-4',
                     ],

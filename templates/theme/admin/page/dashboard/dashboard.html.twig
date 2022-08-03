@@ -6,20 +6,40 @@
   <div class="title-wrapper pt-30">
     <div class="row align-items-center">
 
-      <div class="col-md-6">
-        <div class="titlemb-30">
-          <h1>Twit<strong>thor</strong>.com</h1>
-          <p class="lead">🛠️ New tool ⚡️ “Twit<b>thor</b>” that will help us to manage Twitter.</p>
-          <hr class="mt-4">
-          <p>🧩 The first utility unfollow "Platonic" subscriptions will be to find who’s not following back and unfollow them ☠️</p>
-          {% if app.user %}
-            <p class="lead">
-              🤟 Hello dear {{ app.user.twUsername|default(app.user.email) }} !
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="title mb-30">
+            <h2>Cards</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="cards-styles">
+        <div class="row">
+
+          {% if rows.getTotalItemCount == 0 %}
+            <p class="text-sm mb-20">
+              Zero data...
             </p>
           {% else %}
-            <p class="lead">
-              <a class="btn btn-primary btn-lg" href="{{ path('app_security_login') }}" role="button">Login / Registration</a>
-            </p>
+            {% for row in rows %}
+              <div class="col-1">
+                <div class="card-style-2 mb-30">
+
+                  <div class="card-image">
+                    <div class="lead-image">
+                      <img src="{{ app.request.schemeAndHttpHost ~ row.avatar }}" class="rounded-circle mb-3" title="Go to : {{ row.twName }}" alt="Twitter Avatar">
+                    </div>
+                    <div class="text">
+                      <p class="text-sm text-medium">
+                        <p>{{ row.twName|slice(0, 20) ~ '...' }}</p>
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            {% endfor %}
           {% endif %}
         </div>
       </div>

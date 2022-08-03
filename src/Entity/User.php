@@ -200,19 +200,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    public function setPlainPassword($plainPassword): self
+    public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
 
         return $this;
     }
 
-    public function getVerifydToken(): ?bool
+    public function getVerifydToken(): ?string
     {
         return $this->verifyToken;
     }
